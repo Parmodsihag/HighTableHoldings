@@ -77,10 +77,10 @@ class AccountPage(tk.Frame):
 
         # verify entry
         if name and date and details and status_entry and pm_entry:
-            dailynote = f"01 = {name}, {date}, {details}, {opening_balance}, {status_entry}, {pm_entry}"
-            database.add_note_to_date(dailynote)
             a = accounts.add_new_customer(name, details)
             accounts.add_customer_transaction(a, date, status_entry, opening_balance, pm_entry)
+            dailynote = f"01 = {name}, {date}, {details}, {opening_balance}, {status_entry}, {pm_entry}"
+            database.add_note_to_date(dailynote)
 
             if __name__ != "__main__":
                 self.master.master.set_status(f"Account added: {a}")

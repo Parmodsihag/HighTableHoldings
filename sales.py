@@ -97,9 +97,6 @@ class SalesPage(tk.Frame):
             else:
                 iname = item_name
 
-            # first daily note
-            note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}"
-            note_id = database.add_note_to_date(note)
             
             # to account
             detail = f"{quantity} = {iname}"
@@ -108,6 +105,10 @@ class SalesPage(tk.Frame):
             
             # update inventory
             inventory.add_item_transaction(item_id, date, 0, int(float(quantity)), aname)
+
+            # daily note
+            note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}"
+            note_id = database.add_note_to_date(note)
 
             if __name__ != "__main__":
                 self.master.master.set_status(f"{note_id} Note {note}")
@@ -136,10 +137,6 @@ class SalesPage(tk.Frame):
                 iname = item_name.split("{")[1].split("}")[0]
             else:
                 iname = item_name
-
-            # first daily note
-            note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}"
-            note_id = database.add_note_to_date(note)
             
             # to account
             detail = f"{quantity} = {iname}"
@@ -148,6 +145,10 @@ class SalesPage(tk.Frame):
             
             # update inventory
             inventory.add_item_transaction(item_id, date, int(float(quantity)), 0, aname)
+
+            # daily note
+            note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}"
+            note_id = database.add_note_to_date(note)
 
             if __name__ != "__main__":
                 self.master.master.set_status(f"{note_id} Note {note}")

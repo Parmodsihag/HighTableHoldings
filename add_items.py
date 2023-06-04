@@ -76,11 +76,11 @@ class AddItemsPage(tk.Frame):
 
         # verify entry
         if name and date and details:
-            dailynote = f"02 = {name}, {date}, {details}, {opening_balance}"
-            database.add_note_to_date(dailynote)
-
             item_id = inventory.add_new_item(name)
             inventory.add_item_transaction(item_id,date, opening_balance, 0, details)
+
+            dailynote = f"02 = {name}, {date}, {details}, {opening_balance}"
+            database.add_note_to_date(dailynote)
 
             if __name__ != "__main__":
                 self.master.master.set_status(f"Item added: {item_id}")
