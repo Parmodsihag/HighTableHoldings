@@ -5,15 +5,26 @@ from tkinter import ttk
 
 
 import accounts
-import inventory
-import database
+# import inventory
+# import database
 import krar
+import datetime
+# import time
 
+import mypandasfile
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 
 
 
 class HomePage(tk.Frame):
+    accounts_df = mypandasfile.customer_df
+    # accounts_df = mypandasfile.get_all_list()
+    all_positive_df = accounts_df.loc[accounts_df['Amount'] >=0]
+    all_negative_df = accounts_df.loc[accounts_df['Amount'] <0]
+    # print(all_positive_df)
+
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
 
@@ -29,6 +40,7 @@ class HomePage(tk.Frame):
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.8, rely=0, relheight=1, relwidth=0.2)
 
+
         
 
     
@@ -37,23 +49,120 @@ class HomePage(tk.Frame):
 class SalesData(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        self.debit_credit_bar_graph()
 
-        l = tk.Label(self, text="this is diffrent")
-        # l.pack(expand=1, fill="both")
-        
+    def debit_credit_bar_graph(self):
+        # values
+        total_debit_value = self.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
+        total_diffrence_value = total_debit_value-total_credit_value
+        # print(total_debit_value)
+
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+
+
+        categories = ['Dr', 'Cr', "Df"]
+        amounts = [total_debit_value, total_credit_value, total_diffrence_value]
+        ax.barh(categories, amounts, color= Colors.ACTIVE_FOREGROUND, height=0.5)
+
+        # ax.set_xlabel("Cr/Dr")
+        # ax.set_ylabel("Amount")
+        ax.set_title(total_diffrence_value)
+
+        fig.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+
+
 class RecieceData(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
 
+        self.total_pie_graph()
+
+    def total_pie_graph(self):
+        # values
+        total_debit_value = self.master.all_positive_df.shape[0]
+        total_credit_value = self.master.all_negative_df.shape[0]
+        total_sum_value = total_debit_value+total_credit_value
+        # print(total_debit_value)
+
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+
+
+        categories = ['Dr', 'Cr']
+        amounts = [total_debit_value, total_credit_value]
+        mycolors = [Colors.FG_SHADE_1, Colors.FG_SHADE_3]
+        ax.pie(amounts, labels=categories, colors=mycolors, autopct='%1.1f%%')
+        ax.set_title(total_sum_value)
+
+        fig.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+
 class AccountsData(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        self.positive_scater_plot()
+
+    def positive_scater_plot(self):
+        # values
+        df = self.master.all_positive_df
+        
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+
+
+        ax.scatter(df['Amount'], df['Days'])
+
+        # ax.set_xlabel("Amount")
+        # ax.set_ylabel("Days")
+        # ax.set_title(total_diffrence_value)
+
+        fig.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
 
 class ItemsData(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
-        l = tk.Label(self, text="this is diffrent")
-        # l.pack(expand=1, fill="both")
+        
+        self.total_pie_graph()
+
+    def total_pie_graph(self):
+        # values
+        total_debit_value = self.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
+        total_sum_value = round(total_debit_value-total_credit_value, 2)
+
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+
+
+        categories = ['Dr', 'Cr']
+        amounts = [total_debit_value, total_credit_value]
+        mycolors = [Colors.FG_SHADE_1, Colors.FG_SHADE_3]
+        ax.pie(amounts, labels=categories, colors=mycolors, autopct='%1.1f%%')
+        ax.set_title(total_sum_value)
+
+        fig.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
 
 class KrarData(tk.Frame):
     def __init__(self, master, **kwargs):

@@ -115,3 +115,7 @@ def delete_customer_transaction(customer_id, transaction_id):
 def get_table(table_name):
     accounts_cursor.execute(f"select * from {table_name}")
     return accounts_cursor.fetchall()
+
+def get_table1(table_name):
+    accounts_cursor.execute(f"select date, amount, type from {table_name}")
+    return accounts_cursor.fetchall()

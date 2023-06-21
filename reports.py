@@ -9,8 +9,11 @@ import accounts
 import inventory
 import database
 import krar
+import mypandasfile
 
 class ReportsPage(tk.Frame):
+    accounts_df = mypandasfile.customer_df
+
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
 
@@ -21,8 +24,11 @@ class ReportsPage(tk.Frame):
         self.table_frame = tk.Frame(self)
         self.table_frame.place(relx=0, rely=0.1, relheight=0.9, relwidth=1)
 
-        self.default_lable = tk.Label(self.table_frame, bg=Colors.ACTIVE_BACKGROUND, text="Select a table", font="Consolas 36")
-        self.default_lable.pack(expand=1, fill=tk.BOTH)
+        # self.default_lable = tk.Label(self.table_frame, bg=Colors.ACTIVE_BACKGROUND, text="Select a table", font="Consolas 36")
+        # self.default_lable.pack(expand=1, fill=tk.BOTH)
+
+        self.sort_by_dropdown.set("Customer Id")
+        self.sort_by_combobox_select()
 
 
     
@@ -51,6 +57,54 @@ class ReportsPage(tk.Frame):
         # Create button
         show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=Colors.ACTIVE_BACKGROUND, font=font)
         show_button.pack(side="left", padx=5, pady=5)
+
+        # sort by
+        sort_options_list = ['Customer Id', 'Amount', 'Days', 'Customer Id R', 'Amount R', "Days R"]
+        self.sort_by_dropdown = ttk.Combobox(self.upper_frame, values=sort_options_list, width=20, font=font)
+        self.sort_by_dropdown.pack(side="left", padx=5, pady=5)
+        self.sort_by_dropdown.bind('<<ComboboxSelected>>', lambda e : self.sort_by_combobox_select())
+        
+
+    def sort_by_combobox_select(self):
+        value = self.sort_by_dropdown.get()
+        if value == "Amount":
+            self.make_my_table(self.accounts_df.sort_values('Amount'))
+        elif value == "Days":
+            self.make_my_table(self.accounts_df.sort_values('Days'))
+        elif value == "Customer Id":
+            self.make_my_table(self.accounts_df.sort_values('customer_id'))
+        elif value == "Amount R":
+            self.make_my_table(self.accounts_df.sort_values('Amount', ascending=False))
+        elif value == "Days R":
+            self.make_my_table(self.accounts_df.sort_values('Days', ascending=False))
+        elif value == "Customer Id R":
+            self.make_my_table(self.accounts_df.sort_values('customer_id', ascending=False))
+        else:
+            self.make_my_table(self.accounts_df)
+
+
+
+    def make_my_table(self, df):
+        for widget in self.table_frame.winfo_children():
+                widget.destroy()
+        columns = df.columns.tolist()
+            
+        tree = ttk.Treeview(self.table_frame)
+        tree['columns'] = columns
+        for column in columns:
+            tree.heading(column, text=column)
+        
+        c = 0
+        for index, row in df.iterrows():
+            tg='even'
+            if c%2:
+                tg='odd'
+            c+=1
+            tree.insert("", 'end', text=c, values=row.tolist(), tags=tg)
+
+        tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND)
+        tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND)
+        tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
 
     def update_table_names(self):
         selected_db = self.db_dropdown.get()

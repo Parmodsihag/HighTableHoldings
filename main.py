@@ -114,9 +114,7 @@ class MyApp(tk.Tk):
         self.title_bar_f(self.title_bar)
         
         self.status = tk.StringVar()
-        self.statusl = tk.Label(self.status_bar, textvariable=self.status, font="Consolas 18", background=Colors.BG_SHADE_1, fg=Colors.ACTIVE_FOREGROUND
-                                
-                                )
+        self.statusl = tk.Label(self.status_bar, textvariable=self.status, font="Consolas 18", background=Colors.BG_SHADE_1, fg=Colors.ACTIVE_FOREGROUND)
         self.statusl.pack(anchor="e")
         self.status.set("|Status Bar|")
         
