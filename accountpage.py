@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+# from tkinter import ttk
 from datetime import datetime
 
 from mytheme import Colors

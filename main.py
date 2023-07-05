@@ -11,6 +11,8 @@ from add_items import AddItemsPage
 from modifypage import ModifyPage
 from kararpage import KararPage
 
+from mypandasfile import get_all_list
+
 class CustomLabel(tk.Label):
     def __init__(self, master, text, frame_to_link, **kwargs):
         super().__init__(master, text=text, font=("Consolas", 14), padx=20, pady=20, anchor="w", highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
@@ -65,6 +67,7 @@ class CustomLabel(tk.Label):
 
 
 class MyApp(tk.Tk):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("My App")
@@ -91,7 +94,6 @@ class MyApp(tk.Tk):
                                 {
                                     'rowheight': 30,
                                     'background': 'red',
-                                    'foreground': '#fff',
                                     'fieldbackground': Colors.ACTIVE_BACKGROUND,
                                     'font': 'Ubantu 10'
                                 }
@@ -160,6 +162,11 @@ class MyApp(tk.Tk):
         # self.modify_frame_label.set_active()
         # self.karar_frame_label.set_active()
 
+        # data_process = multiprocessing.Process(target=self.my_parallel_processes, args=(1,2))
+        # data_process.start()
+
+        # data_process.join()
+
     def title_bar_f(self, master):
         today = datetime.now().strftime('%d %m|%Y')
         company_name = tk.Label(master, text="JAAT BEAJ BHANDER", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_3)
@@ -167,11 +174,29 @@ class MyApp(tk.Tk):
         today_date = tk.Label(master, text=today, font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
         today_date.place(relx=0.9, rely=0)
 
+        show_graph_label = tk.Label(master, text="#", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        show_graph_label.place(relx=0.8, rely=0)
+        show_graph_label.bind("<Button-1>",lambda e: self.my_parallel_processes())
+
     def set_status(self,s):
         self.status.set(s)
-        
+
+    def my_parallel_processes(self):
+        accounts_df = get_all_list()
+        self.homeframe.all_graphs_function(accounts_df)
+        self.reportframe.parallel_process_combo(accounts_df)
+    
+    # def start_processing(self):
+    #     with ThreadPoolExecutor() as executor:
+    #         executor.submit(self.my_parallel_processes)
+
 
 if __name__ == "__main__":
+    # accounts_df = get_all_list()
     app = MyApp()
+    # app.start_processing()
+    # data_process = multiprocessing.Process(target=app.my_parallel_processes, args=(1,))
+    # data_process.start()
     app.mainloop()
     # page 52 clouse 6.3
+    # app.my_parallel_processes(1)

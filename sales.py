@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import re
-from mytheme import Colors, DarkFuturisticTheme
+from mytheme import Colors
 from datetime import datetime
 
 

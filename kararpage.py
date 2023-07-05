@@ -1,5 +1,5 @@
 import tkinter as tk
-import sqlite3
+# import sqlite3
 
 import accounts
 import krar

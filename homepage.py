@@ -4,14 +4,14 @@ from mytheme import Colors
 from tkinter import ttk
 
 
-import accounts
+# import accounts
 # import inventory
 # import database
 import krar
-import datetime
+# import datetime
 # import time
 
-import mypandasfile
+# import mypandasfile
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
@@ -19,15 +19,24 @@ from matplotlib.figure import Figure
 
 
 class HomePage(tk.Frame):
-    accounts_df = mypandasfile.customer_df
-    # accounts_df = mypandasfile.get_all_list()
-    all_positive_df = accounts_df.loc[accounts_df['Amount'] >=0]
-    all_negative_df = accounts_df.loc[accounts_df['Amount'] <0]
+    # accounts_df = mypandasfile.customer_df
+    # # accounts_df = mypandasfile.get_all_list()
+    # all_positive_df = accounts_df.loc[accounts_df['Amount'] >=0]
+    # all_negative_df = accounts_df.loc[accounts_df['Amount'] <0]
     # print(all_positive_df)
 
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
 
+
+        self.karar_data_frame = KrarData(self)
+        self.karar_data_frame.place(relx=0.8, rely=0, relheight=1, relwidth=0.2)
+
+    def all_graphs_function(self, accounts_df):
+        self.all_positive_df = accounts_df.loc[accounts_df['Amount'] >=0]
+        self.all_negative_df = accounts_df.loc[accounts_df['Amount'] <0]
+        # self.all_positive_df = []
+        # self.all_negative_df = []
         self.sales_data_frame = SalesData(self)
         self.sales_data_frame.place(relx=0, rely=0, relheight=0.5, relwidth=0.4)
         self.recieve_data_frame = RecieceData(self)
@@ -37,8 +46,6 @@ class HomePage(tk.Frame):
         self.items_data_frame = ItemsData(self)
         self.items_data_frame.place(relx=0.4, rely=0.5, relheight=0.5, relwidth=0.4)
         
-        self.karar_data_frame = KrarData(self)
-        self.karar_data_frame.place(relx=0.8, rely=0, relheight=1, relwidth=0.2)
 
 
         
@@ -50,12 +57,13 @@ class SalesData(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
         self.debit_credit_bar_graph()
+        
 
     def debit_credit_bar_graph(self):
         # values
         total_debit_value = self.master.all_positive_df['Amount'].sum()
         total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
-        total_diffrence_value = total_debit_value-total_credit_value
+        total_diffrence_value = round(total_debit_value-total_credit_value, 2)
         # print(total_debit_value)
 
         fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)

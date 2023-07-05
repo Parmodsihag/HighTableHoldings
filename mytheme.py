@@ -1,23 +1,23 @@
 
 # import tkinter as tk
-from tkinter import ttk
+# from tkinter import ttk
 
-class CustomCombobox(ttk.Combobox):
-    def __init__(self, parent, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
-        self.parent = parent
-        self.postcommand=self.set_grab_current
+# class CustomCombobox(ttk.Combobox):
+#     def __init__(self, parent, *args, **kwargs):
+#         super().__init__(parent, *args, **kwargs)
+#         self.parent = parent
+#         self.postcommand=self.set_grab_current
 
-    def set_grab_current(self):
-        self.parent.tk.eval('tk::MakeGrab {}' .format(self.toplevel))
-        # self.bind("<FocusIn>", self.on_focus_in)
-        # self.bind("<FocusOut>", self.on_focus_out)
+#     def set_grab_current(self):
+#         self.parent.tk.eval('tk::MakeGrab {}' .format(self.toplevel))
+#         # self.bind("<FocusIn>", self.on_focus_in)
+#         # self.bind("<FocusOut>", self.on_focus_out)
 
-    def on_focus_in(self, event):
-        self.parent.configure(background=Colors.ACTIVE_BACKGROUND)
+#     def on_focus_in(self, event):
+#         self.parent.configure(background=Colors.ACTIVE_BACKGROUND)
 
-    def on_focus_out(self, event):
-        self.parent.configure(background='SystemButtonFace')
+#     def on_focus_out(self, event):
+#         self.parent.configure(background='SystemButtonFace')
 
 
 
@@ -43,19 +43,19 @@ class Colors:
     REMINDER = "#FB8C00"
 
 
-class DarkFuturisticTheme:
-        background_color = "#181818"
-        text_color = "#ffffff"
-        button_color = "#1cb9c8"
-        button_hover_color = "#40c3d3"
-        button_active_color = "#19959e"
-        entry_background_color = "#232323"
-        entry_text_color = "#ffffff"
-        label_color = "#ffffff"
-        highlight_color = "#1cb9c8"
-        success_color = "#22c95a"
-        warning_color = "#ffa500"
-        error_color = "#ff4d4d"
-        light_blue = "#1cb9c8"
-        light_green = "#22c95a"
-        dark_color = "#181818" 
+# class DarkFuturisticTheme:
+#         background_color = "#181818"
+#         text_color = "#ffffff"
+#         button_color = "#1cb9c8"
+#         button_hover_color = "#40c3d3"
+#         button_active_color = "#19959e"
+#         entry_background_color = "#232323"
+#         entry_text_color = "#ffffff"
+#         label_color = "#ffffff"
+#         highlight_color = "#1cb9c8"
+#         success_color = "#22c95a"
+#         warning_color = "#ffa500"
+#         error_color = "#ff4d4d"
+#         light_blue = "#1cb9c8"
+#         light_green = "#22c95a"
+#         dark_color = "#181818" 
