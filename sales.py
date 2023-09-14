@@ -11,51 +11,73 @@ import database
 
 class SalesPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        
+        # main frame to include all frames
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame.place(relx=0.3, rely=0.0, relwidth=.4, relheight=1)
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Sales", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
 
         # Date Entry Box
-        date_label = tk.Label(self, text="Date", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        date_label.pack(pady=10)
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack( fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
         today_date = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
-        self.date_entry = tk.Entry(self, textvariable=today_date, font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        self.date_entry.pack()
+        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Account Dropdown Menu
-        account_label = tk.Label(self, text="Account", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        account_label.pack(pady=10)
+        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame.pack( fill='x', pady=10, padx=10)
+        account_label = tk.Label(account_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, fill='x')
         account_choices = self.get_accounts()
-        self.account_dropdown = ttk.Combobox(self, values=account_choices, font="Consolas 14")
-        self.account_dropdown.pack()
+        self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
+        self.account_dropdown.pack(padx=40, pady=(0, 10), fill='x')
         self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
         self.account_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.account_dropdown, self.get_accounts(), self.account_dropdown.get().upper()))
 
         # Item Dropdown Menu
-        item_label = tk.Label(self, text="Item", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        item_label.pack(pady=10)
+        item_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        item_frame.pack( fill='x', pady=10, padx=10)
+        item_label = tk.Label(item_frame, text="Item", font="Consolas 12", bg=Colors.BACKGROUND2, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        item_label.pack(padx=40, fill='x')
         item_choices = self.get_items_from_inventory()
-        self.item_dropdown = ttk.Combobox(self, values=item_choices, font="Consolas 14")
-        self.item_dropdown.pack()
+        self.item_dropdown = ttk.Combobox(item_frame, values=item_choices, font="Consolas 14")
+        self.item_dropdown.pack(padx=40, pady=(0, 10), fill='x')
         self.item_dropdown.bind('<Enter>', lambda e: self.item_dropdown.config(values=self.get_items_from_inventory()))
         self.item_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.item_dropdown, self.get_items_from_inventory(), self.item_dropdown.get().upper()))
 
 
         # Quantity Entry Box
-        quantity_label = tk.Label(self, text="Quantity", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        quantity_label.pack(pady=10)
-        self.quantity_entry = tk.Entry(self, font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        self.quantity_entry.pack()
+        quantity_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        quantity_frame.pack( fill='x', pady=10, padx=10)
+        quantity_label = tk.Label(quantity_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND2, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        quantity_label.pack(padx=40, fill='x')
+        self.quantity_entry = tk.Entry(quantity_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.quantity_entry.pack(padx=40, pady=(0, 10), fill='x')
 
         # Price Entry Box
-        price_label = tk.Label(self, text="Price", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        price_label.pack(pady=10)
-        self.price_entry = tk.Entry(self, font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        self.price_entry.pack()
+        price_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        price_frame.pack( fill='x', pady=10, padx=10)
+        price_label = tk.Label(price_frame, text="Price", font="Consolas 12", bg=Colors.BACKGROUND2, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        price_label.pack(padx=40, fill='x')
+        self.price_entry = tk.Entry(price_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.price_entry.pack(padx=40, pady=(0, 10), fill='x')
 
         # Save Button
-        sale_button = tk.Button(self, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.ACTIVE_BACKGROUND, fg=Colors.ACTIVE_FOREGROUND)
-        sale_button.pack(pady=20)
-        recieve_button = tk.Button(self, text="Recieve", font="Consolas 14", command=self.recieve, bg=Colors.ACTIVE_BACKGROUND, fg=Colors.ACTIVE_FOREGROUND)
-        recieve_button.pack(pady=20)
+        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        sale_button_frame.pack( fill='x', pady=10, padx=10)
+        sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=40, fill='x', pady=(10, 20))
+        recieve_button = tk.Button(sale_button_frame, text="Recieve", font="Consolas 14", command=self.recieve, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        recieve_button.pack(padx=40, fill='x', pady=(0, 10))
 
     def update_listbox_items(self, lb, lst, pat):
         lsts = []

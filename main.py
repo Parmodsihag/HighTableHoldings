@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import PhotoImage
 from datetime import datetime
 
 from mytheme import Colors
@@ -15,14 +16,14 @@ from mypandasfile import get_all_list
 
 class CustomLabel(tk.Label):
     def __init__(self, master, text, frame_to_link, **kwargs):
-        super().__init__(master, text=text, font=("Consolas", 14), padx=20, pady=20, anchor="w", highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        super().__init__(master, text=text, font=("Consolas", 14), padx=20, pady=10, anchor="w", highlightthickness=0, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
 
         self.frame1 = frame_to_link
         self.bind("<Enter>", self.on_enter)
         self.bind("<Leave>", self.on_leave)
         self.bind("<Button-1>", self.on_click)
         
-        self.normal_bg = Colors.BACKGROUND
+        self.normal_bg = Colors.BACKGROUND1
         self.normal_fg = Colors.FOREGROUND
         self.hover_bg = Colors.LIGHT_BG
         self.hover_fg = Colors.FOREGROUND
@@ -50,18 +51,17 @@ class CustomLabel(tk.Label):
     
         self.is_active = True
         self.is_hovering = False
-        self.configure(background=self.active_bg, foreground=self.active_fg)
+        self.configure( foreground=self.active_fg)#, relief='groove')
         self.frame1.tkraise()
         
     def set_inactive(self):
         self.is_active = False
         self.is_hovering = False
-        self.configure(background=self.normal_bg, foreground=self.normal_fg)
-    
+        self.configure(background=self.normal_bg, foreground=self.normal_fg)#
     def set_active(self):
         self.is_active = True
         self.is_hovering = False
-        self.configure(background=self.active_bg, foreground=self.active_fg)
+        self.configure(foreground=self.active_fg)#, relief='groove')
         self.frame1.tkraise()
     
 
@@ -72,6 +72,7 @@ class MyApp(tk.Tk):
         super().__init__(*args, **kwargs)
         self.title("My App")
         self.state("zoomed")
+        self.config(background=Colors.BACKGROUND1)
 
         style=ttk.Style()
         style.theme_create('mytheme', parent='alt', 
@@ -81,37 +82,44 @@ class MyApp(tk.Tk):
                                 'configure':
                                 {
                                 'selectbackground': "#4EC5F1",
-                                'fieldbackground': Colors.ACTIVE_BACKGROUND,
-                                'background': Colors.ACTIVE_BACKGROUND,
-                                'foreground': "#eee",
+                                'fieldbackground': Colors.BACKGROUND3,
+                                'background': Colors.BACKGROUND3,
+                                'foreground': Colors.FG_SHADE_1,
                                 'arrowcolor':Colors.FOREGROUND,
                                 'arrowsize': 18,
-                                'font':"Consolas 16"
+                                'font':"Consolas 14"
                                 }
                             },
                             'Treeview':{
                                 'configure':
                                 {
                                     'rowheight': 30,
-                                    'background': 'red',
-                                    'fieldbackground': Colors.ACTIVE_BACKGROUND,
+                                    'fieldbackground': Colors.BACKGROUND,
                                     'font': 'Ubantu 10'
                                 }
                             }
                         }
                     )
         style.theme_use('mytheme')
-        style.configure("Treeview.Heading", foreground='#a0dad0', background=Colors.ACTIVE_BACKGROUND, font='Consolas 12')
+        style.configure("Treeview.Heading", foreground='#a0dad0', background=Colors.BACKGROUND1, font='Consolas 12')
         
         # main 4 parts 
         self.title_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
         self.title_bar.place(relx=0, rely=0, relheight=0.04, relwidth=1)
-        self.menu_frame = tk.Frame(self, bg=Colors.BACKGROUND)
-        self.menu_frame.place(relx=0, rely=0.04, relheight=0.9, relwidth=0.1)
-        self.action_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=2, highlightbackground=Colors.ACTIVE_FOREGROUND)
+
+        self.menu_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.menu_frame.place(relx=0, rely=0.24, relheight=0.5, relwidth=0.1)
+        self.action_frame = tk.Frame(self, bg=Colors.BACKGROUND1, padx=10, pady=10)
         self.action_frame.place(relx=0.1, rely=0.04, relheight=0.9, relwidth=0.9)
         self.status_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
         self.status_bar.place(relx=0, rely=0.94, relheight=0.06, relwidth=1)
+        
+        # logo
+        self.logo_frame = tk.Frame(self)
+        self.logo_frame.place(relx=0, rely=0.04, relheight=0.2, relwidth=0.1)
+        self.logo_image = PhotoImage(file="myicons/logo.png")
+        logo_image_label = tk.Label(self.logo_frame, image=self.logo_image, background=Colors.BACKGROUND1)
+        logo_image_label.pack( fill="both", expand=1)
         
         self.title_bar_f(self.title_bar)
         
@@ -140,19 +148,19 @@ class MyApp(tk.Tk):
 
         # adding labels in menu
         self.home_page_label = CustomLabel(self.menu_frame, "Home",self.homeframe)
-        self.home_page_label.pack(side="top", fill="x")
+        self.home_page_label.pack( fill="x")
         self.sale_page_label = CustomLabel(self.menu_frame, "Sale", self.saleframe)
-        self.sale_page_label.pack(side="top", fill="x")
+        self.sale_page_label.pack( fill="x")
         self.account_page_label = CustomLabel(self.menu_frame, "Account", self.accountframe)
-        self.account_page_label.pack(side="top", fill="x")
+        self.account_page_label.pack( fill="x")
         self.add_item_page_label = CustomLabel(self.menu_frame, "Add Items", self.additemframe)
-        self.add_item_page_label.pack(side="top", fill="x")
+        self.add_item_page_label.pack( fill="x")
         self.report_frame_label = CustomLabel(self.menu_frame, "Reports", self.reportframe)
-        self.report_frame_label.pack(side="top", fill="x")
+        self.report_frame_label.pack( fill="x")
         self.modify_frame_label = CustomLabel(self.menu_frame, "Modify", self.modifyframe)
-        self.modify_frame_label.pack(side="top", fill="x")
+        self.modify_frame_label.pack( fill="x")
         self.karar_frame_label = CustomLabel(self.menu_frame, "Karar", self.kararframe)
-        self.karar_frame_label.pack(side="top", fill="x")
+        self.karar_frame_label.pack( fill="x")
 
         # activating home page
         self.home_page_label.set_active()

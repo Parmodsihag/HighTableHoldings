@@ -13,25 +13,43 @@ from datetime import datetime
 
 class KararPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+
+
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame.place(relx=0.3, rely=0.0, relwidth=.4, relheight=1)
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Krar", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
 
         # Date Entry Box
-        date_label = tk.Label(self, text="Date", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        date_label.pack(pady=10)
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack(fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
         today_date = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
-        self.date_entry = tk.Entry(self, textvariable=today_date, font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        self.date_entry.pack()
+        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Account Dropdown Menu
-        account_label = tk.Label(self, text="Account", font="Consolas 14", bg=Colors.ACTIVE_BACKGROUND)
-        account_label.pack(pady=10)
+        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame.pack( fill='x', pady=10, padx=10)
+        account_label = tk.Label(account_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, fill='x')
         account_choices = self.get_accounts()
-        self.account_dropdown = ttk.Combobox(self, values=account_choices, font="Consolas 14")
-        self.account_dropdown.pack()
+        self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
+        self.account_dropdown.pack(padx=40, pady=(0,10), fill='x')
         self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
 
-        sale_button = tk.Button(self, text="Add krar", font="Consolas 14", command=self.add_krar, bg=Colors.ACTIVE_BACKGROUND, fg=Colors.ACTIVE_FOREGROUND)
-        sale_button.pack(pady=20)
+
+        # button frame
+        button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        button_frame.pack(fill='x', pady=(10,0), padx=10)
+        sale_button = tk.Button(button_frame, text="Add krar", font="Consolas 14", command=self.add_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
     def get_accounts(self):
         accoount_list = accounts.get_all_customers()

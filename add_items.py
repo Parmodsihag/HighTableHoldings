@@ -12,42 +12,53 @@ import database
 
 class AddItemsPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
 
-        APP_FONT = "Consolas 14"
+        APP_FONT = "Consolas 12"
+        APP_FONT1 = "Consolas 14"
+        # main frame to include all frames
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame.place(relx=0.3, rely=0.0, relwidth=.4, relheight=1)
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Items", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
 
         # Name Entry Box
-        name_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        name_frame.pack(pady=10)
-        name_label = tk.Label(name_frame, text="Item Name: ", font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        name_label.pack(side="left")
-        self.name_entry = tk.Entry(name_frame, font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        self.name_entry.pack(side="left")
+        name_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        name_frame.pack(fill='x', pady=10, padx=10)
+
+        name_label = tk.Label(name_frame, text="Item Name: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        name_label.pack(padx=40, fill='x')
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Other Details Entry Box
-        details_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        details_frame.pack(pady=10)
-        details_label = tk.Label(details_frame, text="Source: ", font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        details_label.pack(side="left")
-        self.details_entry = tk.Entry(details_frame, font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        self.details_entry.pack(side="left")
+        details_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        details_frame.pack(fill='x', pady=10, padx=10)
+        details_label = tk.Label(details_frame, text="Source: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        details_label.pack(padx=40, fill='x')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Date Entry Box
-        date_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        date_frame.pack(pady=10)
-        date_label = tk.Label(date_frame, text="Date: ", font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        date_label.pack(side="left")
-        self.date_entry = tk.Entry(date_frame, font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        self.date_entry.pack(side="left")
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack(fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Date: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(padx=40, pady=(0,10), fill='x')
         self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
 
         # Opening Balance Entry Box
-        balance_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        balance_frame.pack(pady=10)
-        balance_label = tk.Label(balance_frame, text="Opening Balance: ", font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        balance_label.pack(side="left")
-        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT, bg=Colors.ACTIVE_BACKGROUND)
-        self.balance_entry.pack(side="left")
+        balance_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        balance_frame.pack(fill='x', pady=10, padx=10)
+        balance_label = tk.Label(balance_frame, text="Opening Balance: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        balance_label.pack(padx=40, fill='x')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry.pack(padx=40, pady=(0,10), fill='x')
         
         # Status Entry Box
         # status_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
@@ -62,10 +73,10 @@ class AddItemsPage(tk.Frame):
         # self.pm_entry.pack(side="left")
 
         # Add Account Button
-        button_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        button_frame.pack(pady=20)
-        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.ACTIVE_BACKGROUND)
-        self.add_button.pack()
+        button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        button_frame.pack(fill='x', pady=(10,0), padx=10)
+        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button.pack(padx=40, fill='x', pady=(10, 10))
 
 
     def add_item(self):

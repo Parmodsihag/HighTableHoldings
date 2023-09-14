@@ -26,25 +26,45 @@ class HomePage(tk.Frame):
     # print(all_positive_df)
 
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+
+        self.jbb_logo_image = tk.PhotoImage(file='myicons/logonew.png')
+        self.jbb_logo_image_label = tk.Label(self , image=self.jbb_logo_image, bg=Colors.BACKGROUND1)
+        self.jbb_logo_image_label.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=.6)
 
 
         self.karar_data_frame = KrarData(self)
-        self.karar_data_frame.place(relx=0.8, rely=0, relheight=1, relwidth=0.2)
+        self.karar_data_frame.place(relx=0.78, rely=0, relheight=1, relwidth=0.22)
+    
 
     def all_graphs_function(self, accounts_df):
         self.all_positive_df = accounts_df.loc[accounts_df['Amount'] >=0]
         self.all_negative_df = accounts_df.loc[accounts_df['Amount'] <0]
         # self.all_positive_df = []
         # self.all_negative_df = []
-        self.sales_data_frame = SalesData(self)
-        self.sales_data_frame.place(relx=0, rely=0, relheight=0.5, relwidth=0.4)
-        self.recieve_data_frame = RecieceData(self)
-        self.recieve_data_frame.place(relx=0.4, rely=0, relheight=0.5, relwidth=0.4)
-        self.account_data_frame = AccountsData(self)
-        self.account_data_frame.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.4)
-        self.items_data_frame = ItemsData(self)
-        self.items_data_frame.place(relx=0.4, rely=0.5, relheight=0.5, relwidth=0.4)
+
+        self.all_graphs_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.all_graphs_frame.place(relx=0, rely=0, relheight=.5, relwidth=.78)
+        self.all_graphs_frame1 = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.all_graphs_frame1.place(relx=0, rely=0.5, relheight=.5, relwidth=.78)
+        
+        self.sales_data_frame = SalesData(self.all_graphs_frame)
+        self.sales_data_frame.pack( side='left', padx=(0,5), pady=(0,5))
+        self.recieve_data_frame = RecieceData(self.all_graphs_frame)
+        self.recieve_data_frame.pack( side='left', padx=(5,10), pady=(0,5))
+        self.account_data_frame = AccountsData(self.all_graphs_frame1)
+        self.account_data_frame.pack( side='left', padx=(0,5), pady=(5,0))
+        self.items_data_frame = ItemsData(self.all_graphs_frame1)
+        self.items_data_frame.pack( side='left', padx=(5,10), pady=(5,0))
+
+        # self.sales_data_frame = SalesData(self)
+        # self.sales_data_frame.place(relx=0, rely=0, relheight=0.5, relwidth=0.4)
+        # self.recieve_data_frame = RecieceData(self)
+        # self.recieve_data_frame.place(relx=0.4, rely=0, relheight=0.5, relwidth=0.4)
+        # self.account_data_frame = AccountsData(self)
+        # self.account_data_frame.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.4)
+        # self.items_data_frame = ItemsData(self)
+        # self.items_data_frame.place(relx=0.4, rely=0.5, relheight=0.5, relwidth=0.4)
         
 
 
@@ -55,20 +75,20 @@ class HomePage(tk.Frame):
 
 class SalesData(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
         self.debit_credit_bar_graph()
         
 
     def debit_credit_bar_graph(self):
         # values
-        total_debit_value = self.master.all_positive_df['Amount'].sum()
-        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
+        total_debit_value = self.master.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.master.all_negative_df['Amount'].sum()*(-1)
         total_diffrence_value = round(total_debit_value-total_credit_value, 2)
         # print(total_debit_value)
 
-        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        fig = Figure(figsize=(4,3), dpi=100, facecolor=Colors.BACKGROUND)
         ax = fig.add_subplot(111)
-        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+        ax.set_facecolor(Colors.BACKGROUND)
 
 
         categories = ['Dr', 'Cr', "Df"]
@@ -89,20 +109,20 @@ class SalesData(tk.Frame):
 
 class RecieceData(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
 
         self.total_pie_graph()
 
     def total_pie_graph(self):
         # values
-        total_debit_value = self.master.all_positive_df.shape[0]
-        total_credit_value = self.master.all_negative_df.shape[0]
+        total_debit_value = self.master.master.all_positive_df.shape[0]
+        total_credit_value = self.master.master.all_negative_df.shape[0]
         total_sum_value = total_debit_value+total_credit_value
         # print(total_debit_value)
 
-        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.BACKGROUND)
         ax = fig.add_subplot(111)
-        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+        ax.set_facecolor(Colors.BACKGROUND)
 
 
         categories = ['Dr', 'Cr']
@@ -119,16 +139,16 @@ class RecieceData(tk.Frame):
 
 class AccountsData(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
         self.positive_scater_plot()
 
     def positive_scater_plot(self):
         # values
-        df = self.master.all_positive_df
+        df = self.master.master.all_positive_df
         
-        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.BACKGROUND)
         ax = fig.add_subplot(111)
-        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+        ax.set_facecolor(Colors.BACKGROUND)
 
 
         ax.scatter(df['Amount'], df['Days'])
@@ -145,19 +165,19 @@ class AccountsData(tk.Frame):
 
 class ItemsData(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
         
         self.total_pie_graph()
 
     def total_pie_graph(self):
         # values
-        total_debit_value = self.master.all_positive_df['Amount'].sum()
-        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
+        total_debit_value = self.master.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.master.all_negative_df['Amount'].sum()*(-1)
         total_sum_value = round(total_debit_value-total_credit_value, 2)
 
-        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.ACTIVE_BACKGROUND)
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.BACKGROUND)
         ax = fig.add_subplot(111)
-        ax.set_facecolor(Colors.ACTIVE_BACKGROUND)
+        ax.set_facecolor(Colors.BACKGROUND)
 
 
         categories = ['Dr', 'Cr']
@@ -175,11 +195,11 @@ class ItemsData(tk.Frame):
 class KrarData(tk.Frame):
     def __init__(self, master, **kwargs):
         
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, highlightthickness=1, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
 
-        self.table_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
+        self.table_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.table_frame.pack(fill="both", expand=1)
-        self.down_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
+        self.down_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.down_frame.pack(fill="both", expand=1)
         self.show_table()
 
@@ -196,7 +216,7 @@ class KrarData(tk.Frame):
         self.table_dropdown = ttk.Combobox(self.down_frame, values= self.table_list, width=20)
         self.table_dropdown.pack(side="top", padx=5, pady=5, fill="x", expand=1)
 
-        save_button = tk.Button(self, text="Set Done", font="Consolas 14", command=self.set_undue_krar, bg=Colors.ACTIVE_BACKGROUND, fg=Colors.ACTIVE_FOREGROUND)
+        save_button = tk.Button(self, text="Set Done", font="Consolas 14", command=self.set_undue_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
         save_button.pack(pady=20, padx=20, fill="x", expand=1)
         
 
