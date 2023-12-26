@@ -16,9 +16,19 @@ class AccountPage(tk.Frame):
         APP_FONT = "Consolas 12"
         APP_FONT1 = "Consolas 14"
 
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
         # main frame to include all frames
-        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
-        self.main_frame.place(relx=0.3, rely=0.0, relwidth=.4, relheight=1)
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
         title_frame.pack(fill='x', pady=2, padx=10)

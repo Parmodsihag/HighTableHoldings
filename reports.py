@@ -17,12 +17,19 @@ class ReportsPage(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
 
-        self.upper_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        self.upper_frame.place(relx=0, rely=0, relheight=0.1, relwidth=1)
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        self.upper_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.upper_frame.place(relx=0.01, rely=0.01, relheight=0.09, relwidth=0.98)
         self.table_selector()
 
-        self.table_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
-        self.table_frame.place(relx=0, rely=0.1, relheight=0.9, relwidth=1)
+        self.table_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.table_frame.place(relx=0.01, rely=0.11, relheight=0.88, relwidth=0.98)
 
         # self.default_lable = tk.Label(self.table_frame, bg=Colors.ACTIVE_BACKGROUND, text="Select a table", font="Consolas 36")
         # self.default_lable.pack(expand=1, fill=tk.BOTH)
@@ -35,7 +42,7 @@ class ReportsPage(tk.Frame):
     def table_selector(self):
         font = "Consolas 16"
         database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db"]
-        db_label = tk.Label(self.upper_frame, text="Select database:", bg=Colors.ACTIVE_BACKGROUND, font=font)
+        db_label = tk.Label(self.upper_frame, text="Database:", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, font=font)
         db_label.pack(side="left", padx=5, pady=5)
         self.db_dropdown = ttk.Combobox(self.upper_frame, values=database_names, width=20, font=font)
         self.db_dropdown.pack(side="left", padx=5, pady=5)
@@ -48,14 +55,14 @@ class ReportsPage(tk.Frame):
 
         # Create table dropdown
         self.table_list = []
-        table_label = tk.Label(self.upper_frame, text="Select table:", bg=Colors.ACTIVE_BACKGROUND, font=font)
+        table_label = tk.Label(self.upper_frame, text="Table:", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, font=font)
         table_label.pack(side="left", padx=5, pady=5)
         self.table_dropdown = ttk.Combobox(self.upper_frame, values= self.table_list, width=20, font=font)
         self.table_dropdown.pack(side="left", padx=5, pady=5)
         # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
 
         # Create button
-        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=Colors.ACTIVE_BACKGROUND, font=font)
+        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove', font="Consolas 14")
         show_button.pack(side="left", padx=5, pady=5)
 
     def parallel_process_combo(self, accounts_df):
@@ -106,8 +113,10 @@ class ReportsPage(tk.Frame):
             c+=1
             tree.insert("", 'end', text=c, values=row.tolist(), tags=tg)
 
-        tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
-        tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
+        # tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
+        # tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
+        tree.tag_configure('odd', background=Colors.BACKGROUND, foreground=Colors.ACTIVE_FOREGROUND)
+        tree.tag_configure('even', background=Colors.BACKGROUND1, foreground=Colors.ACTIVE_FOREGROUND)
         tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
 
     def update_table_names(self):
@@ -197,8 +206,10 @@ class ReportsPage(tk.Frame):
                     tg = "even"
                 tree.insert('', c, text=c, values=i, tags = tg )
 
-            tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
-            tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
+            # tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
+            # tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
+            tree.tag_configure('odd', background=Colors.BACKGROUND, foreground=Colors.ACTIVE_FOREGROUND)
+            tree.tag_configure('even', background=Colors.BACKGROUND1, foreground=Colors.ACTIVE_FOREGROUND)
             tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP) 
         else:
             print("Empty fields for reports")
@@ -260,10 +271,12 @@ class ReportsPage(tk.Frame):
         for i in column_list:
             updated_column_list.append(i[1])
 
-        if len(column_list) != 2:
+        if len(column_list) != 3:
             updated_table_data = table_data
         else:
             updated_column_list.append("In Stock")
+            updated_column_list.append("Stock Value")
+            updated_column_list.append("Last Value")
             for row in table_data:
                 item_id = int(row[0])
                 temp_list = []
@@ -271,7 +284,11 @@ class ReportsPage(tk.Frame):
                     temp_list.append(i)
 
                 in_stock = inventory.get_item_quantity(item_id)
+                total_stock_value = inventory.get_item_value(item_id)
+                last_value = inventory.get_last_value(item_id)
                 temp_list.append(in_stock)
+                temp_list.append(total_stock_value)
+                temp_list.append(last_value)
                 updated_table_data.append(temp_list)
 
         return updated_column_list, updated_table_data

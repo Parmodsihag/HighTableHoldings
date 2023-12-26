@@ -8,17 +8,33 @@ inventory_cursor = inventory_conn.cursor()
 inventory_cursor.execute("""
     CREATE TABLE IF NOT EXISTS items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT
+        name TEXT,
+        stock_value INTEGER DEFAULT 0,
+        last_value INTEGER DEFAULT 0                        
     )
 """)
 
+alter_query = '''
+    ALTER TABLE items
+    ADD COLUMN last_value INTEGER DEFAULT 0;
+'''
+# inventory_cursor.execute("CREATE TABLE new_table AS SELECT id, name, stock_value FROM items")
+# inventory_cursor.execute(" SELECT * FROM new_table")
+# inventory_cursor.execute("DROP TABLE items")
+# inventory_cursor.execute("ALTER TABLE new_table RENAME TO items")
+# inventory_cursor.execute(alter_query)
+
+# inventory_cursor.execute(" PRAGMA table_info(items);")
+# print(inventory_cursor.fetchall())
+
+
 # function to add a new item and create a table for it
-def add_new_item(name):
+def add_new_item(name, stock_value, last_value):
     # insert the new item into the items table and get its auto-incremented id
     inventory_cursor.execute("""
-        INSERT INTO items (name)
-        VALUES (?)
-    """, (name,))
+        INSERT INTO items (name, stock_value, last_value)
+        VALUES (?, ?, ?)
+    """, (name, stock_value, last_value))
     item_id = inventory_cursor.lastrowid
     
     # create a new table for the item with its id as the table name
@@ -49,8 +65,8 @@ def add_item_transaction(item_id, date, recieved, sale, description, tags=''):
 
 
 # Function to modify an item
-def modify_item(item_id, name):
-    inventory_cursor.execute("UPDATE items SET name=? WHERE id=?", (name, item_id))
+def modify_item(item_id, name, stock_value, last_value):
+    inventory_cursor.execute("UPDATE items SET name=?, stock_value=?, last_value=? WHERE id=?", (name, stock_value, last_value, item_id))
     inventory_conn.commit()
     print("Item with id", item_id, "has been modified.")
 
@@ -167,15 +183,17 @@ def get_item_quantity(item_id):
         print(f"Error getting quantity for item {item_id}: {e}")
     return quantity
 
-def get_item_value(item_id, purchase_price):
+def get_item_value(item_id):
     quantity = get_item_quantity(item_id)
-    value = quantity * purchase_price
+    inventory_cursor.execute(f"SELECT stock_value FROM items where id={item_id}")
+    row = inventory_cursor.fetchone()[0]
+    value = quantity * row
     return value
 
 def get_inventory_value():
     value = 0
     try:
-        inventory_cursor.execute("SELECT id, purchase_price FROM items")
+        inventory_cursor.execute("SELECT id, stock_value FROM items")
         rows = inventory_cursor.fetchall()
         for row in rows:
             item_value = get_item_value(row[0], row[1])
@@ -183,7 +201,23 @@ def get_inventory_value():
     except sqlite3.Error as e:
         print(f"Error getting inventory value: {e}")
     return value
+
+def get_last_value(item_id):
+    inventory_cursor.execute(f"SELECT last_value FROM items where id={item_id}")
+    row = inventory_cursor.fetchone()[0]
+    return row
+
+def set_last_value(item_id, value):
+    inventory_cursor.execute("UPDATE items SET last_value=? WHERE id=?", (value, item_id))
+    inventory_conn.commit()
+    return f'Item Id {item_id} updated to value {value}'
+
 def get_table(table_name):
     inventory_cursor.execute(f"select * from {table_name}")
     return inventory_cursor.fetchall()
 
+if __name__ == '__main__':
+    print('hello')
+    print(get_last_value(4))
+    # print(get_item_value(44))
+    # get_item_value(44)

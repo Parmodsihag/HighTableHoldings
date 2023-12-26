@@ -12,10 +12,20 @@ import database
 class SalesPage(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
-        
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
         # main frame to include all frames
-        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
-        self.main_frame.place(relx=0.3, rely=0.0, relwidth=.4, relheight=1)
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         # title frame
         title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
@@ -44,35 +54,35 @@ class SalesPage(tk.Frame):
         self.account_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.account_dropdown, self.get_accounts(), self.account_dropdown.get().upper()))
 
         # Item Dropdown Menu
-        item_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        item_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         item_frame.pack( fill='x', pady=10, padx=10)
-        item_label = tk.Label(item_frame, text="Item", font="Consolas 12", bg=Colors.BACKGROUND2, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        item_label = tk.Label(item_frame, text="Item", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         item_label.pack(padx=40, fill='x')
         item_choices = self.get_items_from_inventory()
         self.item_dropdown = ttk.Combobox(item_frame, values=item_choices, font="Consolas 14")
         self.item_dropdown.pack(padx=40, pady=(0, 10), fill='x')
         self.item_dropdown.bind('<Enter>', lambda e: self.item_dropdown.config(values=self.get_items_from_inventory()))
         self.item_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.item_dropdown, self.get_items_from_inventory(), self.item_dropdown.get().upper()))
-
+        self.item_dropdown.bind('<<ComboboxSelected>>', lambda e : self.set_price())
 
         # Quantity Entry Box
-        quantity_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        quantity_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         quantity_frame.pack( fill='x', pady=10, padx=10)
-        quantity_label = tk.Label(quantity_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND2, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        quantity_label = tk.Label(quantity_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         quantity_label.pack(padx=40, fill='x')
         self.quantity_entry = tk.Entry(quantity_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
         self.quantity_entry.pack(padx=40, pady=(0, 10), fill='x')
 
         # Price Entry Box
-        price_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        price_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         price_frame.pack( fill='x', pady=10, padx=10)
-        price_label = tk.Label(price_frame, text="Price", font="Consolas 12", bg=Colors.BACKGROUND2, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        price_label = tk.Label(price_frame, text="Price", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         price_label.pack(padx=40, fill='x')
         self.price_entry = tk.Entry(price_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
         self.price_entry.pack(padx=40, pady=(0, 10), fill='x')
 
         # Save Button
-        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND2)
+        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
         sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
         sale_button.pack(padx=40, fill='x', pady=(10, 20))
@@ -98,6 +108,14 @@ class SalesPage(tk.Frame):
         # code to fetch accounts from accounts database
         # replace this with actual code to fetch accounts from your database
         return accoount_list
+    
+    def set_price(self):
+        item_name = self.item_dropdown.get()
+        last_value = item_name.split()[-1]
+        self.price_entry.delete(0, tk.END) 
+        self.price_entry.insert(0, last_value)
+        # self.price_entry.setvar(last_value)
+        # print(last_value)
 
     def sale(self):
         # date item account quatity price
@@ -127,6 +145,7 @@ class SalesPage(tk.Frame):
             
             # update inventory
             inventory.add_item_transaction(item_id, date, 0, int(float(quantity)), aname)
+            inventory.set_last_value(item_id, price)
 
             # daily note
             note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}"
@@ -167,6 +186,7 @@ class SalesPage(tk.Frame):
             
             # update inventory
             inventory.add_item_transaction(item_id, date, int(float(quantity)), 0, aname)
+            inventory.set_last_value(item_id, price)
 
             # daily note
             note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}"

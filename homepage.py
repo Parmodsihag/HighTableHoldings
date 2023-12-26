@@ -28,13 +28,20 @@ class HomePage(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
 
-        self.jbb_logo_image = tk.PhotoImage(file='myicons/logonew.png')
-        self.jbb_logo_image_label = tk.Label(self , image=self.jbb_logo_image, bg=Colors.BACKGROUND1)
-        self.jbb_logo_image_label.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=.6)
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        # self.jbb_logo_image = tk.PhotoImage(file='myicons/logonew.png')
+        # self.jbb_logo_image_label = tk.Label(self , image=self.jbb_logo_image, bg=Colors.BACKGROUND1)
+        # self.jbb_logo_image_label.place(relx=0.1, rely=0.1, relheight=0.8, relwidth=.6)
 
 
         self.karar_data_frame = KrarData(self)
-        self.karar_data_frame.place(relx=0.78, rely=0, relheight=1, relwidth=0.22)
+        self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
     
 
     def all_graphs_function(self, accounts_df):
@@ -43,33 +50,76 @@ class HomePage(tk.Frame):
         # self.all_positive_df = []
         # self.all_negative_df = []
 
-        self.all_graphs_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
-        self.all_graphs_frame.place(relx=0, rely=0, relheight=.5, relwidth=.78)
-        self.all_graphs_frame1 = tk.Frame(self, bg=Colors.BACKGROUND1)
-        self.all_graphs_frame1.place(relx=0, rely=0.5, relheight=.5, relwidth=.78)
+        # self.all_graphs_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        # self.all_graphs_frame.place(relx=0, rely=0, relheight=.5, relwidth=.78)
+        # self.all_graphs_frame1 = tk.Frame(self, bg=Colors.BACKGROUND1)
+        # self.all_graphs_frame1.place(relx=0, rely=0.5, relheight=.5, relwidth=.78)
         
-        self.sales_data_frame = SalesData(self.all_graphs_frame)
-        self.sales_data_frame.pack( side='left', padx=(0,5), pady=(0,5))
-        self.recieve_data_frame = RecieceData(self.all_graphs_frame)
-        self.recieve_data_frame.pack( side='left', padx=(5,10), pady=(0,5))
-        self.account_data_frame = AccountsData(self.all_graphs_frame1)
-        self.account_data_frame.pack( side='left', padx=(0,5), pady=(5,0))
-        self.items_data_frame = ItemsData(self.all_graphs_frame1)
-        self.items_data_frame.pack( side='left', padx=(5,10), pady=(5,0))
+        # self.sales_data_frame = SalesData(self.all_graphs_frame)
+        # self.sales_data_frame.pack( side='left', padx=(0,5), pady=(0,5))
+        # self.recieve_data_frame = RecieceData(self.all_graphs_frame)
+        # self.recieve_data_frame.pack( side='left', padx=(5,10), pady=(0,5))
+        # self.account_data_frame = AccountsData(self.all_graphs_frame1)
+        # self.account_data_frame.pack( side='left', padx=(0,5), pady=(5,0))
+        # self.items_data_frame = ItemsData(self.all_graphs_frame1)
+        # self.items_data_frame.pack( side='left', padx=(5,10), pady=(5,0))
 
-        # self.sales_data_frame = SalesData(self)
-        # self.sales_data_frame.place(relx=0, rely=0, relheight=0.5, relwidth=0.4)
-        # self.recieve_data_frame = RecieceData(self)
-        # self.recieve_data_frame.place(relx=0.4, rely=0, relheight=0.5, relwidth=0.4)
-        # self.account_data_frame = AccountsData(self)
-        # self.account_data_frame.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.4)
-        # self.items_data_frame = ItemsData(self)
-        # self.items_data_frame.place(relx=0.4, rely=0.5, relheight=0.5, relwidth=0.4)
-        
-
-
+        self.sales_data_frame = SalesData(self)
+        self.sales_data_frame.place(relx=0.01, rely=0.01, relheight=0.485, relwidth=0.4)
+        self.recieve_data_frame = RecieceData(self)
+        self.recieve_data_frame.place(relx=0.42, rely=0.01, relheight=0.485, relwidth=0.35)
+        self.items_data_frame = ItemsData(self)
+        self.items_data_frame.place(relx=0.01, rely=0.505, relheight=0.485, relwidth=0.35)
+        self.account_data_frame = AccountsData(self)
+        self.account_data_frame.place(relx=0.37, rely=0.505, relheight=0.485, relwidth=0.4)
         
 
+
+        
+
+class ScrollableLabelFrame(tk.Frame):
+    def __init__(self, master, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+
+        self.configure( bg=Colors.ACTIVE_BACKGROUND)
+
+        self.canvas = tk.Canvas(self, bg=Colors.BACKGROUND, highlightthickness=0)
+        # self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.scrollable_frame = tk.Frame(self.canvas, bg=Colors.BACKGROUND)
+
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(
+                scrollregion=self.canvas.bbox("all")
+            )
+        )
+
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        # self.canvas.configure(yscrollcommand=self.scrollbar.set)
+
+        self.canvas.pack(side="left", fill="both", expand=True)
+        # self.scrollbar.pack(side="right", fill="y")
+
+        # Mousewheel scrolling setup
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+    def add_label(self, text, evenodd):
+        if evenodd:
+            bg = Colors.BACKGROUND1
+            fg = Colors.ACTIVE_FOREGROUND
+        else:
+            bg = Colors.BACKGROUND
+            fg = Colors.ACTIVE_FOREGROUND
+        
+        label = tk.Label(self.scrollable_frame, text=text, bg=bg, fg=fg, font='Consolas 12', anchor='w', padx=4, wraplength=250)
+        label.pack(fill='x', expand=1, padx=2)
+
+        # Update scroll region
+        self.scrollable_frame.update_idletasks()
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
     
         
 
@@ -81,8 +131,8 @@ class SalesData(tk.Frame):
 
     def debit_credit_bar_graph(self):
         # values
-        total_debit_value = self.master.master.all_positive_df['Amount'].sum()
-        total_credit_value = self.master.master.all_negative_df['Amount'].sum()*(-1)
+        total_debit_value = self.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
         total_diffrence_value = round(total_debit_value-total_credit_value, 2)
         # print(total_debit_value)
 
@@ -115,8 +165,8 @@ class RecieceData(tk.Frame):
 
     def total_pie_graph(self):
         # values
-        total_debit_value = self.master.master.all_positive_df.shape[0]
-        total_credit_value = self.master.master.all_negative_df.shape[0]
+        total_debit_value = self.master.all_positive_df.shape[0]
+        total_credit_value = self.master.all_negative_df.shape[0]
         total_sum_value = total_debit_value+total_credit_value
         # print(total_debit_value)
 
@@ -144,7 +194,7 @@ class AccountsData(tk.Frame):
 
     def positive_scater_plot(self):
         # values
-        df = self.master.master.all_positive_df
+        df = self.master.all_positive_df
         
         fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.BACKGROUND)
         ax = fig.add_subplot(111)
@@ -171,8 +221,8 @@ class ItemsData(tk.Frame):
 
     def total_pie_graph(self):
         # values
-        total_debit_value = self.master.master.all_positive_df['Amount'].sum()
-        total_credit_value = self.master.master.all_negative_df['Amount'].sum()*(-1)
+        total_debit_value = self.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
         total_sum_value = round(total_debit_value-total_credit_value, 2)
 
         fig = Figure(figsize=(5,4), dpi=100, facecolor=Colors.BACKGROUND)
@@ -197,11 +247,17 @@ class KrarData(tk.Frame):
         
         super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
 
-        self.table_frame = tk.Frame(self, bg=Colors.BACKGROUND)
-        self.table_frame.pack(fill="both", expand=1)
+
+        self.todo_title = tk.Label(self, text='To DO', font="Consolas 16", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
+        self.todo_title.place(relx=0, rely=0,relheight=0.05, relwidth=1)
+
+        self.table_frame = ScrollableLabelFrame(self, bg=Colors.BACKGROUND)
+        self.table_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.7)
+        # self.table_frame.pack(fill="both", expand=1)
         self.down_frame = tk.Frame(self, bg=Colors.BACKGROUND)
-        self.down_frame.pack(fill="both", expand=1)
-        self.show_table()
+        self.down_frame.place(relx=0, rely=0.8, relwidth=1, relheight=0.2)
+        # self.down_frame.pack(fill="both", expand=1)
+        # self.show_table()
 
         # down table
         self.table_list = []
@@ -212,12 +268,23 @@ class KrarData(tk.Frame):
 
         self.table_list = list(myset)
 
-        # print(all_krars)
-        self.table_dropdown = ttk.Combobox(self.down_frame, values= self.table_list, width=20)
-        self.table_dropdown.pack(side="top", padx=5, pady=5, fill="x", expand=1)
+        today_krar_list = krar.get_krars_by_date()
+        f = 1
+        for i in today_krar_list:
+            # print(i)
+            self.table_frame.add_label(i[1], f)
+            # self.table_frame.add_label(i[2], f)
+            if f:
+                f=0
+            else:
+                f=1
 
-        save_button = tk.Button(self, text="Set Done", font="Consolas 14", command=self.set_undue_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
-        save_button.pack(pady=20, padx=20, fill="x", expand=1)
+        # print(all_krars)
+        self.table_dropdown = ttk.Combobox(self.down_frame, values= self.table_list, font = "Consolas 12")
+        self.table_dropdown.pack(padx=12, ipady=4, fill="x", expand=1)
+
+        save_button = tk.Button(self.down_frame, text="Set Done", font="Consolas 14", command=self.set_undue_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        save_button.pack(padx=12, pady=12, fill="x", expand=1)
         
 
     def set_undue_krar(self):
