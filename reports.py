@@ -271,24 +271,25 @@ class ReportsPage(tk.Frame):
         for i in column_list:
             updated_column_list.append(i[1])
 
-        if len(column_list) != 3:
+        if len(column_list) != 4:
             updated_table_data = table_data
         else:
             updated_column_list.append("In Stock")
-            updated_column_list.append("Stock Value")
-            updated_column_list.append("Last Value")
+            # updated_column_list.append("Stock Value")
+            # updated_column_list.append("Last Value")
             for row in table_data:
+                # print(row)
                 item_id = int(row[0])
                 temp_list = []
                 for i in row:
                     temp_list.append(i)
 
                 in_stock = inventory.get_item_quantity(item_id)
-                total_stock_value = inventory.get_item_value(item_id)
-                last_value = inventory.get_last_value(item_id)
+                # total_stock_value = inventory.get_item_value(item_id)
+                # last_value = inventory.get_last_value(item_id)
                 temp_list.append(in_stock)
-                temp_list.append(total_stock_value)
-                temp_list.append(last_value)
+                # temp_list.append(total_stock_value)
+                # temp_list.append(last_value)
                 updated_table_data.append(temp_list)
 
         return updated_column_list, updated_table_data

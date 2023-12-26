@@ -15,7 +15,7 @@ from kararpage import KararPage
 from mypandasfile import get_all_list
 
 class CustomLabel(tk.Frame):
-    def __init__(self, master, text, frame_to_link, **kwargs):
+    def __init__(self, master, text, frame_to_link, x, **kwargs):
         super().__init__(master, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
         self.customlabel = tk.Label(self, text=text, font=("Consolas", 14), anchor="e")#, pady=10, highlightthickness=0, padx=20, pady=10, anchor="w", highlightthickness=0, highlightbackground=Colors.ACTIVE_FOREGROUND)
         self.customlabel.pack(fill='both', side="right", expand=1)
@@ -40,6 +40,20 @@ class CustomLabel(tk.Frame):
         self.is_hovering = False
         self.customlabel.configure(background=self.normal_bg, foreground=self.normal_fg)
         self.customlabel1.configure(background=self.normal_bg)
+        self.master.master.bind(f"<Alt-{x}>", self.alt_key)  # Bind Alt + x key
+        self.x = x
+        # print(self.x)
+
+    def alt_key(self, event):
+        # print(event.char.isdigit())
+        if event.char == self.x:
+            self.on_click(event)
+
+        # if event.char.isdigit():
+        #     key_pressed = int(event.char)
+        #     print(key_pressed, self.x, key_pressed== self.x)
+        #     if key_pressed == self.x:
+        #         self.on_click(event)
 
         
     def on_enter(self, event):
@@ -232,23 +246,25 @@ class MyApp(tk.Tk):
         # self.home_page_label.pack( fill="x")
         # self.sale_page_label = CustomFrame(self.menu_frame, "Sale", self.saleframe)
         # self.sale_page_label.pack( fill="x")
-        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe)
+        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe, "h")
         self.home_page_label.pack( fill="x")
-        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe)
+        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe, "s")
         self.sale_page_label.pack( fill="x")
-        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe)
+        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe, 'a')
         self.account_page_label.pack( fill="x")
-        self.add_item_page_label = CustomLabel(self.menu_frame, "Add Items ", self.additemframe)
+        self.add_item_page_label = CustomLabel(self.menu_frame, "Items ", self.additemframe, 'i')
         self.add_item_page_label.pack( fill="x")
-        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe)
+        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe, 'k')
         self.karar_frame_label.pack( fill="x")
-        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe)
+        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe, 'm')
         self.modify_frame_label.pack( fill="x")
-        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe)
+        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'r')
         self.report_frame_label.pack( fill="x")
 
         # activating home page
         self.home_page_label.set_active()
+
+        self.bind()
         # self.sale_page_label.set_active()
         # self.account_page_label.set_active()
         # self.report_frame_label.set_active()

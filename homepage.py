@@ -6,7 +6,7 @@ from tkinter import ttk
 
 # import accounts
 # import inventory
-# import database
+import database
 import krar
 # import datetime
 # import time
@@ -14,7 +14,7 @@ import krar
 # import mypandasfile
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-
+import matplotlib.pyplot as plt
 
 
 
@@ -42,6 +42,9 @@ class HomePage(tk.Frame):
 
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
+        # self.all_graphs_function()
+        # self.sales_data_frame = SalesData(self)
+        # self.sales_data_frame.place(relx=0.01, rely=0.01, relheight=0.485, relwidth=0.4)
     
 
     def all_graphs_function(self, accounts_df):
@@ -131,23 +134,27 @@ class SalesData(tk.Frame):
 
     def debit_credit_bar_graph(self):
         # values
-        total_debit_value = self.master.all_positive_df['Amount'].sum()
-        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
-        total_diffrence_value = round(total_debit_value-total_credit_value, 2)
+        # total_debit_value = self.master.all_positive_df['Amount'].sum()
+        # total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
+        # total_diffrence_value = round(total_debit_value-total_credit_value, 2)
         # print(total_debit_value)
+        # Extracting names and values from the list
+        data = database.last_7_day_report()
+        names = [item[0] for item in data]
+        values = [item[1] for item in data]
 
-        fig = Figure(figsize=(4,3), dpi=100, facecolor=Colors.BACKGROUND)
+        fig = Figure(figsize=(5, 3), dpi=100, facecolor=Colors.BACKGROUND)
+
         ax = fig.add_subplot(111)
         ax.set_facecolor(Colors.BACKGROUND)
 
+        markerline, stemline, baseline = ax.stem(names, values, linefmt='-', markerfmt='o', basefmt=' ')
 
-        categories = ['Dr', 'Cr', "Df"]
-        amounts = [total_debit_value, total_credit_value, total_diffrence_value]
-        ax.barh(categories, amounts, color= Colors.ACTIVE_FOREGROUND, height=0.5)
+        plt.setp(markerline, color=Colors.ACTIVE_FOREGROUND)
+        plt.setp(stemline, color=Colors.ACTIVE_FOREGROUND)
+        plt.setp(baseline, visible=False)
 
-        # ax.set_xlabel("Cr/Dr")
-        # ax.set_ylabel("Amount")
-        ax.set_title(total_diffrence_value)
+        # ax.set_title(total_diffrence_value)
 
         fig.tight_layout()
 
@@ -155,6 +162,24 @@ class SalesData(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().pack()
 
+        # fig = Figure(figsize=(4,3), dpi=100, facecolor=Colors.BACKGROUND)
+        # ax = fig.add_subplot(111)
+        # ax.set_facecolor(Colors.BACKGROUND)
+
+
+        # categories = ['Dr', 'Cr', "Df"]
+        # amounts = [total_debit_value, total_credit_value, total_diffrence_value]
+        # ax.barh(categories, amounts, color= Colors.ACTIVE_FOREGROUND, height=0.5)
+
+        # # ax.set_xlabel("Cr/Dr")
+        # # ax.set_ylabel("Amount")
+        # ax.set_title(total_diffrence_value)
+
+        # fig.tight_layout()
+
+        # canvas = FigureCanvasTkAgg(fig, master=self)
+        # canvas.draw()
+        # canvas.get_tk_widget().pack()
 
 
 class RecieceData(tk.Frame):

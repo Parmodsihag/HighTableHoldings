@@ -18,12 +18,17 @@ alter_query = '''
     ALTER TABLE items
     ADD COLUMN last_value INTEGER DEFAULT 0;
 '''
-# inventory_cursor.execute("CREATE TABLE new_table AS SELECT id, name, stock_value FROM items")
-# inventory_cursor.execute(" SELECT * FROM new_table")
+# inventory_cursor.execute("""CREATE TABLE new_table (id INTEGER PRIMARY KEY AUTOINCREMENT,
+#         name TEXT,
+#         stock_value INTEGER DEFAULT 0,
+#         last_value INTEGER DEFAULT 0 )
+#                          """)
+# inventory_cursor.execute("insert into new_table (id, name, stock_value, last_value) select id, name, stock_value, last_value from items")
 # inventory_cursor.execute("DROP TABLE items")
 # inventory_cursor.execute("ALTER TABLE new_table RENAME TO items")
 # inventory_cursor.execute(alter_query)
-
+# inventory_cursor.execute("drop table new_table")
+# inventory_conn.commit()
 # inventory_cursor.execute(" PRAGMA table_info(items);")
 # print(inventory_cursor.fetchall())
 
@@ -219,5 +224,7 @@ def get_table(table_name):
 if __name__ == '__main__':
     print('hello')
     print(get_last_value(4))
+    # inventory_cursor.execute(f'DELETE FROM items WHERE name=?', ("TEST 2",))
+    # inventory_conn.commit()
     # print(get_item_value(44))
     # get_item_value(44)

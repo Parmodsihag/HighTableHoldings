@@ -1,6 +1,6 @@
 import sqlite3
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlite3 import Error
 
 try:
@@ -13,7 +13,37 @@ try:
 except Error as e:
     print(e, "error")
 
+def table_exists(table_name):
+    daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
+    result = daily_cursor.fetchone()
+    return result is not None
 
+def last_7_day_report():
+    today = datetime.now().date()
+
+    # Create a list of the last 7 dates
+    last_7_dates = [today - timedelta(days=i) for i in range(6, -1, -1)]
+    last_7_dates = [i.strftime('%Y_%m_%d') for i in last_7_dates]
+
+    last7dayslist = []
+    for i in last_7_dates:
+        temp = [i.split("_")[2]]
+        if table_exists(f"d{i}"):
+            daily_cursor.execute(f"SELECT COUNT(*) FROM d{i}")
+            x = daily_cursor.fetchone()[0]
+            temp.append(x)
+        
+        else:
+            temp.append(0)
+
+        last7dayslist.append(temp)
+        # print(temp)
+        # for k in j:
+        #     print(k)
+
+    # Print the list of dates
+    # print(last7dayslist)
+    return last7dayslist
 
 
 def add_today_table(daily_notes_conn, daily_notes_cursor):
@@ -73,3 +103,8 @@ def delete_note(date, note_id):
 def get_table(table_name):
     daily_cursor.execute(f"select * from {table_name}")
     return daily_cursor.fetchall()
+
+
+if __name__ == '__main__':
+    print('main')
+    last_7_day_report()
