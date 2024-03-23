@@ -81,7 +81,19 @@ class SalesPage(tk.Frame):
         self.price_entry = tk.Entry(price_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
         self.price_entry.pack(padx=40, pady=(0, 10), fill='x')
 
-        # Save Button
+
+        # Item Dropdown Menu
+        tag_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        tag_frame.pack( fill='x', pady=10, padx=10)
+        tag_label = tk.Label(tag_frame, text="Tag", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        tag_label.pack(padx=40, fill='x')
+        tag_choices = ["0 Set Nill", "1 Normal", "2 No interest"]
+        self.tag_dropdown = ttk.Combobox(tag_frame, values=tag_choices, font="Consolas 14")
+        self.tag_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+        self.tag_dropdown.set("1 Normal")
+
+
+        # Sale recieve Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
         sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
@@ -124,8 +136,9 @@ class SalesPage(tk.Frame):
         account_name = self.account_dropdown.get()
         quantity = self.quantity_entry.get()
         price = self.price_entry.get()
+        tag_value = self.tag_dropdown.get()
         # print(date, item_id,account_id, quantity, price)
-        if date and item_name and account_name and quantity and price:
+        if date and item_name and account_name and quantity and price and tag_value:
             item_id = item_name.split()[0]
             account_id = account_name.split()[0]
             if "{" in account_name:
@@ -139,16 +152,21 @@ class SalesPage(tk.Frame):
 
             
             # to account
+            tagint = tag_value[0]
             detail = f"{quantity} = {iname}"
             amount = int(price) * float(quantity)
-            accounts.add_customer_transaction(account_id, date, detail, amount, "P" )
+            if tagint == "0":pass
+            
+            else:
+                accounts.add_customer_transaction(account_id, date, detail, amount, "P" , tagint)
+
             
             # update inventory
             inventory.add_item_transaction(item_id, date, 0, int(float(quantity)), aname)
             inventory.set_last_value(item_id, price)
 
             # daily note
-            note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}"
+            note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
             note_id = database.add_note_to_date(note)
 
             if __name__ != "__main__":

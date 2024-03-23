@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from sqlite3 import Error
 
 try:
-    daily_conn = sqlite3.connect('new/daily_notes.db')
+    daily_conn = sqlite3.connect('C://JBB//data//daily_notes.db')
     daily_cursor = daily_conn.cursor()
     today = datetime.now().strftime('%Y_%m_%d')
     daily_cursor.execute(f"CREATE TABLE IF NOT EXISTS d{today} (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT)")
@@ -74,7 +74,7 @@ def add_note_to_date(note, date=datetime.now().strftime('%Y_%m_%d') ):
         daily_cursor.execute(f"INSERT INTO d{table_name} (description) VALUES (?)", (note,))
         id = daily_cursor.lastrowid
         daily_conn.commit()
-        print("Note added successfully.")
+        print("Note added successfully.", note)
         return id
         
     except Error as e:       

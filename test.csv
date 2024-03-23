@@ -1,0 +1,7 @@
+item_name,Unit,Batch,Expiry Date,rate,Type,quantity,Start_date,End_date
+item1,bag,120943,12-03-2025,200,p,25,5,30
+item2,bag,120944,12-03-2026,201,f,15,5,30
+item3,bag,120945,12-03-2027,202,s,10,3,24
+item4,bag,120946,12-03-2028,203,s,550,1,30
+item5,bag,120947,12-03-2029,204,f,100,1,30
+item6,bag,120948,12-03-2030,205,f,40,1,30

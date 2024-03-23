@@ -1,7 +1,7 @@
 import sqlite3
 
 # connect to the inventory database
-inventory_conn = sqlite3.connect('new/inventory.db')
+inventory_conn = sqlite3.connect('C://JBB//data//inventory.db')
 inventory_cursor = inventory_conn.cursor()
 
 # add auto-increment to the id column in the items table
@@ -10,14 +10,27 @@ inventory_cursor.execute("""
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         stock_value INTEGER DEFAULT 0,
-        last_value INTEGER DEFAULT 0                        
+        last_value INTEGER DEFAULT 0,
+        unit TEXT DEFAULT 'PCS',
+        batch TEXT DEFAULT 'NA', 
+        expiry_date TEXT DEFAULT 'NA', 
+        gst_rate INTEGER DEFAULT 0,
+        item_type TEXT default 'S',
+        pakka_kacha INTEGER DEFAULT 1
     )
 """)
 
-alter_query = '''
-    ALTER TABLE items
-    ADD COLUMN last_value INTEGER DEFAULT 0;
-'''
+alter_queries = [
+    "ALTER TABLE items ADD COLUMN unit TEXT DEFAULT 'PCS';",
+    "ALTER TABLE items ADD COLUMN batch TEXT DEFAULT 'NA';",
+    "ALTER TABLE items ADD COLUMN expiry_date TEXT DEFAULT 'NA';",
+    "ALTER TABLE items ADD COLUMN gst_rate INTEGER DEFAULT 0;",
+    "ALTER TABLE items ADD COLUMN item_type TEXT DEFAULT 'S';",
+    "ALTER TABLE items ADD COLUMN pakka_kacha INTEGER DEFAULT 1;"
+]
+# for query in alter_queries:
+#     inventory_cursor.execute(query)
+
 # inventory_cursor.execute("""CREATE TABLE new_table (id INTEGER PRIMARY KEY AUTOINCREMENT,
 #         name TEXT,
 #         stock_value INTEGER DEFAULT 0,
@@ -26,7 +39,7 @@ alter_query = '''
 # inventory_cursor.execute("insert into new_table (id, name, stock_value, last_value) select id, name, stock_value, last_value from items")
 # inventory_cursor.execute("DROP TABLE items")
 # inventory_cursor.execute("ALTER TABLE new_table RENAME TO items")
-# inventory_cursor.execute(alter_query)
+
 # inventory_cursor.execute("drop table new_table")
 # inventory_conn.commit()
 # inventory_cursor.execute(" PRAGMA table_info(items);")
@@ -34,12 +47,12 @@ alter_query = '''
 
 
 # function to add a new item and create a table for it
-def add_new_item(name, stock_value, last_value):
+def add_new_item(name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha):
     # insert the new item into the items table and get its auto-incremented id
     inventory_cursor.execute("""
-        INSERT INTO items (name, stock_value, last_value)
-        VALUES (?, ?, ?)
-    """, (name, stock_value, last_value))
+        INSERT INTO items (name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha))
     item_id = inventory_cursor.lastrowid
     
     # create a new table for the item with its id as the table name
@@ -70,8 +83,8 @@ def add_item_transaction(item_id, date, recieved, sale, description, tags=''):
 
 
 # Function to modify an item
-def modify_item(item_id, name, stock_value, last_value):
-    inventory_cursor.execute("UPDATE items SET name=?, stock_value=?, last_value=? WHERE id=?", (name, stock_value, last_value, item_id))
+def modify_item(item_id, name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha):
+    inventory_cursor.execute("UPDATE items SET name=?, stock_value=?, last_value=?, unit=?, batch=?, expiry_date=?, gst_rate=?, item_type=?, pakka_kacha=? WHERE id=?", (name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha, item_id))
     inventory_conn.commit()
     print("Item with id", item_id, "has been modified.")
 

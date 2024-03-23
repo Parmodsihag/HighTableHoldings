@@ -1,7 +1,13 @@
 import sqlite3
+'''
+TAGS
 
+0 = nill 
+1 = normal
+2 = no intrest
+'''
 # Create a connection to the accounts database
-accounts_conn = sqlite3.connect('new/accounts.db')
+accounts_conn = sqlite3.connect('C://JBB//data//accounts.db')
 accounts_cursor = accounts_conn.cursor()
 
 
@@ -50,6 +56,11 @@ def get_all_customers():
 def get_customer_transactions(customer_id):
     table_name = f'customer_{customer_id}'
     accounts_cursor.execute(f"SELECT * FROM {table_name}")
+    return accounts_cursor.fetchall()
+
+def get_normal_customer_transactions(customer_id):
+    table_name = f'customer_{customer_id}'
+    accounts_cursor.execute(f"SELECT * FROM {table_name} where tags != '0'")
     return accounts_cursor.fetchall()
 
 def get_transaction_by_id(table_name, transaction_id):
@@ -119,3 +130,17 @@ def get_table(table_name):
 def get_table1(table_name):
     accounts_cursor.execute(f"select date, amount, type from {table_name}")
     return accounts_cursor.fetchall()
+
+
+def set_all_transaction_tags_to_zero(customer_id):
+    """
+    Updates all transactions in a customer's account to have "0" as the tags value.
+
+    Args:
+        customer_id (int): The ID of the customer whose transactions need to be updated.
+    """
+
+    table_name = f"customer_{customer_id}"
+    query = f"UPDATE {table_name} SET tags = '0'"
+    accounts_cursor.execute(query)
+    accounts_conn.commit()

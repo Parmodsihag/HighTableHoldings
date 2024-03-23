@@ -72,14 +72,17 @@ class AccountPage(tk.Frame):
         # Status Entry Box
         status_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         status_frame.pack(fill='x', pady=10, padx=10)
-        status_label = tk.Label(status_frame, text="Status", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        status_label = tk.Label(status_frame, text="Source | P/M | TAG 1", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         status_label.pack(padx=40, fill='x')
         self.status_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
         self.status_entry.insert(0, "New Account")
         self.status_entry.pack(padx=40, pady=(0,10), fill='x')
         self.pm_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
-        self.pm_entry.insert(0, "p")
+        self.pm_entry.insert(0, "P")
         self.pm_entry.pack(padx=40, pady=(0,10), fill='x')
+        self.tag_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.tag_entry.insert(0, "1")
+        self.tag_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Add Account Button
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
@@ -95,12 +98,13 @@ class AccountPage(tk.Frame):
         opening_balance = self.balance_entry.get()
         status_entry = self.status_entry.get().upper()
         pm_entry = self.pm_entry.get().upper()
+        tag_entry = self.tag_entry.get().upper()
 
         # verify entry
-        if name and date and details and status_entry and pm_entry:
+        if name and date and details and status_entry and pm_entry and tag_entry:
             a = accounts.add_new_customer(name, details)
-            accounts.add_customer_transaction(a, date, status_entry, opening_balance, pm_entry)
-            dailynote = f"01 = {name}, {date}, {details}, {opening_balance}, {status_entry}, {pm_entry}"
+            accounts.add_customer_transaction(a, date, status_entry, opening_balance, pm_entry, tag_entry)
+            dailynote = f"01 = {name}, {date}, {details}, {opening_balance}, {status_entry}, {pm_entry}, {tag_entry}"
             database.add_note_to_date(dailynote)
 
             if __name__ != "__main__":

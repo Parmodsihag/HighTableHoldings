@@ -4,7 +4,7 @@ from mytheme import Colors
 from tkinter import ttk
 
 
-# import accounts
+import accounts
 # import inventory
 import database
 import krar
@@ -77,52 +77,94 @@ class HomePage(tk.Frame):
         self.account_data_frame.place(relx=0.37, rely=0.505, relheight=0.485, relwidth=0.4)
         
 
-
-        
-
 class ScrollableLabelFrame(tk.Frame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
+        self.configure(bg="blue")  # Change to your desired background color
 
-        self.configure( bg=Colors.ACTIVE_BACKGROUND)
-
-        self.canvas = tk.Canvas(self, bg=Colors.BACKGROUND, highlightthickness=0)
-        # self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
-        self.scrollable_frame = tk.Frame(self.canvas, bg=Colors.BACKGROUND)
-
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(
-                scrollregion=self.canvas.bbox("all")
-            )
-        )
+        self.canvas = tk.Canvas(self, bg="red", highlightthickness=0)
+        self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.scrollable_frame = tk.Frame(self.canvas, bg="green")  # Adjust background color here
 
         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        # self.canvas.configure(yscrollcommand=self.scrollbar.set)
 
         self.canvas.pack(side="left", fill="both", expand=True)
-        # self.scrollbar.pack(side="right", fill="y")
+        self.scrollbar.pack(side="right", fill="y")
+
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.scrollable_frame.bind("<Configure>", self._configure_scrollregion)
 
         # Mousewheel scrolling setup
-        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        self.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _configure_scrollregion(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def _on_mousewheel(self, event):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def add_label(self, text, evenodd):
-        if evenodd:
-            bg = Colors.BACKGROUND1
-            fg = Colors.ACTIVE_FOREGROUND
-        else:
-            bg = Colors.BACKGROUND
-            fg = Colors.ACTIVE_FOREGROUND
+        bg = "green" if evenodd else "white"  # Update with your color scheme
+        fg = "black" if evenodd else "blue"  # Update with your color scheme
         
-        label = tk.Label(self.scrollable_frame, text=text, bg=bg, fg=fg, font='Consolas 12', anchor='w', padx=4, wraplength=250)
-        label.pack(fill='x', expand=1, padx=2)
-
-        # Update scroll region
+        label = tk.Label(
+            self.scrollable_frame,
+            text=text,
+            bg=bg,
+            fg=fg,
+            font='Consolas 11',
+            anchor='w',
+            padx=4
+        )
+        label.pack(fill='x', padx=2)
+        
+        # Update scroll region after packing the label
         self.scrollable_frame.update_idletasks()
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))  
+
+# class ScrollableLabelFrame(tk.Frame):
+#     def __init__(self, master, *args, **kwargs):
+#         super().__init__(master, *args, **kwargs)
+
+#         self.configure( bg=Colors.ACTIVE_BACKGROUND)
+
+#         self.canvas = tk.Canvas(self, bg=Colors.BACKGROUND, highlightthickness=0)
+#         # self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+#         self.scrollable_frame = tk.Frame(self.canvas, bg=Colors.BACKGROUND)
+
+#         self.scrollable_frame.bind(
+#             "<Configure>",
+#             lambda e: self.canvas.configure(
+#                 scrollregion=self.canvas.bbox("all")
+#             )
+#         )
+
+#         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+#         # self.canvas.configure(yscrollcommand=self.scrollbar.set)
+
+#         self.canvas.pack(side="left", fill="both", expand=True)
+#         # self.scrollbar.pack(side="right", fill="y")
+
+#         # Mousewheel scrolling setup
+#         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+#     def _on_mousewheel(self, event):
+#         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+#     def add_label(self, text, evenodd):
+#         if evenodd:
+#             bg = Colors.BACKGROUND1
+#             fg = Colors.ACTIVE_FOREGROUND
+#         else:
+#             bg = Colors.BACKGROUND
+#             fg = Colors.ACTIVE_FOREGROUND
+        
+#         label = tk.Label(self.scrollable_frame, text=text, bg=bg, fg=fg, font='Consolas 12', anchor='w', padx=4, wraplength=250)
+#         label.pack(fill='x', expand=1, padx=2)
+
+#         # Update scroll region
+#         self.scrollable_frame.update_idletasks()
+#         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
     
         
 
@@ -181,7 +223,6 @@ class SalesData(tk.Frame):
         # canvas.draw()
         # canvas.get_tk_widget().pack()
 
-
 class RecieceData(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
@@ -210,7 +251,6 @@ class RecieceData(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas.draw()
         canvas.get_tk_widget().pack()
-
 
 class AccountsData(tk.Frame):
     def __init__(self, master, **kwargs):
@@ -267,49 +307,91 @@ class ItemsData(tk.Frame):
         canvas.get_tk_widget().pack()
 
 
+# class KrarData(tk.Frame):
+#     def __init__(self, master, **kwargs):
+        
+#         super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
+
+
+#         self.todo_title = tk.Label(self, text='Today', font="Consolas 16", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
+#         self.todo_title.place(relx=0, rely=0,relheight=0.05, relwidth=1)
+
+#         self.table_frame = ScrollableLabelFrame(self, bg=Colors.BACKGROUND)
+#         self.table_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.7)
+#         # self.table_frame.pack(fill="both", expand=1)
+#         # self.down_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+#         # self.down_frame.place(relx=0, rely=0.8, relwidth=1, relheight=0.2)
+#         # self.down_frame.pack(fill="both", expand=1)
+#         # self.show_table()
+
+#         # down table
+#         self.table_list = []
+#         myset = set()
+#         all_krars = krar.get_accounts_with_unsettled_krars()
+#         for krar1 in all_krars:
+#             myset.add(krar1)
+
+#         self.table_list = list(myset)
+
+#         today_krar_list = krar.get_accounts_with_unsettled_krars()
+#         f = 1
+#         for i in today_krar_list:
+#             # print(i)
+#             self.table_frame.add_label(accounts.get_customer_details(i), f)
+#             # self.table_frame.add_label(i[2], f)
+#             if f:
+#                 f=0
+#             else:
+#                 f=1
+
 class KrarData(tk.Frame):
     def __init__(self, master, **kwargs):
-        
         super().__init__(master, bg=Colors.BACKGROUND, **kwargs)
 
+        self.todo_title = tk.Label(self, text='Today', font="Consolas 16", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
+        self.todo_title.pack(fill='x')
 
-        self.todo_title = tk.Label(self, text='To DO', font="Consolas 16", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
-        self.todo_title.place(relx=0, rely=0,relheight=0.05, relwidth=1)
+        self.table_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.table_frame.pack(fill="x", expand=1)
+        self.show_table(self.table_frame,krar.get_customers_with_last_krar_today())
+
+        self.todo_title2 = tk.Label(self, text='Past', font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
+        self.todo_title2.pack(fill='x')
+
+        self.table_frame2 = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.table_frame2.pack(fill="x", expand=1)
+        self.show_table(self.table_frame2,krar.get_customers_with_last_krar_past())
+
+        self.todo_title3 = tk.Label(self, text='Upcoming', font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
+        self.todo_title3.pack(fill='x')
+
+        self.table_frame3 = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.table_frame3.pack(fill="x", expand=1)
+        self.show_table(self.table_frame3,krar.get_customers_with_last_krar_future())
 
         self.table_frame = ScrollableLabelFrame(self, bg=Colors.BACKGROUND)
-        self.table_frame.place(relx=0, rely=0.05, relwidth=1, relheight=0.7)
-        # self.table_frame.pack(fill="both", expand=1)
-        self.down_frame = tk.Frame(self, bg=Colors.BACKGROUND)
-        self.down_frame.place(relx=0, rely=0.8, relwidth=1, relheight=0.2)
-        # self.down_frame.pack(fill="both", expand=1)
-        # self.show_table()
+        self.table_frame.pack(fill="both", expand=1)
 
-        # down table
-        self.table_list = []
-        myset = set()
-        all_krars = krar.get_all_due_krars()
-        for krar1 in all_krars:
-            myset.add(krar1[1])
+        # self.populate_table()
 
-        self.table_list = list(myset)
+    def populate_table(self):
+        unsettled_accounts = krar.get_accounts_with_unsettled_krars()
 
-        today_krar_list = krar.get_krars_by_date()
-        f = 1
-        for i in today_krar_list:
-            # print(i)
-            self.table_frame.add_label(i[1], f)
-            # self.table_frame.add_label(i[2], f)
-            if f:
-                f=0
-            else:
-                f=1
+        for idx, account_id in enumerate(unsettled_accounts):
+            customer_details = accounts.get_customer_details(account_id)
+            id_name = f"{customer_details[0]} {customer_details[1]}"
+            contact_details = f"   {customer_details[2]}"
+            print(id_name)
+            self.table_frame.add_label(id_name, idx % 2)
+            self.table_frame.add_label(contact_details, idx % 2)
+
 
         # print(all_krars)
-        self.table_dropdown = ttk.Combobox(self.down_frame, values= self.table_list, font = "Consolas 12")
-        self.table_dropdown.pack(padx=12, ipady=4, fill="x", expand=1)
+        # self.table_dropdown = ttk.Combobox(self.down_frame, values= self.table_list, font = "Consolas 12")
+        # self.table_dropdown.pack(padx=12, ipady=4, fill="x", expand=1)
 
-        save_button = tk.Button(self.down_frame, text="Set Done", font="Consolas 14", command=self.set_undue_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
-        save_button.pack(padx=12, pady=12, fill="x", expand=1)
+        # save_button = tk.Button(self.down_frame, text="Set Done", font="Consolas 14", command=self.set_undue_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        # save_button.pack(padx=12, pady=12, fill="x", expand=1)
         
 
     def set_undue_krar(self):
@@ -317,50 +399,49 @@ class KrarData(tk.Frame):
         if customer_name:
             krar.update_krar_tag_by_name(customer_name, 0)
 
-    def show_data(self):
-        table_data = set()
-        t = krar.get_krars_by_date()
-        max_len = 0
-        for i in t:
-            # print(i)
-            if len(i[1]) > max_len:
-                max_len = len(i[1])
-            krar_count = len(krar.get_due_krars_by_customer_name(i[1]))
-            temp = [i[1], krar_count]#, i[2]
-            table_data.add(tuple(temp))
-            # print(krar_count)
-            # table_data.append(temp)
-            # table_data.append([])
+    def show_data(self, accounts_id_list):
+        # unsettled_accounts = krar.get_accounts_with_unsettled_krars()
+        table_data = []
+
+        for idx, account_id in enumerate(accounts_id_list):
+            customer_details = accounts.get_customer_details(account_id)
+
+            customer_name = f"{customer_details[0]} {customer_details[1]}"
+            temp = []
+            temp.append(customer_details[2])
+            temp.extend(krar.get_unsettled_krar_dates(account_id))
+            table_data.append([customer_name, temp])
         
-        return table_data, max_len
+        return table_data
         
-    def show_table(self):
-        table_data, max_len = self.show_data()
-        column_name = ["Name", "Krar count"]
+    def show_table(self, root, x):
+        table_data = self.show_data(x)
+        column_name = ["Name",]
+        # print(table_data)
         
         if column_name and table_data:
-            for widget in self.table_frame.winfo_children():
+            for widget in root.winfo_children():
                 widget.destroy()
                 
-            tree = ttk.Treeview(self.table_frame)
-            tree['columns'] = column_name
-            tree.column('#0', minwidth=5, anchor="w")
+            tree = ttk.Treeview(root, columns=column_name, show='tree')
+            # tree['columns'] = column_name
+            tree.heading("#0", text="")
+            tree.column('#0', width=0)#, stretch="no")
 
-            for i in column_name:
-                tree.column(i, minwidth=300,  anchor='w')
-                tree.heading(i, text=i)
-            
             c = 0
             for i in table_data:
                 c += 1
                 tg = 'odd'
                 if c%2 == 0:
                     tg = "even"
-                tree.insert('', c, text=c, values=i, tags = tg )
+                tree.insert('', 'end', iid=c, text="", values=i, tags = tg )
+                for j in i[1]:
+                    tree.insert(c, 'end', text=c, values=[j,0], tags = tg )
+
 
             tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND)
             tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND)
-            tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
+            tree.pack(fill="x", expand=True)
 
         else:
             print("Empty fields : Krar")

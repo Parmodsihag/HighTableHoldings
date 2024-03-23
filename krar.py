@@ -1,92 +1,165 @@
-
 import sqlite3
-import datetime
+from datetime import datetime, timedelta
 
-krar_conn = sqlite3.connect('new/krar.db')
-krar_cursor = krar_conn.cursor()
+# Connect to SQLite database (creates if not exists)
+conn = sqlite3.connect('C://JBB//data//krar.db')
+cursor = conn.cursor()
 
 
-krar_cursor.execute('''CREATE TABLE if not exists krars (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_name TEXT NOT NULL,
-    krar_date TEXT NOT NULL,
-    tag INTEGER NOT NULL DEFAULT 1)''')
+# Create tables
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS all_krar (
+        krar_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER,
+        is_nill INTEGER DEFAULT 0
+    )
+''')
 
-def create_krar(customer_name, krar_date):
-    with krar_conn:
-        krar_cursor.execute("INSERT INTO krars (customer_name, krar_date) VALUES (?, ?)", (customer_name, krar_date))
-        krar_id = krar_cursor.lastrowid
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS by_krar_id (
+        uid INTEGER PRIMARY KEY AUTOINCREMENT,
+        kid INTEGER,
+        date TEXT,
+        FOREIGN KEY(kid) REFERENCES all_krar(krar_id)
+    )
+''')
+
+
+# Function to add a new krar for a customer with checks for existing unsettled krar
+def add_or_update_krar(customer_id, date):
+    # Check if there's an unsettled krar for the customer
+    cursor.execute('''
+        SELECT krar_id FROM all_krar WHERE customer_id = ? AND is_nill = 0
+    ''', (customer_id,))
+    unsettled_krar = cursor.fetchone()
+
+    if unsettled_krar:
+        # If unsettled krar exists, get its krar_id and update 'by_krar_id' table
+        krar_id = unsettled_krar[0]
+        cursor.execute('''
+            INSERT INTO by_krar_id (kid, date) VALUES (?, ?)
+        ''', (krar_id, date))
+        conn.commit()
+        return krar_id
+    else:
+        # If no unsettled krar exists, add a new krar for the customer
+        cursor.execute('''
+            INSERT INTO all_krar (customer_id) VALUES (?)
+        ''', (customer_id,))
+        krar_id = cursor.lastrowid
+
+        cursor.execute('''
+            INSERT INTO by_krar_id (kid, date) VALUES (?, ?)
+        ''', (krar_id, date))
+        conn.commit()
         return krar_id
 
-def get_krar_by_id(krar_id):
-    krar_cursor.execute("SELECT * FROM krars WHERE id = ?", (krar_id,))
-    krar = krar_cursor.fetchone()
-    return krar
 
-def get_all_krars():
-    krar_cursor.execute("SELECT * FROM krars")
-    krars = krar_cursor.fetchall()
-    return krars
 
-def get_all_due_krars():
-    krar_cursor.execute("SELECT * FROM krars where tag = 1")
-    return krar_cursor.fetchall()
-
-def get_krars_by_customer_name(customer_name):
-    krar_cursor.execute("SELECT * FROM krars WHERE customer_name = ?", (customer_name,))
-    krars = krar_cursor.fetchall()
-    return krars
-
-def get_due_krars_by_customer_name(customer_name):
-    krar_cursor.execute("SELECT * FROM krars WHERE customer_name = ? AND tag = 1", (customer_name,))
-    krars = krar_cursor.fetchall()
-    return krars
+# Function to fetch details of unsettled krar for a customer
+def get_unsettled_krar_dates(customer_id):
+    cursor.execute('''
+        SELECT b.date
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE a.customer_id = ? AND a.is_nill = 0
+    ''', (customer_id,))
+    unsettled_dates = cursor.fetchall()
+    return [date[0] for date in unsettled_dates]
 
 
 
-def get_krars_by_date(date=None):
-    if date is None:
-        date = datetime.date.today().strftime('%Y-%m-%d')
-    krar_cursor.execute('''SELECT * FROM krars WHERE krar_date = ? and tag = 1''', (date,))
-    return krar_cursor.fetchall()
-
-def update_krar_tag(krar_id, tag):
-    with krar_conn:
-        krar_cursor.execute("UPDATE krars SET tag = ? WHERE id = ?", (tag, krar_id))
-        krar_conn.commit()
-
-def update_krar_tag_by_name(krar_name, tag):
-    with krar_conn:
-        krar_cursor.execute("UPDATE krars SET tag = ? WHERE customer_name = ?", (tag, krar_name))
-        krar_conn.commit()
+# Function to fetch details of settled krar for a customer
+def get_settled_krar_details(customer_id):
+    cursor.execute('''
+        SELECT a.krar_id, COUNT(*), MIN(b.date), MAX(b.date)
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE a.customer_id = ? AND a.is_nill = 1
+        GROUP BY a.krar_id
+    ''', (customer_id,))
+    settled_krar_details = cursor.fetchall()
+    return settled_krar_details
 
 
+# Function to set the settlement of krar by customer_id
+def set_krar_settlement(customer_id):
+    cursor.execute('''
+        UPDATE all_krar SET is_nill = 1 WHERE customer_id = ? AND is_nill = 0
+    ''', (customer_id,))
+    conn.commit()
 
-def update_krar_by_id(krar_id, customer_name=None, krar_date=None, tag=None):
-    
-    cursor = krar_conn.cursor()
-    update_query = 'UPDATE krars SET'
-    update_query_params = []
-    if customer_name is not None:
-        update_query += ' customer_name=?,'
-        update_query_params.append(customer_name)
-    if krar_date is not None:
-        update_query += ' krar_date=?,'
-        update_query_params.append(krar_date)
-    if tag is not None:
-        update_query += ' tag=?,'
-        update_query_params.append(tag)
-    # Remove the trailing comma from the update query
-    update_query = update_query.rstrip(',')
-    # Add the WHERE clause to the query
-    update_query += ' WHERE id=?'
-    update_query_params.append(krar_id)
-    cursor.execute(update_query, update_query_params)
-    krar_conn.commit()
-
-def delete_krar(krar_id):
-    with krar_conn:
-        krar_cursor.execute("DELETE FROM krars WHERE id = ?", (krar_id,))
-        krar_conn.commit()
+def modify_krar_customer_and_status(krar_id, new_customer_id, new_is_nill):
+    cursor.execute('''
+        UPDATE all_krar SET customer_id = ?, is_nill = ? WHERE krar_id = ?
+    ''', (new_customer_id, new_is_nill, krar_id))
+    conn.commit()
 
 
+def modify_by_krar_id(uid, new_kid, new_date):
+    cursor.execute('''
+        UPDATE by_krar_id SET kid = ?, date = ? WHERE uid = ?
+    ''', (new_kid, new_date, uid))
+    conn.commit()
+
+
+
+def delete_from_all_krar(krar_id):
+    cursor.execute('''
+        DELETE FROM by_krar_id WHERE kid = ?
+    ''', (krar_id,))
+    cursor.execute('''
+        DELETE FROM all_krar WHERE krar_id = ?
+    ''', (krar_id,))
+    conn.commit()
+
+
+def delete_from_by_krar_id(uid):
+    cursor.execute('''
+        DELETE FROM by_krar_id WHERE uid = ?
+    ''', (uid,))
+    conn.commit()
+
+def get_accounts_with_unsettled_krars():
+    cursor.execute('''
+        SELECT DISTINCT customer_id
+        FROM all_krar
+        WHERE is_nill = 0
+    ''')
+    unsettled_accounts = cursor.fetchall()
+    return [account[0] for account in unsettled_accounts]
+
+
+def get_customers_with_last_krar_today():
+    today = datetime.now().date()
+    cursor.execute('''
+        SELECT DISTINCT a.customer_id
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE DATE(b.date) = ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+    ''', (today,))
+    customers_today = cursor.fetchall()
+    return [customer[0] for customer in customers_today]
+
+
+def get_customers_with_last_krar_past():
+    today = datetime.now().date()
+    cursor.execute('''
+        SELECT DISTINCT a.customer_id
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE DATE(b.date) < ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+    ''', (today,))
+    customers_past = cursor.fetchall()
+    return [customer[0] for customer in customers_past]
+
+def get_customers_with_last_krar_future():
+    today = datetime.now().date()
+    cursor.execute('''
+        SELECT DISTINCT a.customer_id
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE DATE(b.date) > ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+    ''', (today,))
+    customers_future = cursor.fetchall()
+    return [customer[0] for customer in customers_future]

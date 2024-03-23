@@ -1,4 +1,5 @@
 import tkinter as tk
+import os
 from tkinter import ttk
 from tkinter import PhotoImage
 from datetime import datetime
@@ -149,7 +150,8 @@ class MyApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title("My App")
+        self.create_folder_and_subfolder()
+        self.title("JBB")
         self.state("zoomed")
         self.config(background=Colors.BACKGROUND1)
 
@@ -179,7 +181,7 @@ class MyApp(tk.Tk):
                             'Treeview':{
                                 'configure':
                                 {
-                                    'rowheight': 30,
+                                    'rowheight': 20,
                                     'fieldbackground': Colors.BACKGROUND,
                                     'font': 'Ubantu 10'
                                 }
@@ -188,7 +190,7 @@ class MyApp(tk.Tk):
                     )
         style.theme_use('mytheme')
         style.configure("Treeview.Heading", foreground='#a0dad0', background=Colors.BACKGROUND1, font='Consolas 12')
-        
+
         # main 4 parts 
         self.title_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
         self.title_bar.place(relx=0, rely=0, relheight=0.04, relwidth=1)
@@ -275,6 +277,23 @@ class MyApp(tk.Tk):
         # data_process.start()
 
         # data_process.join()
+
+    def create_folder_and_subfolder(self):
+        """Creates the folder JBB in the C drive and a subfolder named data,
+        if they don't already exist.
+        """
+
+        folder_path = "C:/JBB"
+        subfolder_path_data = os.path.join(folder_path, "data")
+        subfolder_path_bills = os.path.join(folder_path, "bills")
+
+        try:
+            os.makedirs(folder_path, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_data, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_bills, exist_ok=True)  # Create parent folders if needed
+            # print(f"Folder structure created successfully: {subfolder_path}")
+        except OSError as e:
+            print(f"Error creating folder structure: {e}")
 
     def title_bar_f(self, master):
         today = datetime.now().strftime('%d %m|%Y')

@@ -170,8 +170,8 @@ class ModifyPage(tk.Frame):
                 database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = database.daily_cursor.fetchall()
             if selected_db == "krar.db":
-                krar.krar_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = krar.krar_cursor.fetchall()
+                krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = krar.cursor.fetchall()
             
             self.table_dropdown.config(values=self.table_list)
             
@@ -199,7 +199,11 @@ class ModifyPage(tk.Frame):
                     self.master.master.set_status("[-] Cannot modify daily_notes")
             
             if selected_db == "krar.db":
-                row = krar.get_krar_by_id(int(row_id))
+                if selected_table == "all_krar":
+                    x = 'krar_id'
+                else:
+                    x = 'uid'
+                row = krar.cursor.execute(f"SELECT * FROM {selected_table} where {x} = {row_id}").fetchone()
 
         new_row = "|".join(map(str, row))
         self.table_row.set(new_row)
@@ -224,7 +228,7 @@ class ModifyPage(tk.Frame):
 
             if selected_db == "inventory.db":
                 if selected_table == "items":
-                    inventory.modify_item(row_id, row_list[1], row_list[2], row_list[3])
+                    inventory.modify_item(row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5], row_list[6], row_list[7], row_list[8], row_list[9])
                     note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
                     database.add_note_to_date(note)
                     
@@ -235,10 +239,13 @@ class ModifyPage(tk.Frame):
                     database.add_note_to_date(note)
 
             if selected_db == "krar.db":
-                if selected_table == "krars":
-                    krar.update_krar_by_id(int(row_id), row_list[1], row_list[2], row_list[3])
-                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                    database.add_note_to_date(note)
+                if selected_table == "all_krar":
+                    krar.modify_krar_customer_and_status(int(row_id), row_list[1], row_list[2])
+                else:
+                    krar.modify_by_krar_id(int(row_id), row_list[1], row_list[2])
+
+                note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                database.add_note_to_date(note)
             
             if __name__ != "__main__":
                 self.master.master.set_status(f"Row updated: {row_id}")
@@ -277,10 +284,13 @@ class ModifyPage(tk.Frame):
                     database.add_note_to_date(note)
 
             if selected_db == "krar.db":
-                if selected_table == "krars":
-                    krar.delete_krar(int(row_id))
-                    note = f"06 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                    database.add_note_to_date(note)
+                if selected_table == "all_krar":
+                    krar.delete_from_all_krar(int(row_id))
+                else:
+                    krar.delete_from_by_krar_id(int(row_id))
+
+                note = f"06 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                database.add_note_to_date(note)
             if __name__ != "__main__":
                 self.master.master.set_status(f"Row deleted: {row_id}")
                 

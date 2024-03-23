@@ -132,8 +132,8 @@ class ReportsPage(tk.Frame):
                 database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = database.daily_cursor.fetchall()
             if selected_db == "krar.db":
-                krar.krar_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = krar.krar_cursor.fetchall()
+                krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = krar.cursor.fetchall()
             
             self.table_dropdown.config(values=self.table_list)
             
@@ -169,9 +169,9 @@ class ReportsPage(tk.Frame):
                 table_data = database.get_table(selected_table)
 
             if selected_db == "krar.db":
-                krar.krar_cursor.execute(f"PRAGMA table_info({selected_table})")
-                column_list = krar.krar_cursor.fetchall()
-                table_data = krar.get_all_krars()
+                krar.cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = krar.cursor.fetchall()
+                table_data = krar.cursor.execute(f"SELECT * FROM {selected_table}").fetchall()
 
         # print(column_list)
         if tag:
@@ -271,7 +271,7 @@ class ReportsPage(tk.Frame):
         for i in column_list:
             updated_column_list.append(i[1])
 
-        if len(column_list) != 4:
+        if len(column_list) != 10:
             updated_table_data = table_data
         else:
             updated_column_list.append("In Stock")
