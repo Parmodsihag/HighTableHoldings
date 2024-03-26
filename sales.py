@@ -97,9 +97,9 @@ class SalesPage(tk.Frame):
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
         sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
-        sale_button.pack(padx=40, fill='x', pady=(10, 20))
+        sale_button.pack(padx=(40,5), fill='x', pady=20, side='left', expand=1)
         recieve_button = tk.Button(sale_button_frame, text="Recieve", font="Consolas 14", command=self.recieve, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
-        recieve_button.pack(padx=40, fill='x', pady=(0, 10))
+        recieve_button.pack(padx=(5, 40), fill='x', pady=20, side='right', expand=1)
 
     def update_listbox_items(self, lb, lst, pat):
         lsts = []
@@ -123,11 +123,14 @@ class SalesPage(tk.Frame):
     
     def set_price(self):
         item_name = self.item_dropdown.get()
-        last_value = item_name.split()[-1]
+        item_id = item_name.split()[0]
+        last_value = inventory.get_last_value(item_id)
         self.price_entry.delete(0, tk.END) 
         self.price_entry.insert(0, last_value)
         # self.price_entry.setvar(last_value)
         # print(last_value)
+
+
 
     def sale(self):
         # date item account quatity price
@@ -155,7 +158,13 @@ class SalesPage(tk.Frame):
             tagint = tag_value[0]
             detail = f"{quantity} = {iname}"
             amount = int(price) * float(quantity)
-            if tagint == "0":pass
+            if tagint == "0":
+                total_amount = accounts.get_account_balace(account_id)
+                discount = total_amount + amount
+                accounts.add_customer_transaction(account_id, date, "Aaj tak total", total_amount, "P" , 0)
+                accounts.add_customer_transaction(account_id, date, detail, amount, "P", tagint)
+                accounts.add_customer_transaction(account_id, date, "DISCOUNT", discount, "P" , 0)
+                accounts.set_all_transaction_tags_to_zero(account_id)
             
             else:
                 accounts.add_customer_transaction(account_id, date, detail, amount, "P" , tagint)
@@ -181,8 +190,9 @@ class SalesPage(tk.Frame):
         account_name = self.account_dropdown.get()
         quantity = self.quantity_entry.get()
         price = self.price_entry.get()
+        tag_value = self.tag_dropdown.get()
         # print(date, item_id,account_id, quantity, price)
-        if date and item_name and account_name and quantity and price:
+        if date and item_name and account_name and quantity and price and tag_value:
             item_id = item_name.split()[0]
             account_id = account_name.split()[0]
             # aname = account_name.split("{")[1].split("}")[0]
@@ -198,16 +208,27 @@ class SalesPage(tk.Frame):
                 iname = item_name
             
             # to account
+            tagint = tag_value[0]
             detail = f"{quantity} = {iname}"
             amount = int(price) * float(quantity)
-            accounts.add_customer_transaction(account_id, date, detail, amount, "M" )
+            if tagint == "0":
+                total_amount = accounts.get_account_balace(account_id)
+                discount = total_amount - amount
+                accounts.add_customer_transaction(account_id, date, "Aaj tak total", total_amount, "M" , 0)
+                accounts.add_customer_transaction(account_id, date, detail, amount, "M", tagint)
+                accounts.add_customer_transaction(account_id, date, "DISCOUNT", discount, "M" , 0)
+                accounts.set_all_transaction_tags_to_zero(account_id)
+            
+            else:
+                accounts.add_customer_transaction(account_id, date, detail, amount, "M" , tagint)
+
             
             # update inventory
             inventory.add_item_transaction(item_id, date, int(float(quantity)), 0, aname)
             inventory.set_last_value(item_id, price)
 
             # daily note
-            note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}"
+            note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
             note_id = database.add_note_to_date(note)
 
             if __name__ != "__main__":

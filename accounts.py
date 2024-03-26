@@ -1,4 +1,6 @@
 import sqlite3
+import datetime
+
 '''
 TAGS
 
@@ -128,7 +130,7 @@ def get_table(table_name):
     return accounts_cursor.fetchall()
 
 def get_table1(table_name):
-    accounts_cursor.execute(f"select date, amount, type from {table_name}")
+    accounts_cursor.execute(f"select date, amount, type, tags from {table_name} where tags != '0'")
     return accounts_cursor.fetchall()
 
 
@@ -144,3 +146,43 @@ def set_all_transaction_tags_to_zero(customer_id):
     query = f"UPDATE {table_name} SET tags = '0'"
     accounts_cursor.execute(query)
     accounts_conn.commit()
+
+
+def calculate_interest(amt, from_date, today_date_1=datetime.date.today()):
+    interest_rate_one_day = 0.0006575342465753425
+    dt2 = from_date.split("-")
+    date_of_entry = datetime.date(int(dt2[0]), int(dt2[1]), int(dt2[2]))
+    date_difference = today_date_1 - date_of_entry
+    interest = amt*date_difference.days*interest_rate_one_day
+    return round(interest, 2)
+
+
+def get_account_balace(customer_id):
+    table_data = get_table1(f"customer_{customer_id}")
+    total_sum = 0.0
+    # total_sum_without_interest = 0.0
+    # total_interest = 0.0
+    for row in table_data:
+        date = row[0]
+        amount = row[1]
+        transction_type = row[2]
+        tag = row[3]
+        # print(tag == "1")
+        if tag == "1":
+            intrest = calculate_interest(amount, date)
+        else:
+            intrest = 0
+        ttl = float(amount) + intrest
+        if transction_type.upper() == "P":
+            # total_interest += intrest
+            # total_sum_without_interest += float(amount)
+            total_sum += ttl
+        else:
+            # total_interest -= intrest
+            # total_sum_without_interest -= float(amount)
+            total_sum -= ttl
+
+    return round(total_sum, 2)
+
+
+# print(get_account_balace(1))

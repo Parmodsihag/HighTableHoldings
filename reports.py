@@ -241,7 +241,15 @@ class ReportsPage(tk.Frame):
                     date = row[1]
                     amount = row[3]
                     transction_type = row[4]
-                    intrest = self.calculate_interest(amount, date)
+                    tag = row[5]
+                    if tag == "1":
+                        intrest = self.calculate_interest(amount, date)
+                    elif tag == "0":
+                        intrest = 0
+                        amount = 0
+                    else:
+                        intrest = 0
+
                     # print(date, amount, intrest)
                     ttl = float(amount) + intrest
                     if transction_type.upper() == "P":
