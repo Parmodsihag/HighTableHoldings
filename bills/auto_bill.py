@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 from datetime import datetime, timedelta
-from billng_invoice import make_bill
+from bills.billng_invoice import make_bill
 
 
 

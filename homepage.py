@@ -82,7 +82,7 @@ class ScrollableLabelFrame(tk.Frame):
         super().__init__(master, *args, **kwargs)
         self.configure(bg="blue")  # Change to your desired background color
 
-        self.canvas = tk.Canvas(self, bg="red", highlightthickness=0)
+        self.canvas = tk.Canvas(self, bg=Colors.BACKGROUND, highlightthickness=0)
         self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = tk.Frame(self.canvas, bg="green")  # Adjust background color here
 

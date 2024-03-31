@@ -12,7 +12,7 @@ from reports import ReportsPage
 from add_items import AddItemsPage
 from modifypage import ModifyPage
 from kararpage import KararPage
-
+from bills.billpage import BillPage
 from mypandasfile import get_all_list
 
 class CustomLabel(tk.Frame):
@@ -242,6 +242,8 @@ class MyApp(tk.Tk):
         self.reportframe.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.modifyframe = ModifyPage(self.action_frame)
         self.modifyframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.billframe = BillPage(self.action_frame)
+        self.billframe.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         # adding labels in menu
         # self.home_page_label = CustomFrame(self.menu_frame, "Home",self.homeframe)
@@ -262,6 +264,8 @@ class MyApp(tk.Tk):
         self.modify_frame_label.pack( fill="x")
         self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'r')
         self.report_frame_label.pack( fill="x")
+        self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'b')
+        self.bill_frame_label.pack( fill="x")
 
         # activating home page
         self.home_page_label.set_active()
