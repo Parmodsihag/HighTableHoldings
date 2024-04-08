@@ -118,6 +118,30 @@ def get_bills_by_month(month_year):
     conn.close()
     return bills
 
+def get_all_bill_numbers():
+    """Retrieves bills for a specific month."""
+
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT bill_number FROM bill_details")
+    bills = cursor.fetchall()
+
+    conn.close()
+    return bills
+
+def get_all_details_bill_numbers(bill_number):
+    """Retrieves bills for a specific month."""
+
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM bill_details where bill_number = ?", (bill_number,))
+    bills = cursor.fetchone()
+
+    conn.close()
+    return bills
+
 def get_bill_items(bill_number):
     """Retrieves items for a specific bill."""
 

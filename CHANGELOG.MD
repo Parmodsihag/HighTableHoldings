@@ -1,5 +1,14 @@
 # MYNEW AI
 
+## v3.5.3
+added billshowpage
+test prototype is ready for randoom bill genration over a given month
+we can store the genrated results into database 
+
+## v3.5.2
+    ADDED
+    changelog.md
+    
 ## V3.5.1
     ADDED
     make group of bill related files in bills folder/package

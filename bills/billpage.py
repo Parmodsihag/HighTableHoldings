@@ -2,8 +2,10 @@ import tkinter as tk
 import re
 # import sqlite3
 
-import bills.bill_db as bill_db
+from bills import bill_db
+# import inventory
 import inventory
+from bills import randombillgen
 
 from tkinter import ttk
 from mytheme import Colors
@@ -94,7 +96,7 @@ class BillPage(tk.Frame):
         self.background_title = tk.Label(self.main_frame2, image=img)
         self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
         
-        # title frame
+        # title frame2
         title_frame2 = tk.Frame(self.main_frame2, bg=Colors.BACKGROUND1)
         title_frame2.pack(fill='x', pady=2, padx=10)
         title_name_label2 = tk.Label(title_frame2, text="SHOW", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
@@ -118,7 +120,17 @@ class BillPage(tk.Frame):
         self.listbox = tk.Listbox(listbox_frame, bg= Colors.BACKGROUND, font="Ubantu 12", relief='flat', bd=4)
         self.listbox.pack(fill='both', expand=1)
 
-    
+        # button frame
+        button_frame3 = tk.Frame(self.main_frame2, bg=Colors.BACKGROUND)
+        button_frame3.pack(fill='x', pady=(10,10), padx=10)
+        add_button = tk.Button(button_frame3, text="Genrate bills", font="Consolas 14", command=self.genrate_bills, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        add_button.pack(padx=40, fill='x', pady=(10, 10))
+
+    def genrate_bills(self):
+        year_month = self.show_dropdown.get()
+        if year_month:
+            randombillgen.make_bills(year_month, 80)
+
     def show_table(self):
         self.listbox.delete(0, 'end')
         year_mon = self.show_dropdown.get()

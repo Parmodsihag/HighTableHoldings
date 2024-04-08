@@ -4,11 +4,15 @@ import tkinter as tk
 from mytheme import Colors
 from tkinter import ttk
 
+import sqlite3
 import datetime
 import accounts
 import inventory
 import database
 import krar
+
+db_name = "C://JBB//data//bills.db"
+bill_cursor = sqlite3.connect(db_name).cursor()
 # import mypandasfile
 
 class ReportsPage(tk.Frame):
@@ -41,7 +45,7 @@ class ReportsPage(tk.Frame):
     
     def table_selector(self):
         font = "Consolas 16"
-        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db"]
+        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db", "bills.db"]
         db_label = tk.Label(self.upper_frame, text="Database:", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, font=font)
         db_label.pack(side="left", padx=5, pady=5)
         self.db_dropdown = ttk.Combobox(self.upper_frame, values=database_names, width=20, font=font)
@@ -134,6 +138,9 @@ class ReportsPage(tk.Frame):
             if selected_db == "krar.db":
                 krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = krar.cursor.fetchall()
+            if selected_db == "bills.db":
+                bill_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = bill_cursor.fetchall()
             
             self.table_dropdown.config(values=self.table_list)
             
@@ -172,6 +179,11 @@ class ReportsPage(tk.Frame):
                 krar.cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = krar.cursor.fetchall()
                 table_data = krar.cursor.execute(f"SELECT * FROM {selected_table}").fetchall()
+
+            if selected_db == "bills.db":
+                bill_cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = bill_cursor.fetchall()
+                table_data = bill_cursor.execute(f"SELECT * FROM {selected_table}").fetchall()
 
         # print(column_list)
         if tag:
