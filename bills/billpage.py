@@ -124,12 +124,39 @@ class BillPage(tk.Frame):
         button_frame3 = tk.Frame(self.main_frame2, bg=Colors.BACKGROUND)
         button_frame3.pack(fill='x', pady=(10,10), padx=10)
         add_button = tk.Button(button_frame3, text="Genrate bills", font="Consolas 14", command=self.genrate_bills, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
-        add_button.pack(padx=40, fill='x', pady=(10, 10))
+        add_button.pack(padx=(40, 10), fill='x', pady=10, side='left', expand=1)
+        add_button = tk.Button(button_frame3, text="Delete bills", font="Consolas 14", command=self.delete_bills, bg=Colors.DELETE, fg=Colors.FG_SHADE_3, relief='groove')
+        add_button.pack(padx=(10, 40), fill='x', pady=10, side='right', expand=1)
 
     def genrate_bills(self):
         year_month = self.show_dropdown.get()
         if year_month:
-            randombillgen.make_bills(year_month, 80)
+            if bill_db.check_bills_exist_for_month_year(year_month):
+                print(f'[-] Bills for {year_month} already exists')
+            else:
+                status = randombillgen.make_bills(year_month, 80)
+                if status:
+                    if __name__ != "__main__":
+                        self.master.master.set_status(f"Bills genrated sucessfully: {year_month}")
+                    print(f'[+] bills for {year_month} genrated sucessfully')
+                else:
+                    if __name__ != "__main__":
+                        self.master.master.set_status(f"Bills not genrated: {year_month}")
+                    print(f'[-] bills for {year_month} can not be genrated')
+
+
+    def delete_bills(self):
+        year_month = self.show_dropdown.get()
+        if year_month:
+            if bill_db.check_bills_exist_for_month_year(year_month):
+                bill_db.delete_bills_for_month_year(year_month)
+                if __name__ != "__main__":
+                    self.master.master.set_status(f"Bills deleted: {year_month}")
+                print(f'[-] Bills for {year_month} deleted')
+            else:
+                if __name__ != "__main__":
+                    self.master.master.set_status(f"Bills not exists: {year_month}")
+                print(f'[-] Bills for {year_month} not exists')
 
     def show_table(self):
         self.listbox.delete(0, 'end')
@@ -155,7 +182,10 @@ class BillPage(tk.Frame):
             item_details = inventory.get_item_by_id(item_id)
             name = item_details[1]
             unit = item_details[4]
-            month_year = f"{year}-{month}"
+            if month <10:
+                month_year = f"{year}-0{month}"
+            else:    
+                month_year = f"{year}-{month}"
             rate = item_details[7]
             type1 = item_details[8]
             batch = item_details[5]

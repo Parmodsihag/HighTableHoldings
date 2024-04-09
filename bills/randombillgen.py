@@ -2,8 +2,10 @@ import random
 import datetime
 if __name__ == "__main__":
     import bill_db
+    import bills_class
 else:
     import bills.bill_db as bill_db
+    import bills.bills_class as bills_class
 
 
 random_name_list = ['रमेश', 'लेखरम', 'सुभाष', 'राजेश', 'महावीर', 'सुरेश', 'माईलाल', 'हवासिंघ', 'बलबीर', 'मोमन', 'संदीप ', 'लुणाराम ', 'सोनू ', 'लिलु', 'मोलुराम', 'हनुमान', 'सतबीर', 'हंशराज', 'विजय', 'अनूप', 'सुशील ', 'उमेद ', 'सतपाल', 'शंकर', 'ईस्वर', 'कृष्ण ', 'मंजीत', 'मनीराम', 'दिलबाग', 'बुधराम','उग्रसेन ', 'राहुल ', 'बजीर ', 'मंगतुराम ', 'विष्णु', 'रोहताश ', 'रामभगत', 'बंशी', 'दारासिंह ', 'दर्शन ', 'जोगेन्दर ', 'पप्पू', 'संतलाल', 'बिंदर', 'रामनिवास ', 'भूप','भूपसिंघ', 'बलवंत', 'ज्वाहरलाल ', 'फुसाराम ', 'नेकीराम', 'सुरेंदर', 'मदन', 'आत्माराम', 'कालूरम', 'सज्जन', 'जगमाल', 'रामजीलाल', 'नवीन ', 'विक्रम ', 'दीपक ', 'दिनेश ', 'बंटी', 'राजबीर', 'रामलाल', 'रणवीर ', 'मोहित ', 'जगदीश ', 'नरेंदर', 'सुमित ', 'सिशपाल ', 'कालूरम', 'भालसिंघ ', 'विकास', 'बलवंत ', 'मंदीप', 'बलराज', 'ओमप्रकाश ', 'अशोक', 'विनोद', 'रमेश', 'रामफल', 'संजय', 'सुल्तान', 'राजेंदर', 'विरेंदर', 'अनिल', 'महावीर' ]
@@ -134,12 +136,17 @@ def distribute_quantities(items_with_quantities_and_start_dates, final_distribut
 
 
 
-def make_bills(year_month, number_of_bills=0):
+def make_bills(year_month, number_of_bills):
     year, month = map(int, year_month.split("-"))
     start_date = datetime.date(year, month, 1)
-    end_date = (datetime.date(year, month + 1, 1) - datetime.timedelta(days=1))
-    start_bill_number = int(f"{year}{month}000")
-    # print(start_date, end_date)
+    if month == 12:
+        end_date = (datetime.date(year+1, 1, 1) - datetime.timedelta(days=1))
+    else:
+        end_date = (datetime.date(year, month + 1, 1) - datetime.timedelta(days=1))
+    if month<10:
+        start_bill_number = int(f"{year}0{month}001")
+    else:    
+        start_bill_number = int(f"{year}{month}001")
     item_details = bill_db.get_items_by_month_year(year_month)
 
     if not number_of_bills:
@@ -148,18 +155,12 @@ def make_bills(year_month, number_of_bills=0):
     fd = distribute_bills_to_dates(number_of_bills, start_date, end_date)
     items_with_quantities_and_start_dates = []
     for i in item_details:
-        # print(i)
         y,m,d = map(int, i[6].split("-"))
         temp = [int(i[0]), int(i[9]), datetime.date(y,m,d)]
         items_with_quantities_and_start_dates.append(temp)
 
     bils, status = distribute_quantities(items_with_quantities_and_start_dates, fd, start_bill_number)
-    # for i in bils:
-    #     print(i['items'])
-    #     for j in i.items():
-    #         print(j)
     if status:
-        print("Quantites distributed sucessfully")
         for i in bils:
             bill_number = i['bill_number']
             bill_date = i['date']
@@ -169,15 +170,27 @@ def make_bills(year_month, number_of_bills=0):
             bill_data = [bill_number, bill_date, customer_name, customer_address]
             bill_db.insert_bill(bill_data)
             # print()
+            bill_obj = bills_class.Bill(customer_name, customer_address, bill_date, bill_number)
             for item in bill_items.items():
                 bill_item_data = [bill_number, item[0], item[1]]
                 bill_db.insert_bill_item(bill_item_data)
+                item_details1 = bill_db.get_item_by_id(item[0])
+                item_name = item_details1[1]
+                unit = item_details1[2]
+                rate = item_details1[4]
+                item_type = item_details1[5]
+                batch = item_details1[7]
+                exp = item_details1[8]
+                item_data_list = [item_name, unit, batch, exp , rate, item_type, item[1]]
+                bill_obj.add_item(item_data_list)
+            
+            bill_obj.make_bill()
+            del bill_obj
+            
+        return True
     else:
-        print("Failed")
-    # print(bils)
-    # print(total)
-    # for i in fd.items():
-    #     print(i)
+        return False
+
 
 
 

@@ -1,5 +1,13 @@
 # MYNEW AI
 
+## v3.5.4
+added
+function to delete bills of specific month_year from database
+show status on status bar of bill creation and deletion
+now billnumber format is yyyymm---
+billnumber starts from yyyymm001
+now document files (docx) are also genrated for bills over given month
+
 ## v3.5.3
 added billshowpage
 test prototype is ready for randoom bill genration over a given month

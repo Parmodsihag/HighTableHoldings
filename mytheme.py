@@ -44,6 +44,7 @@ class Colors:
     SUCCESS = "#7CB342"
     ERROR = "#E53935"
     REMINDER = "#FB8C00"
+    DELETE = "#6C2323"
 
 
 # class DarkFuturisticTheme:

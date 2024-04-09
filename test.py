@@ -1,4 +1,5 @@
-from bills.billshowpage import BillShowPage as bill
+# from bills.billshowpage import BillShowPage as bill
+from bills.billpage import BillPage as bill
 import tkinter as tk
 
 

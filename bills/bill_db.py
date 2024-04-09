@@ -221,3 +221,41 @@ def get_total_sales_by_month(month_year):
 
     conn.close()
     return total_sales
+
+
+def check_bills_exist_for_month_year(month_year):
+    """Checks if bills exist for a given month and year."""
+
+    conn = sqlite3.connect(db_name)  # Assuming db_name is defined as in your provided code
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM bill_details WHERE strftime('%Y-%m', date) = ?", (month_year,))
+    num_bills = cursor.fetchone()[0]
+
+    conn.close()
+
+    return num_bills > 0
+
+def delete_bills_for_month_year(month_year):
+    """Deletes bills and their associated items for a given month and year."""
+
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    # Get bill numbers for the specified month_year
+    cursor.execute("SELECT bill_number FROM bill_details WHERE strftime('%Y-%m', date) = ?", (month_year,))
+    bill_numbers = [row[0] for row in cursor.fetchall()]
+
+    # Delete bill items first to maintain foreign key constraints
+    for bill_number in bill_numbers:
+        cursor.execute("DELETE FROM bill_and_items WHERE bill_number = ?", (bill_number,))
+
+    # Delete bills
+    cursor.execute("DELETE FROM bill_details WHERE strftime('%Y-%m', date) = ?", (month_year,))
+
+    conn.commit()
+    conn.close()
+
+# x = check_bills_exist_for_month_year("2024-01")
+
+# print(x)

@@ -158,20 +158,21 @@ class Num2wordshindi:
 
 
 class Bill:
-    item_name_list = []
-    item_unit_list = []
-    item_batch_list = []
-    item_expiry_list = []
-    item_rate_list = []
-    item_type_list = []
-    item_quantity_list = []
-    item_counts = 0
 
     def __init__(self, customer_name, customer_address, bill_date, bill_number):
         self.customer_name = customer_name
         self.customer_address = customer_address
         self.bill_date = bill_date
         self.bill_number = bill_number
+        
+        self.item_name_list = []
+        self.item_unit_list = []
+        self.item_batch_list = []
+        self.item_expiry_list = []
+        self.item_rate_list = []
+        self.item_type_list = []
+        self.item_quantity_list = []
+        self.item_counts = 0
 
     def add_item(self, item_details):
         # ['urea', 'bag', '123s3d', '12-6-2026', 300, 'P', 3]
@@ -293,7 +294,7 @@ class Bill:
         return comp
             
     def add_in_templet(self, b_date, bill_num, cust_name, cust_add, item_details, sr_num, quantity, unit, batch, expiry, rate, total_sale, total_dis, taxable_amt, crte, ck, sr, sk, ir, ik, taxable_amt_total, ct, st, gt, tmw ):
-        tpl = DocxTemplate("mytamplet.docx")
+        tpl = DocxTemplate("bills//mytamplet.docx")
         context = {
             'bill_number': bill_num,
             'given_date': b_date,
@@ -332,10 +333,9 @@ class Bill:
 
 
 
-b = Bill('ramesh', 'dnx', '12-04-2024', 1)
-b.add_item(['urea P', 'bag', '123s3d', '12-6-2026', 300, 'P', 3])
-b.add_item(['urea2 S', 'bag', '123s3d', '12-6-2026', 300, 'S', 2])
-b.add_item(['urea3 F', 'bag', '123s3d', '12-6-2026', 300, 'F', 2])
+# b = Bill('ramesh', 'dnx', '12-04-2024', 1)
+# b.add_item(['urea P', 'bag', '123s3d', '12-6-2026', 300, 'P', 3])
+# b.add_item(['urea2 S', 'bag', '123s3d', '12-6-2026', 300, 'S', 2])
+# b.add_item(['urea3 F', 'bag', '123s3d', '12-6-2026', 300, 'F', 2])
 
-b.make_bill()
-
+# b.make_bill()
