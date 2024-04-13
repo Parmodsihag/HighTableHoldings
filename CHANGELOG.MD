@@ -1,8 +1,29 @@
 # MYNEWAI changelog
 * v3.5
+    * [v3.5.5](#v355)
     * [v3.5.4](#v354)
     * [v3.5.3](#v354)
     * [v3.5.2](#v352)
+    * [v3.5.1](#v351)
+
+
+## v3.5.5
+    main
+        * added light theme, assign a lable [@] on title bar which can toogle between dark and light themes
+        * improved homepage logic for better theme changing
+
+    reports
+        * a new format to show reports for accounts
+        * specified column widths for reports of accounts
+        * calculate_intrest function now calculate compound intrest by year
+        * now show a default page for every database we select
+        * customers and items table is bind with double click event to open the selected row
+    
+    mytheme
+        * added light theme Colors
+        * renamed dark theme to Colors1
+        * removed unnessesory lines/ comments
+
 
 ## v3.5.4
     added

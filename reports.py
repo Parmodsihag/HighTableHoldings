@@ -20,6 +20,7 @@ class ReportsPage(tk.Frame):
 
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        self.Colors = Colors
 
         img = tk.PhotoImage(file="myicons\\framebg2.png")
 
@@ -46,7 +47,7 @@ class ReportsPage(tk.Frame):
     def table_selector(self):
         font = "Consolas 16"
         database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db", "bills.db"]
-        db_label = tk.Label(self.upper_frame, text="Database:", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, font=font)
+        db_label = tk.Label(self.upper_frame, text="Database:", bg=self.Colors.BACKGROUND, fg=self.Colors.ACTIVE_FOREGROUND, font=font)
         db_label.pack(side="left", padx=5, pady=5)
         self.db_dropdown = ttk.Combobox(self.upper_frame, values=database_names, width=20, font=font)
         self.db_dropdown.pack(side="left", padx=5, pady=5)
@@ -59,18 +60,21 @@ class ReportsPage(tk.Frame):
 
         # Create table dropdown
         self.table_list = []
-        table_label = tk.Label(self.upper_frame, text="Table:", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, font=font)
+        table_label = tk.Label(self.upper_frame, text="Table:", bg=self.Colors.BACKGROUND, fg=self.Colors.ACTIVE_FOREGROUND, font=font)
         table_label.pack(side="left", padx=5, pady=5)
         self.table_dropdown = ttk.Combobox(self.upper_frame, values= self.table_list, width=20, font=font)
         self.table_dropdown.pack(side="left", padx=5, pady=5)
         # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
 
         # Create button
-        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove', font="Consolas 14")
+        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=self.Colors.BACKGROUND3, fg=self.Colors.FG_SHADE_3, relief='groove', font="Consolas 14")
         show_button.pack(side="left", padx=5, pady=5)
 
     def parallel_process_combo(self, accounts_df):
+        for widget in self.upper_frame.winfo_children():
+            widget.destroy()
         # sort by
+        self.table_selector()
         self.accounts_df = accounts_df
         sort_options_list = ['Customer Id', 'Amount', 'Days', 'Customer Id R', 'Amount R', "Days R"]
         self.sort_by_dropdown = ttk.Combobox(self.upper_frame, values=sort_options_list, width=20, font="Consolas 16")
@@ -79,7 +83,6 @@ class ReportsPage(tk.Frame):
         self.sort_by_dropdown.set("Customer Id")
         self.sort_by_combobox_select()
         
-
     def sort_by_combobox_select(self):
         value = self.sort_by_dropdown.get()
         if value == "Amount":
@@ -97,8 +100,6 @@ class ReportsPage(tk.Frame):
         else:
             self.make_my_table(self.accounts_df)
 
-
-
     def make_my_table(self, df):
         for widget in self.table_frame.winfo_children():
                 widget.destroy()
@@ -106,6 +107,8 @@ class ReportsPage(tk.Frame):
             
         tree = ttk.Treeview(self.table_frame)
         tree['columns'] = columns
+        tree.heading("#0", text="")
+        tree.column('#0', width=0, stretch="no")
         for column in columns:
             tree.heading(column, text=column)
         
@@ -119,8 +122,8 @@ class ReportsPage(tk.Frame):
 
         # tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
         # tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
-        tree.tag_configure('odd', background=Colors.BACKGROUND, foreground=Colors.ACTIVE_FOREGROUND)
-        tree.tag_configure('even', background=Colors.BACKGROUND1, foreground=Colors.ACTIVE_FOREGROUND)
+        tree.tag_configure('odd', background=self.Colors.BACKGROUND, foreground=self.Colors.ACTIVE_FOREGROUND)
+        tree.tag_configure('even', background=self.Colors.BACKGROUND1, foreground=self.Colors.ACTIVE_FOREGROUND)
         tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
 
     def update_table_names(self):
@@ -129,21 +132,30 @@ class ReportsPage(tk.Frame):
             if selected_db == "accounts.db":
                 accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = accounts.accounts_cursor.fetchall()
+                self.table_dropdown.set("customers")
             if selected_db == "inventory.db":
                 inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = inventory.inventory_cursor.fetchall()
+                self.table_dropdown.set("items")
             if selected_db == "daily_notes.db":
                 database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = database.daily_cursor.fetchall()
+                today_date = datetime.date.today()
+                if today_date.month<10:
+                    self.table_dropdown.set(f"d{today_date.year}_0{today_date.month}_{today_date.day}")
+                else:
+                    self.table_dropdown.set(f"d{today_date.year}_{today_date.month}_{today_date.day}")
             if selected_db == "krar.db":
                 krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = krar.cursor.fetchall()
+                self.table_dropdown.set("all_krar")
             if selected_db == "bills.db":
                 bill_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = bill_cursor.fetchall()
+                self.table_dropdown.set("item_details")
             
             self.table_dropdown.config(values=self.table_list)
-            
+            self.show_table()
             # print(selected_db, self.table_list)
 
     def show_data(self):
@@ -153,14 +165,17 @@ class ReportsPage(tk.Frame):
         column_names = []
         column_list = []
         table_data = []
+        column_width_list= [1,1,1,1,1,1,1,1,1,1]
         tag = 0
         if selected_db and selected_table:
             if selected_db == "accounts.db":
                 tag = 1
+                # table_id = self.table_dropdown.get().split("_")[1]  # Extract customer ID
+                # self.generate_compound_interest_report(table_id) 
                 accounts.accounts_cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = accounts.accounts_cursor.fetchall()
                 table_data = accounts.get_table(selected_table)
-                column_names, table_data = self.make_table_accounts(column_list, table_data)
+                column_names, table_data, column_width_list = self.make_table_accounts(column_list, table_data)
                 
 
             if selected_db == "inventory.db":
@@ -168,7 +183,7 @@ class ReportsPage(tk.Frame):
                 inventory.inventory_cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = inventory.inventory_cursor.fetchall()
                 table_data = inventory.get_table(selected_table)
-                column_names, table_data = self.make_table_items(column_list, table_data)
+                column_names, table_data, column_width_list = self.make_table_items(column_list, table_data)
 
             if selected_db == "daily_notes.db":
                 database.daily_cursor.execute(f"PRAGMA table_info({selected_table})")
@@ -192,23 +207,22 @@ class ReportsPage(tk.Frame):
             for column in column_list:
                 column_names.append(column[1])
         
-        return column_names, table_data
+        return column_names, table_data, column_width_list
     
     def show_table(self):
-        column_name, table_data = self.show_data()
+        column_name, table_data, column_width_list = self.show_data()
         if column_name and table_data:
-            # print("emot")
-
             for widget in self.table_frame.winfo_children():
                     widget.destroy()
                 
-            tree = ttk.Treeview(self.table_frame)
-            tree['columns'] = column_name
-            tree.column('#0', width=1, minwidth=1)
+            self.tree = ttk.Treeview(self.table_frame)
+            self.tree['columns'] = column_name
+            self.tree.column('#0', width=0, stretch='no')
 
-            for i in column_name:
-                tree.column(i, width=50)#, anchor='center')
-                tree.heading(i, text=i)
+
+            for i in range(len(column_name)):
+                self.tree.column(column_name[i], width=column_width_list[i], anchor='w')
+                self.tree.heading(column_name[i], text=column_name[i], anchor="w")
             
             c = 0
             for i in table_data:
@@ -216,18 +230,35 @@ class ReportsPage(tk.Frame):
                 tg = 'odd'
                 if c%2 == 0:
                     tg = "even"
-                tree.insert('', c, text=c, values=i, tags = tg )
+                self.tree.insert('', c, text=c, values=i, tags = tg)
 
-            # tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
-            # tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
-            tree.tag_configure('odd', background=Colors.BACKGROUND, foreground=Colors.ACTIVE_FOREGROUND)
-            tree.tag_configure('even', background=Colors.BACKGROUND1, foreground=Colors.ACTIVE_FOREGROUND)
-            tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP) 
+            # tree.tag_configure('odd', background="#fff")
+            # tree.tag_configure('even', background="#fafafa")
+            self.tree.tag_configure('odd', background=self.Colors.BACKGROUND, foreground=self.Colors.ACTIVE_FOREGROUND)
+            self.tree.tag_configure('even', background=self.Colors.BACKGROUND1, foreground=self.Colors.ACTIVE_FOREGROUND)
+            self.tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
+            if self.table_dropdown.get() in ['customers', 'items']:
+                self.tree.bind("<Double-1>", self.on_double_click)
         else:
+            if __name__ != "__main__":
+                self.master.master.set_status("Data Not Avilable")
             print("Empty fields for reports")
 
+    def on_double_click(self, event):
+        """Handles double-click event on Treeview items and retrieves the ID."""
+        region = self.tree.identify("region", event.x, event.y)
+        if region == "cell":
+            item_id = self.tree.identify_row(event.y)
+            # print(f"Double-clicked item ID: {item_id}")
+            row_data = self.tree.item(item_id)['values']
+            if self.db_dropdown.get() == "accounts.db":
+                self.table_dropdown.set(f"customer_{row_data[0]}")
+            else:
+                self.table_dropdown.set(f"item_{row_data[0]}")
+            self.show_table()
     
-    def calculate_interest(self, amt, from_date, today_date_1=datetime.date.today()):
+    # important funcition for simple intrest
+    def calculate_interest1(self, amt, from_date, today_date_1=datetime.date.today()):
         interest_rate_one_day = 0.0006575342465753425
         dt2 = from_date.split("-")
         date_of_entry = datetime.date(int(dt2[0]), int(dt2[1]), int(dt2[2]))
@@ -235,65 +266,127 @@ class ReportsPage(tk.Frame):
         interest = amt*date_difference.days*interest_rate_one_day
         return round(interest, 2)
     
+    def calculate_interest(self, principle_amount, from_date, to_date=datetime.date.today()):
+        """
+        Calculates interest earned on a principle amount, considering financial year-end (March 31st).
+
+        Args:
+            principle_amount (float): The initial amount of money.
+            from_date (datetime.date): The starting date for interest calculation.
+            to_date (datetime.date, optional): The ending date for interest calculation. Defaults to today.
+
+        Returns:
+            float: The calculated interest amount.
+        """
+        daily_interest_rate = 0.0006575342465753425 
+
+        def is_leap_year(year):
+            """Checks if a given year is a leap year."""
+            return (year % 4 == 0 and year % 100 != 0) or year % 400 == 0
+
+        def days_in_year(year):
+            """Returns the number of days in a given year."""
+            return 366 if is_leap_year(year) else 365
+
+        def get_next_march_31st(date):
+            """Finds the next March 31st from a given date."""
+            year = date.year
+            if date.month > 3:
+                year += 1
+            return datetime.date(year, 3, 31)
+
+        def calculate_interest_for_period(amount, start_date, end_date):
+            """Calculates interest for a specific period."""
+            days = (end_date - start_date).days
+            return amount * days * daily_interest_rate
+
+        current_date = datetime.datetime.strptime(from_date, "%Y-%m-%d").date()
+        total_interest = 0
+
+        while current_date < to_date:
+            next_march_31st = get_next_march_31st(current_date)
+            end_date = min(next_march_31st, to_date)  # Choose the earlier date
+
+            interest = calculate_interest_for_period(principle_amount, current_date, end_date)
+            total_interest += interest
+            principle_amount += interest  # Add interest to principle for next period
+
+            current_date = end_date + datetime.timedelta(days=1)  # Start from the next day
+            # current_date = end_date # Start from the next day
+
+        return round(total_interest, 2)
+
     def make_table_accounts(self, column_list, table_data):
-            total_sum = 0.0
-            total_sum_without_interest = 0.0
-            total_interest = 0.0
-            updated_column_list = []
-            updated_table_data = []
-            # print(column_list)
-            for i in column_list:
-                updated_column_list.append(i[1])
+        total_sum = 0.0
+        total_sum_without_interest = 0.0
+        total_interest = 0.0
+        updated_column_list = []
+        updated_table_data = []
+        # print(column_list)
+        for i in column_list:
+            updated_column_list.append(i[1])
+        if len(column_list) == 3:
+            updated_table_data = table_data
+            column_width_list = [10, 400, 400]
+        else:
+            column_width_list = [10, 50, 400, 10, 40, 40, 50]
+            updated_column_list = ['ID', 'Date', 'Particulars', 'Intrest', 'Debit', 'Credit', 'Balance']
     
-            if len(column_list) == 3:
-                updated_table_data = table_data
-            else:
-                updated_column_list.append("Intrest")
-                for row in table_data:
-                    date = row[1]
-                    amount = row[3]
-                    transction_type = row[4]
-                    tag = row[5]
-                    if tag == "1":
-                        intrest = self.calculate_interest(amount, date)
-                    elif tag == "0":
-                        intrest = 0
-                        amount = 0
-                    else:
-                        intrest = 0
-
-                    # print(date, amount, intrest)
-                    ttl = float(amount) + intrest
-                    if transction_type.upper() == "P":
-                        total_interest += intrest
-                        total_sum_without_interest += float(amount)
-                        total_sum += ttl
-                    else:
-                        total_interest -= intrest
-                        total_sum_without_interest -= float(amount)
-                        total_sum -= ttl
-                    temp_list = []
-                    for i in row:
-                        temp_list.append(i)
-                    temp_list.append(intrest)
-                    updated_table_data.append(temp_list)
-                if __name__ != "__main__":
-                    table_id = self.table_dropdown.get().split("_")[1]
-                    customer_name = accounts.get_customer_details(table_id)
-                    status = f"{customer_name}    {round(total_sum_without_interest,2)} + {round(total_interest, 2)} = {round(total_sum,2)} "
-                    self.master.master.set_status(status)
-
-            return updated_column_list, updated_table_data
+            for row in table_data:
+                date = row[1]
+                amount = row[3]
+                transction_type = row[4]
+                tag = row[5]
+                if tag == "1":
+                    intrest = self.calculate_interest(amount, date)
+                elif tag == "0":
+                    intrest = 0
+                    amount = 0
+                else:
+                    intrest = 0
+                ttl = float(amount) + intrest
+                if transction_type.upper() == "P":
+                    debit = amount
+                    credit =  "" 
+                    total_interest += intrest
+                    total_sum_without_interest += float(amount)
+                    total_sum += ttl
+                else:
+                    debit = ""
+                    credit =  amount
+                    total_interest -= intrest
+                    total_sum_without_interest -= float(amount)
+                    total_sum -= ttl
+                temp_list = [row[0], date, row[2], intrest, debit, credit, total_sum_without_interest]
+                # for i in row:
+                #     temp_list.append(i)
+                # temp_list.append(intrest)
+                updated_table_data.append(temp_list)
+            if __name__ != "__main__":
+                table_id = self.table_dropdown.get().split("_")[1]
+                customer_name = accounts.get_customer_details(table_id)
+                status = f"{customer_name}    {round(total_sum_without_interest,2)} + {round(total_interest, 2)} = {round(total_sum,2)} "
+                self.master.master.set_status(status)
+        return updated_column_list, updated_table_data, column_width_list
     
     def make_table_items(self, column_list, table_data):
         updated_column_list = []
         updated_table_data = []
         for i in column_list:
             updated_column_list.append(i[1])
+    
 
         if len(column_list) != 10:
             updated_table_data = table_data
+            column_width_list = [1,1,1,1,400,1]
+            if __name__ != "__main__":
+                table_id = self.table_dropdown.get().split("_")[1]
+                item_name = inventory.get_item_by_id(table_id)[1]
+                item_instock = inventory.get_item_quantity(table_id)
+                status = f"{item_name}   [{item_instock}] "
+                self.master.master.set_status(status)
         else:
+            column_width_list = [1,1,1,1,1,1,1,1,1,1,1]
             updated_column_list.append("In Stock")
             # updated_column_list.append("Stock Value")
             # updated_column_list.append("Last Value")
@@ -312,10 +405,9 @@ class ReportsPage(tk.Frame):
                 # temp_list.append(last_value)
                 updated_table_data.append(temp_list)
 
-        return updated_column_list, updated_table_data
+            
 
-
-
+        return updated_column_list, updated_table_data, column_width_list
 
 
 

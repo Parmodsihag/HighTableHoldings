@@ -1,27 +1,6 @@
 
-# import tkinter as tk
-# from tkinter import ttk
 
-# class CustomCombobox(ttk.Combobox):
-#     def __init__(self, parent, *args, **kwargs):
-#         super().__init__(parent, *args, **kwargs)
-#         self.parent = parent
-#         self.postcommand=self.set_grab_current
-
-#     def set_grab_current(self):
-#         self.parent.tk.eval('tk::MakeGrab {}' .format(self.toplevel))
-#         # self.bind("<FocusIn>", self.on_focus_in)
-#         # self.bind("<FocusOut>", self.on_focus_out)
-
-#     def on_focus_in(self, event):
-#         self.parent.configure(background=Colors.ACTIVE_BACKGROUND)
-
-#     def on_focus_out(self, event):
-#         self.parent.configure(background='SystemButtonFace')
-
-
-
-class Colors:
+class Colors1:
     BACKGROUND = "#2C3333"
     BACKGROUND1 = "#1C2323"
     BACKGROUND2 = "#2f3636"
@@ -46,20 +25,26 @@ class Colors:
     REMINDER = "#FB8C00"
     DELETE = "#6C2323"
 
+class Colors:
+    BACKGROUND = "#F5F5F5" 
+    BACKGROUND1 = "#E8E8E8"  
+    BACKGROUND2 = "#E0E0E0" 
+    BACKGROUND3 = "#D8D8D8" 
+    ACTIVE_BACKGROUND = "#CCEEFF" 
+    ACTIVE_FOREGROUND = "#0077BB" 
+    FOREGROUND = "#333333" 
+    BG_SHADE_1 = "#DADADA" 
+    BG_SHADE_2 = "#C2C2C2" 
+    BG_SHADE_3 = "#AAAAAA" 
+    FG_SHADE_1 = "#0077BB"
+    FG_SHADE_2 = "#333333" 
+    FG_SHADE_3 = "#00994C"
 
-# class DarkFuturisticTheme:
-#         background_color = "#181818"
-#         text_color = "#ffffff"
-#         button_color = "#1cb9c8"
-#         button_hover_color = "#40c3d3"
-#         button_active_color = "#19959e"
-#         entry_background_color = "#232323"
-#         entry_text_color = "#ffffff"
-#         label_color = "#ffffff"
-#         highlight_color = "#1cb9c8"
-#         success_color = "#22c95a"
-#         warning_color = "#ffa500"
-#         error_color = "#ff4d4d"
-#         light_blue = "#1cb9c8"
-#         light_green = "#22c95a"
-#         dark_color = "#181818" 
+    LIGHT_FG = "#354040"   
+    LIGHT_BG = "#D2E7E0"
+
+    SUCCESS = "#7CB342"  
+    ERROR = "#CC0000"   
+    REMINDER = "#F57C00" 
+    DELETE = "#A42929"
+

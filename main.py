@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import PhotoImage
 from datetime import datetime
 
-from mytheme import Colors
+from mytheme import Colors, Colors1
 from homepage import HomePage
 from sales import SalesPage
 from accountpage import AccountPage
@@ -15,6 +15,7 @@ from kararpage import KararPage
 from bills.billpage import BillPage
 from bills.billshowpage import BillShowPage
 from mypandasfile import get_all_list
+
 
 class CustomLabel(tk.Frame):
     def __init__(self, master, text, frame_to_link, x, **kwargs):
@@ -30,6 +31,8 @@ class CustomLabel(tk.Frame):
         self.bind("<Leave>", self.on_leave)
         self.customlabel.bind("<Button-1>", self.on_click)
         self.customlabel1.bind("<Button-1>", self.on_click)
+
+        # self.Colors = Colors
         
         self.normal_bg = Colors.BACKGROUND1
         self.normal_fg = Colors.FOREGROUND
@@ -152,10 +155,12 @@ class MyApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.create_folder_and_subfolder()
+        self.themeint = 0
+        self.is_graph_ready = 0
         self.title("JBB")
         self.state("zoomed")
         self.config(background=Colors.BACKGROUND1)
-
+        # self.clrs = Colors
         img = tk.PhotoImage(file="myicons\\framebg2.png")
 
         self.background_title = tk.Label(self, image=img)
@@ -163,18 +168,13 @@ class MyApp(tk.Tk):
 
         self.img = img
 
-        style=ttk.Style()
-        style.theme_create('mytheme', parent='alt', 
+        self.style=ttk.Style()
+        self.style.theme_create('mytheme', parent='alt', 
                         settings={
                             'TCombobox':
                             {
                                 'configure':
                                 {
-                                'selectbackground': "#4EC5F1",
-                                'fieldbackground': Colors.BACKGROUND3,
-                                'background': Colors.BACKGROUND3,
-                                'foreground': Colors.FG_SHADE_1,
-                                'arrowcolor':Colors.FOREGROUND,
                                 'arrowsize': 18,
                                 'font':"Consolas 14"
                                 }
@@ -183,14 +183,19 @@ class MyApp(tk.Tk):
                                 'configure':
                                 {
                                     'rowheight': 20,
-                                    'fieldbackground': Colors.BACKGROUND,
                                     'font': 'Ubantu 10'
                                 }
                             }
                         }
                     )
-        style.theme_use('mytheme')
-        style.configure("Treeview.Heading", foreground='#a0dad0', background=Colors.BACKGROUND1, font='Consolas 12')
+        self.style.theme_use('mytheme')
+        self.style.configure('TCombobox', selectbackground=Colors.FG_SHADE_1, 
+                            fieldbackground=Colors.BACKGROUND3, 
+                            background=Colors.BACKGROUND3, 
+                            foreground=Colors.FG_SHADE_1, 
+                            arrowcolor=Colors.FOREGROUND)
+        self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND)
+        self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 12')
 
         # main 4 parts 
         self.title_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
@@ -315,13 +320,98 @@ class MyApp(tk.Tk):
         show_graph_label.place(relx=0.8, rely=0)
         show_graph_label.bind("<Button-1>",lambda e: self.my_parallel_processes())
 
+        change_theme_label = tk.Label(master, text="@", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        change_theme_label.place(relx=0.78, rely=0)
+        change_theme_label.bind("<Button-1>",lambda e: self.togle_theme())
+
     def set_status(self,s):
         self.status.set(s)
 
+    def togle_theme(self):
+        if self.themeint:
+            colors = Colors
+            self.themeint = 0
+        else:
+            colors = Colors1
+            self.themeint = 1
+
+        self.update_widget_colors(widget=self, colors=colors)
+        self.homeframe.Colors = colors
+        self.reportframe.Colors = colors
+        self.billframe.Colors = colors
+        self.style.configure('TCombobox', selectbackground=colors.FG_SHADE_1, 
+                            fieldbackground=colors.BACKGROUND3, 
+                            background=colors.BACKGROUND3, 
+                            foreground=colors.FG_SHADE_1, 
+                            arrowcolor=colors.FOREGROUND)
+        self.style.configure('Treeview', fieldbackground=colors.BACKGROUND)
+        self.style.configure("Treeview.Heading", foreground=colors.FOREGROUND, 
+                                background=colors.BACKGROUND1)
+
+        if self.is_graph_ready:
+            self.homeframe.redraw_graphs()
+
+    def update_widget_colors(self, widget, colors):
+        """
+        Recursively updates the colors of a widget and its children based on the current theme.
+
+        Args:
+            widget (tk.Widget): The widget to start updating colors from.
+        """
+
+        if isinstance(widget, CustomLabel):
+            # widget.Colors = colors
+            widget.normal_bg = colors.BACKGROUND
+            widget.normal_fg = colors.FOREGROUND
+            widget.hover_bg = colors.LIGHT_BG
+            widget.hover_fg = colors.FOREGROUND
+            widget.active_bg = colors.ACTIVE_BACKGROUND
+            widget.active_fg = colors.FG_SHADE_1
+        
+        elif isinstance(widget, tk.Listbox):
+            widget.config(background=colors.BACKGROUND)
+        
+        elif isinstance(widget, tk.Frame):
+            widget.config(background=colors.BACKGROUND)
+
+        elif isinstance(widget, tk.Label):
+            widget.config(background=colors.BACKGROUND,
+                foreground=colors.ACTIVE_FOREGROUND)
+        
+        elif isinstance(widget, ttk.Combobox):
+            widget.config(
+                          background= colors.BACKGROUND3,
+                          foreground= colors.FG_SHADE_1)
+
+        elif isinstance(widget, tk.Button):
+            widget.config(activebackground=colors.ACTIVE_BACKGROUND, 
+                          activeforeground=colors.ACTIVE_FOREGROUND, 
+                          background=colors.BACKGROUND3, 
+                          foreground=colors.FG_SHADE_3)
+
+        elif isinstance(widget, tk.Entry):
+            widget.config(background=colors.BACKGROUND3, 
+                          foreground=colors.FG_SHADE_1)
+        
+
+        # Recursively update child widgets
+        for child in widget.winfo_children():
+            self.update_widget_colors(child, colors)
+        
+        
+
     def my_parallel_processes(self):
+        if self.themeint:
+            colors = Colors1
+        else:
+            colors = Colors
+        
+        self.homeframe.Colors = colors
         accounts_df = get_all_list()
         self.homeframe.all_graphs_function(accounts_df)
         self.reportframe.parallel_process_combo(accounts_df)
+        self.is_graph_ready = 1
+
     
     # def start_processing(self):
     #     with ThreadPoolExecutor() as executor:
