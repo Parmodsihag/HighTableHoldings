@@ -1,6 +1,6 @@
 
 
-class Colors1:
+class Colors:
     BACKGROUND = "#2C3333"
     BACKGROUND1 = "#1C2323"
     BACKGROUND2 = "#2f3636"
@@ -25,7 +25,7 @@ class Colors1:
     REMINDER = "#FB8C00"
     DELETE = "#6C2323"
 
-class Colors:
+class Colors1:
     BACKGROUND = "#F5F5F5" 
     BACKGROUND1 = "#E8E8E8"  
     BACKGROUND2 = "#E0E0E0" 

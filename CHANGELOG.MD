@@ -1,4 +1,8 @@
 # MYNEWAI changelog
+
+* v3.6
+    * [v3.6.1](#v361)
+
 * v3.5
     * [v3.5.5](#v355)
     * [v3.5.4](#v354)
@@ -6,6 +10,12 @@
     * [v3.5.2](#v352)
     * [v3.5.1](#v351)
 
+
+
+## v3.6.1
+    * added readme.md
+    * added screenshots folder
+    * default theme dark
 
 ## v3.5.5
     main

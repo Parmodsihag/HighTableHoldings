@@ -1,0 +1,3356 @@
++accountpage.py
+#code
+import tkinter as tk
+# from tkinter import ttk
+from datetime import datetime
+
+from mytheme import Colors
+
+import accounts
+import database
+# from inventory import
+# from sales import Sales
+
+class AccountPage(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+
+        APP_FONT = "Consolas 12"
+        APP_FONT1 = "Consolas 14"
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        # main frame to include all frames
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Account", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
+
+        # Name Entry Box
+        name_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        name_frame.pack(fill='x', pady=10, padx=10)
+
+        name_label = tk.Label(name_frame, text="Name", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        name_label.pack(padx=40, fill='x')
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Other Details Entry Box
+        details_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        details_frame.pack(fill='x', pady=10, padx=10)
+        details_label = tk.Label(details_frame, text="Other Details", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        details_label.pack(padx=40, fill='x')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Date Entry Box
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack(fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Date", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(padx=40, pady=(0,10), fill='x')
+        self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
+
+        # Opening Balance Entry Box
+        balance_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        balance_frame.pack(fill='x', pady=10, padx=10)
+        balance_label = tk.Label(balance_frame, text="Opening Balance", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        balance_label.pack(padx=40, fill='x')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry.pack(padx=40, pady=(0,10), fill='x')
+        
+        # Status Entry Box
+        status_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        status_frame.pack(fill='x', pady=10, padx=10)
+        status_label = tk.Label(status_frame, text="Source | P/M | TAG 1", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        status_label.pack(padx=40, fill='x')
+        self.status_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.status_entry.insert(0, "New Account")
+        self.status_entry.pack(padx=40, pady=(0,10), fill='x')
+        self.pm_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.pm_entry.insert(0, "P")
+        self.pm_entry.pack(padx=40, pady=(0,10), fill='x')
+        self.tag_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.tag_entry.insert(0, "1")
+        self.tag_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Add Account Button
+        button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        button_frame.pack(fill='x', pady=(10,0), padx=10)
+        self.add_button = tk.Button(button_frame, text="Add Account", font=APP_FONT1, command=self.add_account, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button.pack(padx=40, fill='x', pady=(10, 10))
+
+
+    def add_account(self):
+        name = self.name_entry.get().upper()
+        date = self.date_entry.get().upper()
+        details = self.details_entry.get().upper()
+        opening_balance = self.balance_entry.get()
+        status_entry = self.status_entry.get().upper()
+        pm_entry = self.pm_entry.get().upper()
+        tag_entry = self.tag_entry.get().upper()
+
+        # verify entry
+        if name and date and details and status_entry and pm_entry and tag_entry:
+            a = accounts.add_new_customer(name, details)
+            accounts.add_customer_transaction(a, date, status_entry, opening_balance, pm_entry, tag_entry)
+            dailynote = f"01 = {name}, {date}, {details}, {opening_balance}, {status_entry}, {pm_entry}, {tag_entry}"
+            database.add_note_to_date(dailynote)
+
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Account added: {a}")
+
+        else:
+            if __name__ == "__main__":
+                print("Some fields are empty")
+            else:
+                self.master.master.set_status("[-]|Some fields are empty|")
+
+        # add account to database
+        # (code for this would depend on how you implemented your accounts database)
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    a = AccountPage(app)
+    a.pack(expand=1, fill="both")
+    app.mainloop()
+
+
++accounts.py
+#code
+import sqlite3
+import datetime
+
+'''
+TAGS
+
+0 = nill 
+1 = normal
+2 = no intrest
+'''
+# Create a connection to the accounts database
+accounts_conn = sqlite3.connect('C://JBB//data//accounts.db')
+accounts_cursor = accounts_conn.cursor()
+
+
+# Create a table to store information about all customers
+accounts_cursor.execute('''CREATE TABLE IF NOT EXISTS customers
+                (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                other_details TEXT)''')
+
+# Function to add a new customer to the database
+def add_new_customer(name, other_details):
+    accounts_cursor.execute("""
+        INSERT INTO customers (name, other_details)
+        VALUES (?, ?)
+    """, (name, other_details))
+    id = accounts_cursor.lastrowid
+    # Create a new table for the customer with their ID
+    accounts_cursor.execute(f'''CREATE TABLE IF NOT EXISTS customer_{id}
+                       (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       date TEXT,
+                       description TEXT,
+                       amount REAL,
+                       type TEXT,
+                       tags TEXT)''')
+    # Insert the new customer into the main customers table
+    accounts_conn.commit()
+
+    return id
+
+
+# Function to get a list of all customer IDs
+def get_customer_ids():
+    accounts_cursor.execute("SELECT id FROM customers")
+    return [row[0] for row in accounts_cursor.fetchall()]
+
+# Function to get customer details by ID
+def get_customer_details(customer_id):
+    accounts_cursor.execute(f"SELECT * FROM customers WHERE id = {customer_id}")
+    return accounts_cursor.fetchone()
+
+def get_all_customers():
+    accounts_cursor.execute(f"select * from customers")
+    return accounts_cursor.fetchall()
+
+# Function to get all transactions for a specific customer
+def get_customer_transactions(customer_id):
+    table_name = f'customer_{customer_id}'
+    accounts_cursor.execute(f"SELECT * FROM {table_name}")
+    return accounts_cursor.fetchall()
+
+def get_normal_customer_transactions(customer_id):
+    table_name = f'customer_{customer_id}'
+    accounts_cursor.execute(f"SELECT * FROM {table_name} where tags != '0'")
+    return accounts_cursor.fetchall()
+
+def get_transaction_by_id(table_name, transaction_id):
+    # table_name = "customer_" + str(item_id)
+    accounts_cursor.execute(f"SELECT * FROM {table_name} WHERE id = ?", (transaction_id,))
+    transaction = accounts_cursor.fetchone()
+    return transaction
+
+# Function to add a new transaction for a specific customer
+def add_customer_transaction(customer_id, date, description, amount, transaction_type, tags=''):
+    table_name = f'customer_{customer_id}'
+    accounts_cursor.execute(f'''INSERT INTO {table_name}
+                                 (date, description, amount, type, tags)
+                                 VALUES (?, ?, ?, ?, ?)''',
+                            (date, description, amount, transaction_type, tags))
+    accounts_conn.commit()
+
+
+
+def update_customer_details(customer_id, name=None, other_details=None):
+    query = "UPDATE customers SET "
+    updates = []
+    if name:
+        updates.append("name = '{}'".format(name))
+    if other_details:
+        updates.append("other_details = '{}'".format(other_details))
+    if not updates:
+        return False
+    query += ", ".join(updates)
+    query += " WHERE id = {}".format(customer_id)
+    accounts_cursor.execute(query)
+    accounts_conn.commit()
+    return True
+
+def delete_customer(customer_id):
+    query = "DROP TABLE IF EXISTS customer_{}".format(customer_id)
+    accounts_cursor.execute(query)
+    query = "DELETE FROM customers WHERE id = {}".format(customer_id)
+    accounts_cursor.execute(query)
+    accounts_conn.commit()
+    return True
+
+
+def update_customer_transaction(table_name, transaction_id, date, description, amount, transaction_type, tags):
+    """
+    Update an existing transaction for a customer in the accounts database.
+    """
+    query = "UPDATE {} SET date=?, description=?, amount=?, type=?, tags=? WHERE id=?".format(table_name)
+    values = (date, description, amount, transaction_type, tags, transaction_id)
+    accounts_cursor.execute(query, values)
+    accounts_conn.commit()
+
+def delete_customer_transaction(customer_id, transaction_id):
+    """
+    Delete a transaction for a customer from the accounts database.
+    """
+    query = "DELETE FROM customer_{} WHERE id=?".format(customer_id)
+    values = (transaction_id,)
+    accounts_cursor.execute(query, values)
+    accounts_conn.commit()
+    
+
+def get_table(table_name):
+    accounts_cursor.execute(f"select * from {table_name}")
+    return accounts_cursor.fetchall()
+
+def get_table1(table_name):
+    accounts_cursor.execute(f"select date, amount, type, tags from {table_name} where tags != '0'")
+    return accounts_cursor.fetchall()
+
+
+def set_all_transaction_tags_to_zero(customer_id):
+    """
+    Updates all transactions in a customer's account to have "0" as the tags value.
+
+    Args:
+        customer_id (int): The ID of the customer whose transactions need to be updated.
+    """
+
+    table_name = f"customer_{customer_id}"
+    query = f"UPDATE {table_name} SET tags = '0'"
+    accounts_cursor.execute(query)
+    accounts_conn.commit()
+
+
+def calculate_interest(amt, from_date, today_date_1=datetime.date.today()):
+    interest_rate_one_day = 0.0006575342465753425
+    dt2 = from_date.split("-")
+    date_of_entry = datetime.date(int(dt2[0]), int(dt2[1]), int(dt2[2]))
+    date_difference = today_date_1 - date_of_entry
+    interest = amt*date_difference.days*interest_rate_one_day
+    return round(interest, 2)
+
+
+def get_account_balace(customer_id):
+    table_data = get_table1(f"customer_{customer_id}")
+    total_sum = 0.0
+    # total_sum_without_interest = 0.0
+    # total_interest = 0.0
+    for row in table_data:
+        date = row[0]
+        amount = row[1]
+        transction_type = row[2]
+        tag = row[3]
+        # print(tag == "1")
+        if tag == "1":
+            intrest = calculate_interest(amount, date)
+        else:
+            intrest = 0
+        ttl = float(amount) + intrest
+        if transction_type.upper() == "P":
+            # total_interest += intrest
+            # total_sum_without_interest += float(amount)
+            total_sum += ttl
+        else:
+            # total_interest -= intrest
+            # total_sum_without_interest -= float(amount)
+            total_sum -= ttl
+
+    return round(total_sum, 2)
+
+
+# print(get_account_balace(1))
+
++add_items.py
+#code
+import tkinter as tk
+# from tkinter import ttk
+from datetime import datetime
+
+from mytheme import Colors
+
+# import accounts
+import inventory
+import database
+# from inventory import
+# from sales import Sales
+
+class AddItemsPage(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+
+        APP_FONT = "Consolas 12"
+        APP_FONT1 = "Consolas 14"
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+
+        # main frame to include all frames
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame.place(relx=0.2, rely=0.01, relwidth=.6, relheight=.98)
+
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Items", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
+
+        # GROUP 1
+        frame1 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        frame1.pack(fill='x', pady=(10,0), padx=10)
+        # Name Entry Box
+        name_frame = tk.Frame(frame1, bg=Colors.BACKGROUND)
+        name_frame.pack(fill='x', side='left', expand=1)
+        name_label = tk.Label(name_frame, text="Item Name: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        name_label.pack(fill='x', padx=(40, 10), pady=(10,0))
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
+        # Other Details Entry Box
+        details_frame = tk.Frame(frame1, bg=Colors.BACKGROUND)
+        details_frame.pack(fill='x', side='left', expand=1)
+        details_label = tk.Label(details_frame, text="Source: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        details_label.pack(fill='x')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry.pack(fill='x', padx=(0,40))
+
+        # GROUP 2
+        frame2 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        frame2.pack(fill='x', pady=0, padx=10)
+        # Date Entry Box
+        date_frame = tk.Frame(frame2, bg=Colors.BACKGROUND)
+        date_frame.pack(fill='x', side='left', expand=1)
+        date_label = tk.Label(date_frame, text="Date: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(fill='x', padx=(40,10), pady=(10,0))
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(fill='x', padx=(40,10), pady=(0,10))
+        self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
+        # Opening Balance Entry Box
+        balance_frame = tk.Frame(frame2, bg=Colors.BACKGROUND)
+        balance_frame.pack(fill='x', side='left', expand=1)
+        balance_label = tk.Label(balance_frame, text="Opening Balance: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        balance_label.pack(fill='x')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry.pack(padx=(0, 40), fill='x')
+
+        # GROUP 3
+        frame3 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        frame3.pack(fill='x', pady=0, padx=10)
+        # stock value
+        stock_value_frame = tk.Frame(frame3, bg=Colors.BACKGROUND)
+        stock_value_frame.pack(fill='x', side='left', expand=1)
+        stock_value_label = tk.Label(stock_value_frame, text="Stock Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        stock_value_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
+        self.stock_value_entry = tk.Entry(stock_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.stock_value_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
+        # Last Value Entry Box
+        last_value_frame = tk.Frame(frame3, bg=Colors.BACKGROUND)
+        last_value_frame.pack(fill='x', side='left', expand=1)
+        last_value_label = tk.Label(last_value_frame, text="Last Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        last_value_label.pack(fill='x')
+        self.last_value_entry = tk.Entry(last_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.last_value_entry.pack(padx=(0, 40), fill='x')
+
+        # GROUP 4
+        frame4 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        frame4.pack(fill='x', pady=0, padx=10)
+        # pakka kacha
+        pk_frame = tk.Frame(frame4, bg=Colors.BACKGROUND)
+        pk_frame.pack(fill='x', side='left', expand=1)
+        pk_label = tk.Label(pk_frame, text="Pakka Kacha: [P/K] ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        pk_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
+        self.pk_entry = tk.Entry(pk_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.pk_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
+        self.pk_entry.insert(0, 'P')
+        # GST Value Entry Box
+        gst_value_frame = tk.Frame(frame4, bg=Colors.BACKGROUND)
+        gst_value_frame.pack(fill='x', side='left', expand=1)
+        gst_value_label = tk.Label(gst_value_frame, text="GST Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        gst_value_label.pack(fill='x')
+        self.gst_value_entry = tk.Entry(gst_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.gst_value_entry.pack(padx=(0, 40), fill='x')
+
+        # GROUP 5
+        frame5 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        frame5.pack(fill='x', pady=0, padx=10)
+        # pakka kacha
+        batch_frame = tk.Frame(frame5, bg=Colors.BACKGROUND)
+        batch_frame.pack(fill='x', side='left', expand=1)
+        batch_label = tk.Label(batch_frame, text="Batch: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        batch_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
+        self.batch_entry = tk.Entry(batch_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.batch_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
+        self.batch_entry.insert(0, 'NA')
+        # GST Value Entry Box
+        expiry_frame = tk.Frame(frame5, bg=Colors.BACKGROUND)
+        expiry_frame.pack(fill='x', side='left', expand=1)
+        expiry_label = tk.Label(expiry_frame, text="Expiry: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        expiry_label.pack(fill='x')
+        self.expiry_value_entry = tk.Entry(expiry_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.expiry_value_entry.pack(padx=(0, 40), fill='x')
+        self.expiry_value_entry.insert(0, 'NA')
+
+        # GROUP 6
+        frame6 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        frame6.pack(fill='x', pady=0, padx=10)
+        # pakka kacha
+        unit_frame = tk.Frame(frame6, bg=Colors.BACKGROUND)
+        unit_frame.pack(fill='x', side='left', expand=1)
+        unit_label = tk.Label(unit_frame, text="Unit: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        unit_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
+        self.unit_entry = tk.Entry(unit_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.unit_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
+        self.unit_entry.insert(0, 'PCS')
+        # GST Value Entry Box
+        type_value_frame = tk.Frame(frame6, bg=Colors.BACKGROUND)
+        type_value_frame.pack(fill='x', side='left', expand=1)
+        type_value_label = tk.Label(type_value_frame, text="Type: [F, P, S, O] ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        type_value_label.pack(fill='x')
+        self.type_value_entry = tk.Entry(type_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.type_value_entry.pack(padx=(0, 40), fill='x')
+        self.type_value_entry.insert(0, 'O')
+
+
+        # Add Item Button
+        button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        button_frame.pack(fill='x', pady=(10,0), padx=10)
+        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button.pack(padx=40, fill='x', pady=(10, 10))
+
+
+    def add_item(self):
+        name = self.name_entry.get().upper()
+        date = self.date_entry.get().upper()
+        details = self.details_entry.get().upper()
+        opening_balance = self.balance_entry.get()
+        stock_value = self.stock_value_entry.get()
+        last_value = self.last_value_entry.get()
+        pk_value = self.pk_entry.get().upper()
+        gst_value = self.gst_value_entry.get()
+        batch_value = self.batch_entry.get().upper()
+        expiry_date = self.expiry_value_entry.get()
+        unit_value = self.unit_entry.get().upper()
+        type_value = self.type_value_entry.get().upper()
+
+        # verify entry
+        if name and date and details and pk_value and batch_value and expiry_date and unit_value and type_value:
+            item_id = inventory.add_new_item(name, stock_value,last_value, unit_value, batch_value, expiry_date, gst_value, type_value, pk_value)
+            inventory.add_item_transaction(item_id,date, opening_balance, 0, details)
+
+            dailynote = f"02 = {name}, {date}, {stock_value}, {details}, {opening_balance}, {last_value} , {unit_value}, {batch_value}, {expiry_date}, {gst_value}, {type_value}, {pk_value}"
+            database.add_note_to_date(dailynote)
+
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Item added: {item_id}")
+
+        else:
+            if __name__ == "__main__":
+                print("Some fields are empty")
+            else:
+                self.master.master.set_status("[-]|Some fields are empty|")
+
+        # add account to database
+        # (code for this would depend on how you implemented your accounts database)
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    a = AddItemsPage(app)
+    a.pack(expand=1, fill="both")
+    app.mainloop()
+
+
++database.py
+#code
+import sqlite3
+
+from datetime import datetime, timedelta
+from sqlite3 import Error
+
+try:
+    daily_conn = sqlite3.connect('C://JBB//data//daily_notes.db')
+    daily_cursor = daily_conn.cursor()
+    today = datetime.now().strftime('%Y_%m_%d')
+    daily_cursor.execute(f"CREATE TABLE IF NOT EXISTS d{today} (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT)")
+    daily_conn.commit()
+
+except Error as e:
+    print(e, "error")
+
+def table_exists(table_name):
+    daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
+    result = daily_cursor.fetchone()
+    return result is not None
+
+def last_7_day_report():
+    today = datetime.now().date()
+
+    # Create a list of the last 7 dates
+    last_7_dates = [today - timedelta(days=i) for i in range(6, -1, -1)]
+    last_7_dates = [i.strftime('%Y_%m_%d') for i in last_7_dates]
+
+    last7dayslist = []
+    for i in last_7_dates:
+        temp = [i.split("_")[2]]
+        if table_exists(f"d{i}"):
+            daily_cursor.execute(f"SELECT COUNT(*) FROM d{i}")
+            x = daily_cursor.fetchone()[0]
+            temp.append(x)
+        
+        else:
+            temp.append(0)
+
+        last7dayslist.append(temp)
+        # print(temp)
+        # for k in j:
+        #     print(k)
+
+    # Print the list of dates
+    # print(last7dayslist)
+    return last7dayslist
+
+
+def add_today_table(daily_notes_conn, daily_notes_cursor):
+    # Get today's date
+    today = datetime.now().strftime('%Y_%m_%d')
+    
+    # Check if table already exists for today's date
+    daily_notes_cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name=f'd{today}'")
+    if daily_notes_cursor.fetchone() is not None:
+        print("Table already exists for today's date")
+        return
+    
+    # Create table for today's date
+    daily_notes_cursor.execute(f"CREATE TABLE IF NOT EXISTS d{today} (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT)")
+    daily_notes_conn.commit()
+    
+    print(f"Table d{today} created successfully")
+
+    
+def add_note_to_date(note, date=datetime.now().strftime('%Y_%m_%d') ):
+    try:
+        
+        # Create table if not exists
+        table_name = date
+        daily_cursor.execute(f"CREATE TABLE IF NOT EXISTS d{table_name} (id INTEGER PRIMARY KEY, description TEXT)")
+        
+        # Insert new note
+        daily_cursor.execute(f"INSERT INTO d{table_name} (description) VALUES (?)", (note,))
+        id = daily_cursor.lastrowid
+        daily_conn.commit()
+        print("Note added successfully.", note)
+        return id
+        
+    except Error as e:       
+        print(e)
+        return 0
+
+def get_notes(date):
+    table_name = date.replace("-", "_")
+    daily_cursor.execute(f"SELECT * FROM d{table_name}")
+    notes = daily_cursor.fetchall()
+    
+    return notes
+
+def update_note(date, note_id, new_description):
+    table_name = date.replace("-", "_")
+    daily_cursor.execute(f"UPDATE d{table_name} SET description=? WHERE id=?", (new_description, note_id))
+    daily_conn.commit()
+    
+
+def delete_note(date, note_id):
+    table_name = date.replace("-", "_")
+    daily_cursor.execute(f"DELETE FROM d{table_name} WHERE id=?", (note_id,))
+    daily_conn.commit()
+
+
+def get_table(table_name):
+    daily_cursor.execute(f"select * from {table_name}")
+    return daily_cursor.fetchall()
+
+
+if __name__ == '__main__':
+    print('main')
+    last_7_day_report()
+
++homepage.py
+#code
+import tkinter as tk
+
+from mytheme import Colors
+from tkinter import ttk
+
+
+import accounts
+# import inventory
+import database
+import krar
+# import datetime
+# import time
+
+# import mypandasfile
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+
+
+
+
+class HomePage(tk.Frame):
+
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.Colors = Colors
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        self.karar_data_frame = KrarData(self)
+        self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
+    
+
+    def all_graphs_function(self, accounts_df):
+        for widget in self.winfo_children():
+            widget.destroy()
+        
+        self.background_title = tk.Label(self, image=self.img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.karar_data_frame = KrarData(self)
+        self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
+
+        self.all_positive_df = accounts_df.loc[accounts_df['Amount'] >=0]
+        self.all_negative_df = accounts_df.loc[accounts_df['Amount'] <0]
+
+        self.sales_data_frame = SalesData(self)
+        self.sales_data_frame.place(relx=0.01, rely=0.01, relheight=0.485, relwidth=0.4)
+        self.recieve_data_frame = RecieceData(self)
+        self.recieve_data_frame.place(relx=0.42, rely=0.01, relheight=0.485, relwidth=0.35)
+        self.items_data_frame = ItemsData(self)
+        self.items_data_frame.place(relx=0.01, rely=0.505, relheight=0.485, relwidth=0.35)
+        self.account_data_frame = AccountsData(self)
+        self.account_data_frame.place(relx=0.37, rely=0.505, relheight=0.485, relwidth=0.4)
+        
+    def redraw_graphs(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        
+        self.background_title = tk.Label(self, image=self.img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.karar_data_frame = KrarData(self)
+        self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
+        self.sales_data_frame = SalesData(self)
+        self.sales_data_frame.place(relx=0.01, rely=0.01, relheight=0.485, relwidth=0.4)
+        self.recieve_data_frame = RecieceData(self)
+        self.recieve_data_frame.place(relx=0.42, rely=0.01, relheight=0.485, relwidth=0.35)
+        self.items_data_frame = ItemsData(self)
+        self.items_data_frame.place(relx=0.01, rely=0.505, relheight=0.485, relwidth=0.35)
+        self.account_data_frame = AccountsData(self)
+        self.account_data_frame.place(relx=0.37, rely=0.505, relheight=0.485, relwidth=0.4)
+
+
+class SalesData(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.Colors = self.master.Colors
+        self.config(background=self.Colors.BACKGROUND)
+        self.debit_credit_bar_graph()
+        
+
+    def debit_credit_bar_graph(self):
+        data = database.last_7_day_report()
+        names = [item[0] for item in data]
+        values = [item[1] for item in data]
+
+        fig = Figure(figsize=(5, 3), dpi=100, facecolor=self.Colors.BACKGROUND)
+
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(self.Colors.BACKGROUND)
+
+        markerline, stemline, baseline = ax.stem(names, values, linefmt='-', markerfmt='o', basefmt=' ')
+
+        plt.setp(markerline, color=self.Colors.ACTIVE_FOREGROUND)
+        plt.setp(stemline, color=self.Colors.ACTIVE_FOREGROUND)
+        plt.setp(baseline, visible=False)
+
+        # ax.set_title(total_diffrence_value)
+
+        fig.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+class RecieceData(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.Colors = self.master.Colors
+        self.config(background=self.Colors.BACKGROUND)
+        self.total_pie_graph()
+
+    def total_pie_graph(self):
+        # values
+        total_debit_value = self.master.all_positive_df.shape[0]
+        total_credit_value = self.master.all_negative_df.shape[0]
+        total_sum_value = total_debit_value+total_credit_value
+        # print(total_debit_value)
+
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=self.Colors.BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(self.Colors.BACKGROUND)
+
+
+        categories = ['Dr', 'Cr']
+        amounts = [total_debit_value, total_credit_value]
+        mycolors = [self.Colors.FG_SHADE_1, self.Colors.FG_SHADE_3]
+        ax.pie(amounts, labels=categories, colors=mycolors, autopct='%1.1f%%')
+        ax.set_title(total_sum_value)
+
+        fig.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+class AccountsData(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.Colors = self.master.Colors
+        self.config(background=self.Colors.BACKGROUND)
+        self.positive_scater_plot()
+
+    def positive_scater_plot(self):
+        # values
+        df = self.master.all_positive_df
+        
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=self.Colors.BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(self.Colors.BACKGROUND)
+
+
+        ax.scatter(df['Amount'], df['Days'])
+
+        # ax.set_xlabel("Amount")
+        # ax.set_ylabel("Days")
+        # ax.set_title(total_diffrence_value)
+
+        fig.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+class ItemsData(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.Colors = self.master.Colors
+        self.config(background=self.Colors.BACKGROUND)
+        self.total_pie_graph()
+
+    def total_pie_graph(self):
+        # values
+        total_debit_value = self.master.all_positive_df['Amount'].sum()
+        total_credit_value = self.master.all_negative_df['Amount'].sum()*(-1)
+        total_sum_value = round(total_debit_value-total_credit_value, 2)
+
+        fig = Figure(figsize=(5,4), dpi=100, facecolor=self.Colors.BACKGROUND)
+        ax = fig.add_subplot(111)
+        ax.set_facecolor(self.Colors.BACKGROUND)
+
+
+        categories = ['Dr', 'Cr']
+        amounts = [total_debit_value, total_credit_value]
+        mycolors = [self.Colors.FG_SHADE_1, self.Colors.FG_SHADE_3]
+        ax.pie(amounts, labels=categories, colors=mycolors, autopct='%1.1f%%')
+        ax.set_title(total_sum_value)
+
+        fig.tight_layout()
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+
+
+class KrarData(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        
+        self.Colors = self.master.Colors
+        self.config(background=self.Colors.BACKGROUND)
+
+        self.todo_title = tk.Label(self, text='Today', font="Consolas 16", bg=self.Colors.BACKGROUND, fg=self.Colors.FG_SHADE_3, anchor='center')
+        self.todo_title.pack(fill='x')
+
+        self.table_frame = tk.Frame(self, bg=self.Colors.BACKGROUND)
+        self.table_frame.pack(fill="x", expand=1)
+        self.show_table(self.table_frame,krar.get_customers_with_last_krar_today())
+
+        self.todo_title2 = tk.Label(self, text='Past', font="Consolas 14", bg=self.Colors.BACKGROUND, fg=self.Colors.FG_SHADE_3, anchor='center')
+        self.todo_title2.pack(fill='x')
+
+        self.table_frame2 = tk.Frame(self, bg=self.Colors.BACKGROUND)
+        self.table_frame2.pack(fill="x", expand=1)
+        self.show_table(self.table_frame2,krar.get_customers_with_last_krar_past())
+
+        self.todo_title3 = tk.Label(self, text='Upcoming', font="Consolas 14", bg=self.Colors.BACKGROUND, fg=self.Colors.FG_SHADE_3, anchor='center')
+        self.todo_title3.pack(fill='x')
+
+        self.table_frame3 = tk.Frame(self, bg=self.Colors.BACKGROUND)
+        self.table_frame3.pack(fill="x", expand=1)
+        self.show_table(self.table_frame3,krar.get_customers_with_last_krar_future())
+        
+
+    def set_undue_krar(self):
+        customer_name = self.table_dropdown.get()
+        if customer_name:
+            krar.update_krar_tag_by_name(customer_name, 0)
+
+    def show_data(self, accounts_id_list):
+        # unsettled_accounts = krar.get_accounts_with_unsettled_krars()
+        table_data = []
+
+        for idx, account_id in enumerate(accounts_id_list):
+            customer_details = accounts.get_customer_details(account_id)
+
+            customer_name = f"{customer_details[0]} {customer_details[1]}"
+            temp = []
+            temp.append(customer_details[2])
+            temp.extend(krar.get_unsettled_krar_dates(account_id))
+            table_data.append([customer_name, temp])
+        
+        return table_data
+        
+    def show_table(self, root, x):
+        table_data = self.show_data(x)
+        column_name = ["Name",]
+        # print(table_data)
+        
+        if column_name and table_data:
+            for widget in root.winfo_children():
+                widget.destroy()
+                
+            tree = ttk.Treeview(root, columns=column_name, show='tree')
+            # tree['columns'] = column_name
+            tree.heading("#0", text="")
+            tree.column('#0', width=0)#, stretch="no")
+
+            c = 0
+            for i in table_data:
+                c += 1
+                tg = 'odd'
+                if c%2 == 0:
+                    tg = "even"
+                tree.insert('', 'end', iid=c, text="", values=i, tags = tg )
+                for j in i[1]:
+                    tree.insert(c, 'end', text=c, values=[j,0], tags = tg )
+
+
+            tree.tag_configure('odd', background=self.Colors.ACTIVE_BACKGROUND)
+            tree.tag_configure('even', background=self.Colors.ACTIVE_FOREGROUND)
+            tree.pack(fill="x", expand=True)
+
+
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    h = HomePage(app)
+    h.pack(expand=1, fill="both")
+    app.mainloop()
+
+
++inventory.py
+#code
+import sqlite3
+
+# connect to the inventory database
+inventory_conn = sqlite3.connect('C://JBB//data//inventory.db')
+inventory_cursor = inventory_conn.cursor()
+
+# add auto-increment to the id column in the items table
+inventory_cursor.execute("""
+    CREATE TABLE IF NOT EXISTS items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        stock_value INTEGER DEFAULT 0,
+        last_value INTEGER DEFAULT 0,
+        unit TEXT DEFAULT 'PCS',
+        batch TEXT DEFAULT 'NA', 
+        expiry_date TEXT DEFAULT 'NA', 
+        gst_rate INTEGER DEFAULT 0,
+        item_type TEXT default 'S',
+        pakka_kacha INTEGER DEFAULT 1
+    )
+""")
+
+alter_queries = [
+    "ALTER TABLE items ADD COLUMN unit TEXT DEFAULT 'PCS';",
+    "ALTER TABLE items ADD COLUMN batch TEXT DEFAULT 'NA';",
+    "ALTER TABLE items ADD COLUMN expiry_date TEXT DEFAULT 'NA';",
+    "ALTER TABLE items ADD COLUMN gst_rate INTEGER DEFAULT 0;",
+    "ALTER TABLE items ADD COLUMN item_type TEXT DEFAULT 'S';",
+    "ALTER TABLE items ADD COLUMN pakka_kacha INTEGER DEFAULT 1;"
+]
+# for query in alter_queries:
+#     inventory_cursor.execute(query)
+
+# inventory_cursor.execute("""CREATE TABLE new_table (id INTEGER PRIMARY KEY AUTOINCREMENT,
+#         name TEXT,
+#         stock_value INTEGER DEFAULT 0,
+#         last_value INTEGER DEFAULT 0 )
+#                          """)
+# inventory_cursor.execute("insert into new_table (id, name, stock_value, last_value) select id, name, stock_value, last_value from items")
+# inventory_cursor.execute("DROP TABLE items")
+# inventory_cursor.execute("ALTER TABLE new_table RENAME TO items")
+
+# inventory_cursor.execute("drop table new_table")
+# inventory_conn.commit()
+# inventory_cursor.execute(" PRAGMA table_info(items);")
+# print(inventory_cursor.fetchall())
+
+
+# function to add a new item and create a table for it
+def add_new_item(name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha):
+    # insert the new item into the items table and get its auto-incremented id
+    inventory_cursor.execute("""
+        INSERT INTO items (name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha))
+    item_id = inventory_cursor.lastrowid
+    
+    # create a new table for the item with its id as the table name
+    inventory_cursor.execute(f"""
+        CREATE TABLE IF NOT EXISTS item_{item_id} (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,
+            received INTEGER,
+            sale INTEGER,
+            description TEXT,
+            tags TEXT
+        )
+    """)
+    
+    # commit the changes to the database
+    inventory_conn.commit()
+    
+    # return the id of the new item
+    return item_id
+
+def add_item_transaction(item_id, date, recieved, sale, description, tags=''):
+    table_name = f'item_{item_id}'
+    inventory_cursor.execute(f'''INSERT INTO {table_name}
+                                 (date, received, sale, description, tags)
+                                 VALUES (?, ?, ?, ?, ?)''',
+                            (date, recieved, sale, description, tags))
+    inventory_conn.commit()
+
+
+# Function to modify an item
+def modify_item(item_id, name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha):
+    inventory_cursor.execute("UPDATE items SET name=?, stock_value=?, last_value=?, unit=?, batch=?, expiry_date=?, gst_rate=?, item_type=?, pakka_kacha=? WHERE id=?", (name, stock_value, last_value, unit, batch, expiry_date, gst_rate, item_type, pakka_kacha, item_id))
+    inventory_conn.commit()
+    print("Item with id", item_id, "has been modified.")
+
+# Function to delete an item
+def delete_item(item_id):
+    # First, drop the corresponding item table
+    inventory_cursor.execute("DROP TABLE IF EXISTS item_{}".format(item_id))
+    # Then, delete the item from the main items table
+    inventory_cursor.execute("DELETE FROM items WHERE id=?", (item_id,))
+    inventory_conn.commit()
+    print("Item with id", item_id, "has been deleted.")
+
+
+
+# Define function to get all items
+def get_all_items():
+    inventory_cursor.execute('SELECT * FROM items')
+    items = inventory_cursor.fetchall()
+    return items
+
+# Define function to get item by id
+def get_item_by_id(item_id):
+    inventory_cursor.execute('SELECT * FROM items WHERE id=?', (item_id,))
+    item = inventory_cursor.fetchone()
+    return item
+
+# Define function to get all transactions for an item
+def get_item_transactions(item_id):
+    table_name = 'item_' + str(item_id)
+    inventory_cursor.execute(f'SELECT * FROM {table_name}')
+    transactions = inventory_cursor.fetchall()
+    return transactions
+
+def get_transaction_by_id(table_name, transaction_id):
+    # table_name = "item_" + str(item_id)
+    inventory_cursor.execute(f"SELECT * FROM {table_name} WHERE id = ?", (transaction_id,))
+    transaction = inventory_cursor.fetchone()
+    return transaction
+
+
+# function to modify transaction for an item
+def modify_transaction(item_id, transaction_id, date, received, sale, description, tags):
+    # check if the item exists in the inventory database
+    inventory_cursor.execute('SELECT name FROM items WHERE id=?', (item_id,))
+    item_name = inventory_cursor.fetchone()
+    if item_name is None:
+        print(f'Error: Item with ID {item_id} does not exist in the inventory database')
+        return
+
+    # check if the transaction exists in the item's transaction table
+    item_table_name = f'item_{item_id}'
+    inventory_cursor.execute(f'SELECT id FROM {item_table_name} WHERE id=?', (transaction_id,))
+    transaction = inventory_cursor.fetchone()
+    if transaction is None:
+        print(f'Error: Transaction with ID {transaction_id} does not exist for item {item_name[0]}')
+        return
+
+    # update the transaction in the item's transaction table
+    inventory_cursor.execute(f'UPDATE {item_table_name} SET date=?, received=?, sale=?, description=?, tags=? WHERE id=?',
+                              (date, received, sale, description, tags, transaction_id))
+    inventory_conn.commit()
+    print(f'Transaction {transaction_id} for item {item_name[0]} has been modified successfully')
+
+
+# function to delete a transaction for an item
+def delete_transaction(item_id, transaction_id):
+    # check if the item exists in the inventory database
+    inventory_cursor.execute('SELECT name FROM items WHERE id=?', (item_id,))
+    item_name = inventory_cursor.fetchone()
+    if item_name is None:
+        print(f'Error: Item with ID {item_id} does not exist in the inventory database')
+        return
+
+    # check if the transaction exists in the item's transaction table
+    item_table_name = f'item_{item_id}'
+    inventory_cursor.execute(f'SELECT id FROM {item_table_name} WHERE id=?', (transaction_id,))
+    transaction = inventory_cursor.fetchone()
+    if transaction is None:
+        print(f'Error: Transaction with ID {transaction_id} does not exist for item {item_name[0]}')
+        return
+
+    # delete the transaction from the item's transaction table
+    inventory_cursor.execute(f'DELETE FROM {item_table_name} WHERE id=?', (transaction_id,))
+    inventory_conn.commit()
+    print(f'Transaction {transaction_id} for item {item_name[0]} has been deleted successfully')
+
+def get_item_transactions(item_id):
+    transactions = []
+    try:
+        inventory_cursor.execute(f"SELECT * FROM item_{item_id}")
+        rows = inventory_cursor.fetchall()
+        for row in rows:
+            transaction = {
+                "id": row[0],
+                "date": row[1],
+                "received": row[2],
+                "sale": row[3],
+                "description": row[4],
+                "tags": row[5]
+            }
+            transactions.append(transaction)
+    except sqlite3.Error as e:
+        print(f"Error getting transactions for item {item_id}: {e}")
+    return transactions
+
+def get_item_quantity(item_id):
+    quantity = 0
+    try:
+        inventory_cursor.execute(f"SELECT SUM(received - sale) FROM item_{item_id}")
+        row = inventory_cursor.fetchone()
+        if row[0]:
+            quantity = row[0]
+    except sqlite3.Error as e:
+        print(f"Error getting quantity for item {item_id}: {e}")
+    return quantity
+
+def get_item_value(item_id):
+    quantity = get_item_quantity(item_id)
+    inventory_cursor.execute(f"SELECT stock_value FROM items where id={item_id}")
+    row = inventory_cursor.fetchone()[0]
+    value = quantity * row
+    return value
+
+def get_inventory_value():
+    value = 0
+    try:
+        inventory_cursor.execute("SELECT id, stock_value FROM items")
+        rows = inventory_cursor.fetchall()
+        for row in rows:
+            item_value = get_item_value(row[0], row[1])
+            value += item_value
+    except sqlite3.Error as e:
+        print(f"Error getting inventory value: {e}")
+    return value
+
+def get_last_value(item_id):
+    inventory_cursor.execute(f"SELECT last_value FROM items where id={item_id}")
+    row = inventory_cursor.fetchone()[0]
+    return row
+
+def set_last_value(item_id, value):
+    inventory_cursor.execute("UPDATE items SET last_value=? WHERE id=?", (value, item_id))
+    inventory_conn.commit()
+    return f'Item Id {item_id} updated to value {value}'
+
+def get_table(table_name):
+    inventory_cursor.execute(f"select * from {table_name}")
+    return inventory_cursor.fetchall()
+
+if __name__ == '__main__':
+    print('hello')
+    print(get_last_value(4))
+    # inventory_cursor.execute(f'DELETE FROM items WHERE name=?', ("TEST 2",))
+    # inventory_conn.commit()
+    # print(get_item_value(44))
+    # get_item_value(44)
+
++kararpage.py
+#code
+import tkinter as tk
+# import sqlite3
+
+import accounts
+import krar
+
+from tkinter import ttk
+from mytheme import Colors
+from datetime import datetime
+
+
+
+
+class KararPage(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        # main frame to include all frames
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Krar", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
+
+        # Date Entry Box
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack(fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
+        today_date = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
+        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Account Dropdown Menu
+        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame.pack( fill='x', pady=10, padx=10)
+        account_label = tk.Label(account_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, fill='x')
+        account_choices = self.get_accounts()
+        self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
+        self.account_dropdown.pack(padx=40, pady=(0,10), fill='x')
+        self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
+
+        # button frame
+        button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        button_frame.pack(fill='x', pady=(10,10), padx=10)
+        sale_button = tk.Button(button_frame, text="Add krar", font="Consolas 14", command=self.add_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=40, fill='x', pady=(10, 10))
+
+        # Account dropdown Menu for Settlement
+        account_frame2  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame2.pack( fill='x', pady=10, padx=10)
+        account_label2 = tk.Label(account_frame2, text="Account Krar", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label2.pack(padx=40, fill='x')
+        account_choices2 = self.get_accounts_unsettled()
+        self.account_dropdown2 = ttk.Combobox(account_frame2, values=account_choices2, font="Consolas 14")
+        self.account_dropdown2.pack(padx=40, pady=(0,10), fill='x')
+        self.account_dropdown2.bind('<Enter>', lambda e: self.account_dropdown2.config(values=self.get_accounts_unsettled()))
+
+        # button frame
+        button_frame2 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        button_frame2.pack(fill='x', pady=(10,0), padx=10)
+        settle_button = tk.Button(button_frame2, text="Settle", font="Consolas 14", command=self.settle_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        settle_button.pack(padx=40, fill='x', pady=(10, 10))
+
+    def get_accounts(self):
+        accoount_list = accounts.get_all_customers()
+        return accoount_list
+    
+    def get_accounts_unsettled(self):
+        accounts_list = krar.get_accounts_with_unsettled_krars()
+        result_list = []
+        for account_id in accounts_list:
+            result_list.append(accounts.get_customer_details(account_id))
+
+        return result_list
+
+
+    def add_krar(self):
+        customer_name = self.account_dropdown.get()
+        krar_date = self.date_entry.get()
+        if customer_name and krar_date:
+            customer_id = customer_name.split()[0]
+            krar_id = krar.add_or_update_krar(customer_id, krar_date)
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Krar Id : {krar_id}")
+
+    def settle_krar(self):
+        customer_name = self.account_dropdown2.get()
+        if customer_name:
+            customer_id = customer_name.split()[0]
+            krar.set_krar_settlement(customer_id)
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Krar Settled for : {customer_id}")
+
+
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    h = KararPage(app)
+    h.pack(expand=1, fill="both")
+    app.mainloop()
+
+
++krar.py
+#code
+import sqlite3
+from datetime import datetime, timedelta
+
+# Connect to SQLite database (creates if not exists)
+conn = sqlite3.connect('C://JBB//data//krar.db')
+cursor = conn.cursor()
+
+
+# Create tables
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS all_krar (
+        krar_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER,
+        is_nill INTEGER DEFAULT 0
+    )
+''')
+
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS by_krar_id (
+        uid INTEGER PRIMARY KEY AUTOINCREMENT,
+        kid INTEGER,
+        date TEXT,
+        FOREIGN KEY(kid) REFERENCES all_krar(krar_id)
+    )
+''')
+
+
+# Function to add a new krar for a customer with checks for existing unsettled krar
+def add_or_update_krar(customer_id, date):
+    # Check if there's an unsettled krar for the customer
+    cursor.execute('''
+        SELECT krar_id FROM all_krar WHERE customer_id = ? AND is_nill = 0
+    ''', (customer_id,))
+    unsettled_krar = cursor.fetchone()
+
+    if unsettled_krar:
+        # If unsettled krar exists, get its krar_id and update 'by_krar_id' table
+        krar_id = unsettled_krar[0]
+        cursor.execute('''
+            INSERT INTO by_krar_id (kid, date) VALUES (?, ?)
+        ''', (krar_id, date))
+        conn.commit()
+        return krar_id
+    else:
+        # If no unsettled krar exists, add a new krar for the customer
+        cursor.execute('''
+            INSERT INTO all_krar (customer_id) VALUES (?)
+        ''', (customer_id,))
+        krar_id = cursor.lastrowid
+
+        cursor.execute('''
+            INSERT INTO by_krar_id (kid, date) VALUES (?, ?)
+        ''', (krar_id, date))
+        conn.commit()
+        return krar_id
+
+
+
+# Function to fetch details of unsettled krar for a customer
+def get_unsettled_krar_dates(customer_id):
+    cursor.execute('''
+        SELECT b.date
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE a.customer_id = ? AND a.is_nill = 0
+    ''', (customer_id,))
+    unsettled_dates = cursor.fetchall()
+    return [date[0] for date in unsettled_dates]
+
+
+
+# Function to fetch details of settled krar for a customer
+def get_settled_krar_details(customer_id):
+    cursor.execute('''
+        SELECT a.krar_id, COUNT(*), MIN(b.date), MAX(b.date)
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE a.customer_id = ? AND a.is_nill = 1
+        GROUP BY a.krar_id
+    ''', (customer_id,))
+    settled_krar_details = cursor.fetchall()
+    return settled_krar_details
+
+
+# Function to set the settlement of krar by customer_id
+def set_krar_settlement(customer_id):
+    cursor.execute('''
+        UPDATE all_krar SET is_nill = 1 WHERE customer_id = ? AND is_nill = 0
+    ''', (customer_id,))
+    conn.commit()
+
+def modify_krar_customer_and_status(krar_id, new_customer_id, new_is_nill):
+    cursor.execute('''
+        UPDATE all_krar SET customer_id = ?, is_nill = ? WHERE krar_id = ?
+    ''', (new_customer_id, new_is_nill, krar_id))
+    conn.commit()
+
+
+def modify_by_krar_id(uid, new_kid, new_date):
+    cursor.execute('''
+        UPDATE by_krar_id SET kid = ?, date = ? WHERE uid = ?
+    ''', (new_kid, new_date, uid))
+    conn.commit()
+
+
+
+def delete_from_all_krar(krar_id):
+    cursor.execute('''
+        DELETE FROM by_krar_id WHERE kid = ?
+    ''', (krar_id,))
+    cursor.execute('''
+        DELETE FROM all_krar WHERE krar_id = ?
+    ''', (krar_id,))
+    conn.commit()
+
+
+def delete_from_by_krar_id(uid):
+    cursor.execute('''
+        DELETE FROM by_krar_id WHERE uid = ?
+    ''', (uid,))
+    conn.commit()
+
+def get_accounts_with_unsettled_krars():
+    cursor.execute('''
+        SELECT DISTINCT customer_id
+        FROM all_krar
+        WHERE is_nill = 0
+    ''')
+    unsettled_accounts = cursor.fetchall()
+    return [account[0] for account in unsettled_accounts]
+
+
+def get_customers_with_last_krar_today():
+    today = datetime.now().date()
+    cursor.execute('''
+        SELECT DISTINCT a.customer_id
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE DATE(b.date) = ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+    ''', (today,))
+    customers_today = cursor.fetchall()
+    return [customer[0] for customer in customers_today]
+
+
+def get_customers_with_last_krar_past():
+    today = datetime.now().date()
+    cursor.execute('''
+        SELECT DISTINCT a.customer_id
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE DATE(b.date) < ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+    ''', (today,))
+    customers_past = cursor.fetchall()
+    return [customer[0] for customer in customers_past]
+
+def get_customers_with_last_krar_future():
+    today = datetime.now().date()
+    cursor.execute('''
+        SELECT DISTINCT a.customer_id
+        FROM all_krar a
+        JOIN by_krar_id b ON a.krar_id = b.kid
+        WHERE DATE(b.date) > ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+    ''', (today,))
+    customers_future = cursor.fetchall()
+    return [customer[0] for customer in customers_future]
+
+
++krar2.py
+#code
+
+import sqlite3
+import datetime
+
+krar_conn = sqlite3.connect('new/krar.db')
+krar_cursor = krar_conn.cursor()
+
+
+krar_cursor.execute('''CREATE TABLE if not exists krars (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    customer_name TEXT NOT NULL,
+    krar_date TEXT NOT NULL,
+    tag INTEGER NOT NULL DEFAULT 1)''')
+
+def create_krar(customer_name, krar_date):
+    with krar_conn:
+        krar_cursor.execute("INSERT INTO krars (customer_name, krar_date) VALUES (?, ?)", (customer_name, krar_date))
+        krar_id = krar_cursor.lastrowid
+        return krar_id
+
+def get_krar_by_id(krar_id):
+    krar_cursor.execute("SELECT * FROM krars WHERE id = ?", (krar_id,))
+    krar = krar_cursor.fetchone()
+    return krar
+
+def get_all_krars():
+    krar_cursor.execute("SELECT * FROM krars")
+    krars = krar_cursor.fetchall()
+    return krars
+
+def get_all_due_krars():
+    krar_cursor.execute("SELECT * FROM krars where tag = 1")
+    return krar_cursor.fetchall()
+
+def get_krars_by_customer_name(customer_name):
+    krar_cursor.execute("SELECT * FROM krars WHERE customer_name = ?", (customer_name,))
+    krars = krar_cursor.fetchall()
+    return krars
+
+def get_due_krars_by_customer_name(customer_name):
+    krar_cursor.execute("SELECT * FROM krars WHERE customer_name = ? AND tag = 1", (customer_name,))
+    krars = krar_cursor.fetchall()
+    return krars
+
+
+
+def get_krars_by_date(date=None):
+    if date is None:
+        date = datetime.date.today().strftime('%Y-%m-%d')
+    krar_cursor.execute('''SELECT * FROM krars WHERE krar_date = ? and tag = 1''', (date,))
+    return krar_cursor.fetchall()
+
+def update_krar_tag(krar_id, tag):
+    with krar_conn:
+        krar_cursor.execute("UPDATE krars SET tag = ? WHERE id = ?", (tag, krar_id))
+        krar_conn.commit()
+
+def update_krar_tag_by_name(krar_name, tag):
+    with krar_conn:
+        krar_cursor.execute("UPDATE krars SET tag = ? WHERE customer_name = ?", (tag, krar_name))
+        krar_conn.commit()
+
+
+
+def update_krar_by_id(krar_id, customer_name=None, krar_date=None, tag=None):
+    
+    cursor = krar_conn.cursor()
+    update_query = 'UPDATE krars SET'
+    update_query_params = []
+    if customer_name is not None:
+        update_query += ' customer_name=?,'
+        update_query_params.append(customer_name)
+    if krar_date is not None:
+        update_query += ' krar_date=?,'
+        update_query_params.append(krar_date)
+    if tag is not None:
+        update_query += ' tag=?,'
+        update_query_params.append(tag)
+    # Remove the trailing comma from the update query
+    update_query = update_query.rstrip(',')
+    # Add the WHERE clause to the query
+    update_query += ' WHERE id=?'
+    update_query_params.append(krar_id)
+    cursor.execute(update_query, update_query_params)
+    krar_conn.commit()
+
+def delete_krar(krar_id):
+    with krar_conn:
+        krar_cursor.execute("DELETE FROM krars WHERE id = ?", (krar_id,))
+        krar_conn.commit()
+
+
+
+
++main.py
+#code
+import tkinter as tk
+import os
+from tkinter import ttk
+from tkinter import PhotoImage
+from datetime import datetime
+
+from mytheme import Colors, Colors1
+from homepage import HomePage
+from sales import SalesPage
+from accountpage import AccountPage
+from reports import ReportsPage
+from add_items import AddItemsPage
+from modifypage import ModifyPage
+from kararpage import KararPage
+from bills.billpage import BillPage
+from bills.billshowpage import BillShowPage
+from mypandasfile import get_all_list
+
+
+class CustomLabel(tk.Frame):
+    def __init__(self, master, text, frame_to_link, x, **kwargs):
+        super().__init__(master, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+        self.customlabel = tk.Label(self, text=text, font=("Consolas", 14), anchor="e")#, pady=10, highlightthickness=0, padx=20, pady=10, anchor="w", highlightthickness=0, highlightbackground=Colors.ACTIVE_FOREGROUND)
+        self.customlabel.pack(fill='both', side="right", expand=1)
+
+        self.customlabel1 = tk.Label(self, text="", font=("Consolas", 20), anchor='w')
+        self.customlabel1.pack(side='left',fill='x')#, expand=1)
+
+        self.frame1 = frame_to_link
+        self.bind("<Enter>", self.on_enter)
+        self.bind("<Leave>", self.on_leave)
+        self.customlabel.bind("<Button-1>", self.on_click)
+        self.customlabel1.bind("<Button-1>", self.on_click)
+
+        # self.Colors = Colors
+        
+        self.normal_bg = Colors.BACKGROUND1
+        self.normal_fg = Colors.FOREGROUND
+        self.hover_bg = Colors.LIGHT_BG
+        self.hover_fg = Colors.FOREGROUND
+        self.active_bg = Colors.ACTIVE_BACKGROUND
+        self.active_fg = Colors.FG_SHADE_1
+        
+        self.is_active = False
+        self.is_hovering = False
+        self.customlabel.configure(background=self.normal_bg, foreground=self.normal_fg)
+        self.customlabel1.configure(background=self.normal_bg)
+        self.master.master.bind(f"<Alt-{x}>", self.alt_key)  # Bind Alt + x key
+        self.x = x
+        # print(self.x)
+
+    def alt_key(self, event):
+        # print(event.char.isdigit())
+        if event.char == self.x:
+            self.on_click(event)
+
+        # if event.char.isdigit():
+        #     key_pressed = int(event.char)
+        #     print(key_pressed, self.x, key_pressed== self.x)
+        #     if key_pressed == self.x:
+        #         self.on_click(event)
+
+        
+    def on_enter(self, event):
+        if not self.is_active:
+            self.customlabel.configure(background=self.hover_bg, foreground=self.hover_fg)
+            self.customlabel1.configure(background=self.hover_bg, foreground=self.hover_fg)
+            self.is_hovering = True
+            
+    def on_leave(self, event):
+        if not self.is_active:
+            self.customlabel.configure(background=self.normal_bg, foreground=self.normal_fg)
+            self.customlabel1.configure(background=self.normal_bg, foreground=self.normal_fg)
+            self.is_hovering = False
+            
+    def on_click(self, event):
+        # print('click')
+        for  i in self.master.winfo_children():
+            # print('clicksdf')
+            i.set_inactive()
+    
+        self.is_active = True
+        self.is_hovering = False
+        self.customlabel.configure( foreground=self.active_fg)#, relief='groove')
+        self.customlabel1.configure( background=self.active_fg)#, relief='groove')
+        self.frame1.tkraise()
+        
+    def set_inactive(self):
+        self.is_active = False
+        self.is_hovering = False
+        self.customlabel.configure(background=self.normal_bg, foreground=self.normal_fg)
+        self.customlabel1.configure(background=self.normal_bg)
+
+    def set_active(self):
+        self.is_active = True
+        self.is_hovering = False
+        self.customlabel.configure(foreground=self.active_fg)#, relief='groove')
+        self.customlabel1.configure(background=self.active_fg)#, relief='groove')
+        self.frame1.tkraise()
+
+# class CustomLabel(tk.Label):
+#     def __init__(self, master, text, frame_to_link, **kwargs):
+#         super().__init__(master, text=text, font=("Consolas", 14), padx=20, pady=10, anchor="w", highlightthickness=0, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
+
+#         self.frame1 = frame_to_link
+#         self.bind("<Enter>", self.on_enter)
+#         self.bind("<Leave>", self.on_leave)
+#         self.bind("<Button-1>", self.on_click)
+        
+#         self.normal_bg = Colors.BACKGROUND1
+#         self.normal_fg = Colors.FOREGROUND
+#         self.hover_bg = Colors.LIGHT_BG
+#         self.hover_fg = Colors.FOREGROUND
+#         self.active_bg = Colors.ACTIVE_BACKGROUND
+#         self.active_fg = Colors.FG_SHADE_1
+        
+#         self.is_active = False
+#         self.is_hovering = False
+#         self.configure(background=self.normal_bg, foreground=self.normal_fg)
+
+        
+#     def on_enter(self, event):
+#         if not self.is_active:
+#             self.configure(background=self.hover_bg, foreground=self.hover_fg)
+#             self.is_hovering = True
+            
+#     def on_leave(self, event):
+#         if not self.is_active:
+#             self.configure(background=self.normal_bg, foreground=self.normal_fg)
+#             self.is_hovering = False
+            
+#     def on_click(self, event):
+#         for  i in self.master.winfo_children():
+#             i.set_inactive()
+    
+#         self.is_active = True
+#         self.is_hovering = False
+#         self.configure( foreground=self.active_fg)#, relief='groove')
+#         self.frame1.tkraise()
+        
+#     def set_inactive(self):
+#         self.is_active = False
+#         self.is_hovering = False
+#         self.configure(background=self.normal_bg, foreground=self.normal_fg)#
+#     def set_active(self):
+#         self.is_active = True
+#         self.is_hovering = False
+#         self.configure(foreground=self.active_fg)#, relief='groove')
+#         self.frame1.tkraise()
+    
+
+
+class MyApp(tk.Tk):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.create_folder_and_subfolder()
+        self.themeint = 0
+        self.is_graph_ready = 0
+        self.title("JBB")
+        self.state("zoomed")
+        self.config(background=Colors.BACKGROUND1)
+        # self.clrs = Colors
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        self.style=ttk.Style()
+        self.style.theme_create('mytheme', parent='alt', 
+                        settings={
+                            'TCombobox':
+                            {
+                                'configure':
+                                {
+                                'arrowsize': 18,
+                                'font':"Consolas 14"
+                                }
+                            },
+                            'Treeview':{
+                                'configure':
+                                {
+                                    'rowheight': 20,
+                                    'font': 'Ubantu 10'
+                                }
+                            }
+                        }
+                    )
+        self.style.theme_use('mytheme')
+        self.style.configure('TCombobox', selectbackground=Colors.FG_SHADE_1, 
+                            fieldbackground=Colors.BACKGROUND3, 
+                            background=Colors.BACKGROUND3, 
+                            foreground=Colors.FG_SHADE_1, 
+                            arrowcolor=Colors.FOREGROUND)
+        self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND)
+        self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 12')
+
+        # main 4 parts 
+        self.title_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
+        self.title_bar.place(relx=0, rely=0, relheight=0.04, relwidth=1)
+
+        self.menu_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.menu_frame.place(relx=0.005, rely=0.255, relheight=0.675, relwidth=0.095)
+        self.action_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.action_frame.place(relx=0.1, rely=0.04, relheight=0.9, relwidth=0.9)
+        self.status_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
+        self.status_bar.place(relx=0, rely=0.94, relheight=0.06, relwidth=1)
+
+
+        
+        # logo
+        self.logo_frame = tk.Frame(self)
+        self.logo_frame.place(relx=0.005, rely=0.05, relheight=0.2, relwidth=0.095)
+        self.logo_image = PhotoImage(file="myicons/logo.png")
+        logo_image_label = tk.Label(self.logo_frame, image=self.logo_image, background=Colors.BACKGROUND1)
+        logo_image_label.pack( fill="both", expand=1)
+        
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        # self.background_title = tk.Label(self.logo_frame, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        # self.img = img
+
+        self.title_bar_f(self.title_bar)
+        
+        self.status = tk.StringVar()
+        self.statusl = tk.Label(self.status_bar, textvariable=self.status, font="Consolas 18", background=Colors.BG_SHADE_1, fg=Colors.ACTIVE_FOREGROUND)
+        self.statusl.pack(anchor="e")
+        self.status.set("|Status Bar|")
+        
+
+        # adding other views frames
+        # self.homeframe = tk.Frame(self.action_frame, bg=Colors.ACTIVE_BACKGROUND)
+        self.homeframe = HomePage(self.action_frame)
+        self.homeframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.saleframe = SalesPage(self.action_frame)
+        self.saleframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.accountframe = AccountPage(self.action_frame)
+        self.accountframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.additemframe = AddItemsPage(self.action_frame)
+        self.additemframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.kararframe = KararPage(self.action_frame)
+        self.kararframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.reportframe = ReportsPage(self.action_frame)
+        self.reportframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.modifyframe = ModifyPage(self.action_frame)
+        self.modifyframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.billframe = BillPage(self.action_frame)
+        self.billframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        self.billshowframe = BillShowPage(self.action_frame)
+        self.billshowframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        # adding labels in menu
+        # self.home_page_label = CustomFrame(self.menu_frame, "Home",self.homeframe)
+        # self.home_page_label.pack( fill="x")
+        # self.sale_page_label = CustomFrame(self.menu_frame, "Sale", self.saleframe)
+        # self.sale_page_label.pack( fill="x")
+        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe, "h")
+        self.home_page_label.pack( fill="x")
+        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe, "s")
+        self.sale_page_label.pack( fill="x")
+        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe, 'a')
+        self.account_page_label.pack( fill="x")
+        self.add_item_page_label = CustomLabel(self.menu_frame, "Items ", self.additemframe, 'i')
+        self.add_item_page_label.pack( fill="x")
+        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe, 'k')
+        self.karar_frame_label.pack( fill="x")
+        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe, 'm')
+        self.modify_frame_label.pack( fill="x")
+        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'r')
+        self.report_frame_label.pack( fill="x")
+        self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'b')
+        self.bill_frame_label.pack( fill="x")
+        self.bill_show_frame_label = CustomLabel(self.menu_frame, "Bill ", self.billshowframe, 't')
+        self.bill_show_frame_label.pack( fill="x")
+
+        # activating home page
+        self.home_page_label.set_active()
+
+        self.bind()
+        # self.sale_page_label.set_active()
+        # self.account_page_label.set_active()
+        # self.report_frame_label.set_active()
+        # self.modify_frame_label.set_active()
+        # self.karar_frame_label.set_active()
+
+        # data_process = multiprocessing.Process(target=self.my_parallel_processes, args=(1,2))
+        # data_process.start()
+
+        # data_process.join()
+
+    def create_folder_and_subfolder(self):
+        """Creates the folder JBB in the C drive and a subfolder named data,
+        if they don't already exist.
+        """
+
+        folder_path = "C:/JBB"
+        subfolder_path_data = os.path.join(folder_path, "data")
+        subfolder_path_bills = os.path.join(folder_path, "bills")
+
+        try:
+            os.makedirs(folder_path, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_data, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_bills, exist_ok=True)  # Create parent folders if needed
+            # print(f"Folder structure created successfully: {subfolder_path}")
+        except OSError as e:
+            print(f"Error creating folder structure: {e}")
+
+    def title_bar_f(self, master):
+        today = datetime.now().strftime('%d %m|%Y')
+        company_name = tk.Label(master, text="JAAT BEAJ BHANDER", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_3)
+        company_name.place(relx=0.01, rely=0)
+        today_date = tk.Label(master, text=today, font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        today_date.place(relx=0.9, rely=0)
+
+        show_graph_label = tk.Label(master, text="#", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        show_graph_label.place(relx=0.8, rely=0)
+        show_graph_label.bind("<Button-1>",lambda e: self.my_parallel_processes())
+
+        change_theme_label = tk.Label(master, text="@", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        change_theme_label.place(relx=0.78, rely=0)
+        change_theme_label.bind("<Button-1>",lambda e: self.togle_theme())
+
+    def set_status(self,s):
+        self.status.set(s)
+
+    def togle_theme(self):
+        if self.themeint:
+            colors = Colors
+            self.themeint = 0
+        else:
+            colors = Colors1
+            self.themeint = 1
+
+        self.update_widget_colors(widget=self, colors=colors)
+        self.homeframe.Colors = colors
+        self.reportframe.Colors = colors
+        self.billframe.Colors = colors
+        self.style.configure('TCombobox', selectbackground=colors.FG_SHADE_1, 
+                            fieldbackground=colors.BACKGROUND3, 
+                            background=colors.BACKGROUND3, 
+                            foreground=colors.FG_SHADE_1, 
+                            arrowcolor=colors.FOREGROUND)
+        self.style.configure('Treeview', fieldbackground=colors.BACKGROUND)
+        self.style.configure("Treeview.Heading", foreground=colors.FOREGROUND, 
+                                background=colors.BACKGROUND1)
+
+        if self.is_graph_ready:
+            self.homeframe.redraw_graphs()
+
+    def update_widget_colors(self, widget, colors):
+        """
+        Recursively updates the colors of a widget and its children based on the current theme.
+
+        Args:
+            widget (tk.Widget): The widget to start updating colors from.
+        """
+
+        if isinstance(widget, CustomLabel):
+            # widget.Colors = colors
+            widget.normal_bg = colors.BACKGROUND
+            widget.normal_fg = colors.FOREGROUND
+            widget.hover_bg = colors.LIGHT_BG
+            widget.hover_fg = colors.FOREGROUND
+            widget.active_bg = colors.ACTIVE_BACKGROUND
+            widget.active_fg = colors.FG_SHADE_1
+        
+        elif isinstance(widget, tk.Listbox):
+            widget.config(background=colors.BACKGROUND)
+        
+        elif isinstance(widget, tk.Frame):
+            widget.config(background=colors.BACKGROUND)
+
+        elif isinstance(widget, tk.Label):
+            widget.config(background=colors.BACKGROUND,
+                foreground=colors.ACTIVE_FOREGROUND)
+        
+        elif isinstance(widget, ttk.Combobox):
+            widget.config(
+                          background= colors.BACKGROUND3,
+                          foreground= colors.FG_SHADE_1)
+
+        elif isinstance(widget, tk.Button):
+            widget.config(activebackground=colors.ACTIVE_BACKGROUND, 
+                          activeforeground=colors.ACTIVE_FOREGROUND, 
+                          background=colors.BACKGROUND3, 
+                          foreground=colors.FG_SHADE_3)
+
+        elif isinstance(widget, tk.Entry):
+            widget.config(background=colors.BACKGROUND3, 
+                          foreground=colors.FG_SHADE_1)
+        
+
+        # Recursively update child widgets
+        for child in widget.winfo_children():
+            self.update_widget_colors(child, colors)
+        
+        
+
+    def my_parallel_processes(self):
+        if self.themeint:
+            colors = Colors1
+        else:
+            colors = Colors
+        
+        self.homeframe.Colors = colors
+        accounts_df = get_all_list()
+        self.homeframe.all_graphs_function(accounts_df)
+        self.reportframe.parallel_process_combo(accounts_df)
+        self.is_graph_ready = 1
+
+    
+    # def start_processing(self):
+    #     with ThreadPoolExecutor() as executor:
+    #         executor.submit(self.my_parallel_processes)
+
+
+if __name__ == "__main__":
+    # accounts_df = get_all_list()
+    app = MyApp()
+    # app.start_processing()
+    # data_process = multiprocessing.Process(target=app.my_parallel_processes, args=(1,))
+    # data_process.start()
+    app.mainloop()
+    # page 52 clouse 6.3
+    # app.my_parallel_processes(1)
+
+
++modifypage.py
+#code
+        
+import tkinter as tk
+
+from mytheme import Colors
+from tkinter import ttk
+
+import accounts
+import inventory
+import database
+import krar
+
+class ModifyPage(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+
+        font = "Consolas 16"
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        self.main_frame = tk.Frame(self)
+        self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Modify Details", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
+
+        # Database Dropdown Menu
+        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db"]
+        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame.pack( fill='x', pady=10, padx=10)
+        account_label = tk.Label(account_frame, text="Database", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, fill='x')
+        self.db_dropdown = ttk.Combobox(account_frame, values=database_names, font="Consolas 14")
+        self.db_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+        self.db_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
+        # self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
+        # self.account_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.account_dropdown, self.get_accounts(), self.account_dropdown.get().upper()))
+
+        # Table Dropdown Menu
+        self.table_list = []
+        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame.pack( fill='x', pady=10, padx=10)
+        account_label = tk.Label(account_frame, text="Table", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, fill='x')
+        self.table_dropdown = ttk.Combobox(account_frame, values=self.table_list, font="Consolas 14")
+        self.table_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+
+
+        # Row Entry
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack( fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Row ID", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
+        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.row_id_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Show Button
+        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        sale_button_frame.pack( fill='x', pady=10, padx=10)
+        sale_button = tk.Button(sale_button_frame, text="Show", font="Consolas 14", command=self.show_row, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=40, fill='x', pady=(10, 10))
+
+        # modify row entry
+        self.table_row = tk.StringVar()
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack( fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Modify Row", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
+        self.modify_row_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.table_row, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.modify_row_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Modify Button
+        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        sale_button_frame.pack( fill='x', pady=10, padx=10)
+        sale_button = tk.Button(sale_button_frame, text="Modify", font="Consolas 14", command=self.modify_row_function, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=40, fill='x', pady=(10, 10))
+
+        # Delete Button
+        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        sale_button_frame.pack( fill='x', pady=10, padx=10)
+        sale_button = tk.Button(sale_button_frame, text="Delete", font="Consolas 14", command=self.delete_row_function, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=40, fill='x', pady=(10, 10))
+
+        # # --------------------------------------------------------
+        # self.upper_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
+        # # self.upper_frame.place(relx=0, rely=0, relheight=0.2, relwidth=1)
+        # # self.table_selector()
+
+        # self.table_frame = tk.Frame(self, bg=Colors.ACTIVE_BACKGROUND)
+        # # self.table_frame.place(relx=0, rely=0.2, relheight=0.8, relwidth=1)
+
+        # # self.table_row = tk.StringVar()
+
+        # row_label = tk.Label(self.table_frame, text="Table Row", bg=Colors.ACTIVE_BACKGROUND, font=font)
+        # row_label.place(relx=0.1, rely=0.1, relheight=0.1, relwidth=0.8)
+        # row_entry = tk.Entry(self.table_frame, textvariable=self.table_row, font=font, bg=Colors.ACTIVE_BACKGROUND)
+        # row_entry.place(relx=0.1, rely=0.2, relheight=0.1, relwidth=0.8)
+
+        # # Create button
+        # modify_row_button = tk.Button(self.table_frame, text="Modify Data", command=self.modify_row_function, bg=Colors.ACTIVE_BACKGROUND, font=font)
+        # modify_row_button.place(relx=0.18, rely=0.4, relheight=0.1, relwidth=0.3)
+        # delete_row_button = tk.Button(self.table_frame, text="Delete Data", command=self.delete_row_function, bg=Colors.ACTIVE_BACKGROUND, font=font)
+        # delete_row_button.place(relx=0.52, rely=0.4, relheight=0.1, relwidth=0.3)
+
+
+
+
+        # self.default_lable = tk.Label(self.table_frame, bg=Colors.ACTIVE_BACKGROUND, text="Select a table", font="Consolas 36")
+        # self.default_lable.pack(expand=1, fill=tk.BOTH)
+
+
+    
+    # def table_selector(self):
+    #     font = "Consolas 16"
+    #     database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db"]
+    #     labels_top_frame = tk.Frame(self.upper_frame, bg=Colors.ACTIVE_BACKGROUND)
+    #     labels_top_frame.pack(side="top", fill=tk.BOTH)
+    #     labels_bottom_frame = tk.Frame(self.upper_frame, bg=Colors.ACTIVE_BACKGROUND)
+    #     labels_bottom_frame.pack(side="top", fill=tk.BOTH)
+        
+        
+    #     db_label = tk.Label(labels_top_frame, text="Select database:", bg=Colors.ACTIVE_BACKGROUND, font=font)
+    #     db_label.pack(side="left", padx=5, pady=5)
+    #     self.db_dropdown = ttk.Combobox(labels_bottom_frame, values=database_names, font=font)
+    #     self.db_dropdown.pack(side="left", padx=5, pady=5)
+    #     self.db_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
+
+
+    #     # self.db_dropdown.bind('<Enter>', lambda e: db_dropdown.config(values=get_item_list()))
+    #     # self.db_dropdown.bind('<Down>', lambda e: update_listbox_items(db_dropdown, get_item_list(), b_in1.get()))
+
+
+    #     # Create table dropdown
+    #     self.table_list = []
+    #     table_label = tk.Label(labels_top_frame, text="Select table:", bg=Colors.ACTIVE_BACKGROUND, font=font)
+    #     table_label.pack(side="left", padx=80, pady=5)
+    #     self.table_dropdown = ttk.Combobox(labels_bottom_frame, values= self.table_list, width=20, font=font)
+    #     self.table_dropdown.pack(side="left", padx=5, pady=5)
+    #     # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
+
+    #     row_label = tk.Label(labels_top_frame, text="Row id:", bg=Colors.ACTIVE_BACKGROUND, font=font)
+    #     row_label.pack(side="left", padx=50, pady=5)
+    #     self.row_id_entry = tk.Entry(labels_bottom_frame, font=font, bg=Colors.ACTIVE_BACKGROUND)
+    #     self.row_id_entry.pack(side="left", padx=5, pady=5)
+
+    #     # Create button
+    #     show_button = tk.Button(labels_bottom_frame, text="Show Data", command=self.show_row, bg=Colors.ACTIVE_BACKGROUND, font=font)
+    #     show_button.pack(side="left", padx=5, pady=5)
+
+    def update_table_names(self):
+        selected_db = self.db_dropdown.get()
+        if selected_db:
+            if selected_db == "accounts.db":
+                accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = accounts.accounts_cursor.fetchall()
+            if selected_db == "inventory.db":
+                inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = inventory.inventory_cursor.fetchall()
+            if selected_db == "daily_notes.db":
+                database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = database.daily_cursor.fetchall()
+            if selected_db == "krar.db":
+                krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = krar.cursor.fetchall()
+            
+            self.table_dropdown.config(values=self.table_list)
+            
+            # print(selected_db, self.table_list)
+
+    def show_row(self):
+        # Get selected database and table
+        selected_db = self.db_dropdown.get()
+        selected_table = self.table_dropdown.get()
+        row_id = self.row_id_entry.get()
+        
+        row = []
+        if selected_db and selected_table:
+            if selected_db == "accounts.db":
+                row = accounts.get_transaction_by_id(selected_table, int(row_id) )
+
+            if selected_db == "inventory.db":
+                row = inventory.get_transaction_by_id(selected_table, row_id)
+
+            if selected_db == "daily_notes.db":
+                if __name__ == "__main__":
+                    print("cannot modify daily_note")
+                
+                else:
+                    self.master.master.set_status("[-] Cannot modify daily_notes")
+            
+            if selected_db == "krar.db":
+                if selected_table == "all_krar":
+                    x = 'krar_id'
+                else:
+                    x = 'uid'
+                row = krar.cursor.execute(f"SELECT * FROM {selected_table} where {x} = {row_id}").fetchone()
+
+        new_row = "|".join(map(str, row))
+        self.table_row.set(new_row)
+    
+    def modify_row_function(self):
+        table_row = self.table_row.get().upper()
+        selected_db = self.db_dropdown.get()
+        selected_table = self.table_dropdown.get()
+        row_id = self.row_id_entry.get()
+        if table_row and selected_db and selected_table and row_id:
+            row_list = table_row.split("|")
+            if selected_db == "accounts.db":
+                if selected_table == "customers":
+                    accounts.update_customer_details(row_id, row_list[1], row_list[2])
+                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                    database.add_note_to_date(note)
+                    
+                else:
+                    accounts.update_customer_transaction(selected_table, row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5])
+                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                    database.add_note_to_date(note)
+
+            if selected_db == "inventory.db":
+                if selected_table == "items":
+                    inventory.modify_item(row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5], row_list[6], row_list[7], row_list[8], row_list[9])
+                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                    database.add_note_to_date(note)
+                    
+                else:
+                    item_id  = int(selected_table.split("_")[1])
+                    inventory.modify_transaction(item_id, row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5])
+                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                    database.add_note_to_date(note)
+
+            if selected_db == "krar.db":
+                if selected_table == "all_krar":
+                    krar.modify_krar_customer_and_status(int(row_id), row_list[1], row_list[2])
+                else:
+                    krar.modify_by_krar_id(int(row_id), row_list[1], row_list[2])
+
+                note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                database.add_note_to_date(note)
+            
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Row updated: {row_id}")
+                    
+                    
+
+
+    def delete_row_function(self):
+        table_row = self.table_row.get().upper()
+        selected_db = self.db_dropdown.get()
+        selected_table = self.table_dropdown.get()
+        row_id = self.row_id_entry.get()
+        if selected_db and selected_table and row_id:
+            if selected_db == "accounts.db":
+                if selected_table == "customers":
+                    accounts.delete_customer(row_id)
+                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
+                    database.add_note_to_date(note)
+                
+                else:
+                    customer_id = int(selected_table.split("_")[1])
+                    accounts.delete_customer_transaction(customer_id, row_id)
+                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
+                    database.add_note_to_date(note)
+
+            if selected_db == "inventory.db":
+                if selected_table == "items":
+                    inventory.delete_item(row_id)
+                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
+                    database.add_note_to_date(note)
+                
+                else:
+                    item_id = int(selected_table.split("_")[1])
+                    inventory.delete_transaction(item_id, row_id)
+                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
+                    database.add_note_to_date(note)
+
+            if selected_db == "krar.db":
+                if selected_table == "all_krar":
+                    krar.delete_from_all_krar(int(row_id))
+                else:
+                    krar.delete_from_by_krar_id(int(row_id))
+
+                note = f"06 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+                database.add_note_to_date(note)
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Row deleted: {row_id}")
+                
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    h = ModifyPage(app)
+    h.pack(expand=1, fill="both")
+    app.mainloop()
+
+
++mydocxtopdf.py
+#code
+
+from docx2pdf import convert
+from PyPDF2 import PdfMerger, PdfReader
+import os
+
+def get_all_list():
+    lst = os.listdir("bills")
+    lst2 = os.listdir("pdfs")
+    docx_list = []
+    num_list = []
+    for i in lst:
+        if i.endswith(".docx"):
+            first = i.split(".")[0]
+            docx_list.append(first)
+    for i in lst2:
+        if i.endswith(".pdf"):
+            first = i.split(".")[0]
+            num_list.append(first)
+            
+    # print(docx_list, num_list)
+    return docx_list, num_list
+    
+
+
+def my_sort(strt, nd, lst):
+    res = []
+    for i in range(strt, nd+1):
+        if str(i) in lst:
+            res.append(str(i))
+    return res
+
+def my_converter(docx_list, num_list):
+    for i in docx_list:
+        if i in num_list:
+            print(i+" Pdf Found")
+        else:
+            print(i)
+            try:
+                convert(f"bills/"+str(i)+".docx", f"pdfs/{str(i)}.pdf")
+                
+            except Exception as e:
+                print(f"!!!! Error in Converting {i} \n Error {e}")
+
+def my_merger(lst, from_num, to_num):
+    merged_object = PdfMerger()
+    print(f"Merging {from_num} to {to_num}")
+    for num in lst:
+        try:
+            merged_object.append(PdfReader( "pdfs/"+num+ '.pdf', 'rb'))
+            print(num, end=" done ")
+        except Exception as e:
+            print(f"*** Error in Merging {num} \n Error {e}")
+    merged_name = "merged_pdfs/"+str(from_num) + "to" + str(to_num)+".pdf"
+    merged_object.write(merged_name)
+
+def docs_to_pdf_main(from_num, to_num):
+    docxs, pdfs = get_all_list()
+    docxsm = my_sort(int(from_num), int(to_num), docxs)
+    pdfsm = my_sort(int(from_num), int(to_num), pdfs)
+    
+    my_converter(docxsm, pdfsm)
+    
+    my_merger(docxsm, from_num, to_num)
+    
+    
+    x = input('\n Operation completed successfully!!!!!!!!')
+
+
+docs_to_pdf_main(101, 130)
+
++mypandasfile.py
+#code
+import pandas as pd
+import accounts
+import datetime
+# import time
+
+def get_all_list():
+    try:
+        result = accounts.get_table("customers")
+        column_names = ['customer_id', 'name', 'detail']
+        customer_df = pd.DataFrame(result, columns=column_names)
+    except Exception as e:
+        print(f'Error in get_all_list: {str(e)}')
+        return pd.DataFrame()
+    
+    try:
+
+        customer_df[['Amount', 'Days']] = customer_df['customer_id'].apply(get_one_total).apply(pd.Series)
+    except Exception as e:
+        print(e)
+
+    return customer_df
+
+
+def get_one_total(customer_id):
+    try:
+        result = accounts.get_table1(f"customer_{customer_id}")
+    except Exception as e:
+        print(f'Error in get_one_total: {str(e)}')
+        return pd.Series([0, 0])
+    try:
+        table_df = pd.DataFrame(result)
+        table_df[0] = pd.to_datetime(table_df[0])
+        today = pd.to_datetime(datetime.date.today())
+
+        table_df[3] = (today - table_df[0]).dt.days
+        interest_one_day = 0.0006575342465753425
+        table_df[4] = table_df[3] * interest_one_day
+        table_df['result'] = table_df[1]
+        table_df[2] = table_df[2].str.lower()
+        table_df.loc[table_df[2] == "p", 'result'] *= table_df[4]
+        table_df.loc[table_df[2] == "m", 'result'] *= -table_df[4]
+
+        s1 = table_df['result'].sum()
+        s = table_df.loc[table_df[2] == "p", 1].sum() - table_df.loc[table_df[2] == "m", 1].sum()
+
+        last_days = table_df[3].min()
+        mysum = round(s + s1, 2)
+
+    except:
+        return pd.Series([0, 0])
+
+    return pd.Series([mysum, last_days])
+
+
+
+
+# s = time.time()
+# customer_df = get_all_list()
+# # get_all_list()
+# e = time.time()
+# print(e-s)
+# get_one_total(10)
+
+
+# # import numpy as np
+# import pandas as pd
+# import time
+
+# import accounts
+# import datetime
+
+# def get_all_list():
+#     try:
+#         result = accounts.get_table("customers")
+#         column_names = ['customer_id', 'name', 'detail']
+#         customer_df = pd.DataFrame(result, columns=column_names)
+#     except:
+#         print('error in get all list line 15 of mypandasfile')
+    
+#     customer_df[['Amount', 'Days']] = customer_df.apply(lambda row: pd.Series(get_one_total(row['customer_id'])), axis=1)
+
+#     # customer_df.to_csv("mydata.csv", index=False)
+
+#     # print(customer_df.head())
+#     return customer_df
+    
+
+# # def get_one_total(customer_id):
+# #     # print(customer_id)
+# #     result = accounts.get_table1(f"customer_{customer_id}")
+
+# #     table_df = pd.DataFrame(result)
+# #     table_df[0] = pd.to_datetime(table_df[0])
+# #     today = pd.to_datetime(datetime.date.today())
+
+# #     table_df[3] = (today-table_df[0]).dt.days
+# #     interest_one_day = 0.0006575342465753425
+# #     table_df[4] = table_df[3]*interest_one_day
+# #     table_df['result'] = table_df[1]
+# #     table_df[2] = table_df[2].str.lower()
+# #     table_df.loc[table_df[2] == "p" , 'result'] *= table_df[4]
+# #     table_df.loc[table_df[2] == "m", 'result'] *= -table_df[4]
+
+# #     s1 = table_df['result'].sum()
+# #     s = table_df.loc[table_df[2] == "p", 1].sum() -  table_df.loc[table_df[2] == "m", 1].sum()
+
+# #     last_days = table_df[3].min()
+# #     # print(table_df)
+# #     # print(last_days)
+# #     mysum = round(s+s1, 2)
+
+# #     return mysum, last_days
+
+# #     # print(s1, s, s+s1)
+
+
+
+# def get_one_total(customer_id):
+#     result = accounts.get_table1(f"customer_{customer_id}")
+#     table_df = pd.DataFrame(result)
+
+#     # Convert date column to datetime
+#     table_df[0] = pd.to_datetime(table_df[0])
+
+#     # Calculate the number of days from today
+#     today = pd.to_datetime(datetime.date.today())
+#     table_df['Days'] = (today - table_df[0]).dt.days
+
+#     # Calculate interest per day
+#     interest_one_day = 0.0006575342465753425
+#     table_df['Interest'] = table_df['Days'] * interest_one_day
+
+#     # Calculate result based on conditions
+#     table_df['Result'] = table_df[1]
+#     table_df.loc[table_df[2].str.lower() == 'p', 'Result'] *= table_df['Interest']
+#     table_df.loc[table_df[2].str.lower() == 'm', 'Result'] *= -table_df['Interest']
+
+#     # Calculate the sum of Result and last_days
+#     mysum = round(table_df['Result'].sum() + table_df.loc[table_df[2].str.lower() == 'p', 1].sum() - table_df.loc[table_df[2].str.lower() == 'm', 1].sum(), 2)
+#     last_days = table_df['Days'].min()
+
+#     return mysum, last_days
+
+
+
++mytheme.py
+#code
+
+
+class Colors:
+    BACKGROUND = "#2C3333"
+    BACKGROUND1 = "#1C2323"
+    BACKGROUND2 = "#2f3636"
+    BACKGROUND3 = "#353c3c"
+    ACTIVE_BACKGROUND = "#2E4F4F"
+    ACTIVE_FOREGROUND = "#0E8388"
+    FOREGROUND = "#CBE4D0"
+    
+    BG_SHADE_1 = "#1b2222"
+    BG_SHADE_2 = "#1b2232"
+    BG_SHADE_3 = "#475151"
+    
+    FG_SHADE_1 = "#1cb9c8"
+    FG_SHADE_2 = "#ffffff"
+    FG_SHADE_3 = "#22c95a"
+    
+    LIGHT_BG = "#354040"
+    LIGHT_FG = "#D2E7E0"
+    
+    SUCCESS = "#7CB342"
+    ERROR = "#E53935"
+    REMINDER = "#FB8C00"
+    DELETE = "#6C2323"
+
+class Colors1:
+    BACKGROUND = "#F5F5F5" 
+    BACKGROUND1 = "#E8E8E8"  
+    BACKGROUND2 = "#E0E0E0" 
+    BACKGROUND3 = "#D8D8D8" 
+    ACTIVE_BACKGROUND = "#CCEEFF" 
+    ACTIVE_FOREGROUND = "#0077BB" 
+    FOREGROUND = "#333333" 
+    BG_SHADE_1 = "#DADADA" 
+    BG_SHADE_2 = "#C2C2C2" 
+    BG_SHADE_3 = "#AAAAAA" 
+    FG_SHADE_1 = "#0077BB"
+    FG_SHADE_2 = "#333333" 
+    FG_SHADE_3 = "#00994C"
+
+    LIGHT_FG = "#354040"   
+    LIGHT_BG = "#D2E7E0"
+
+    SUCCESS = "#7CB342"  
+    ERROR = "#CC0000"   
+    REMINDER = "#F57C00" 
+    DELETE = "#A42929"
+
+
+
++reports.py
+#code
+        
+import tkinter as tk
+
+from mytheme import Colors
+from tkinter import ttk
+
+import sqlite3
+import datetime
+import accounts
+import inventory
+import database
+import krar
+
+db_name = "C://JBB//data//bills.db"
+bill_cursor = sqlite3.connect(db_name).cursor()
+# import mypandasfile
+
+class ReportsPage(tk.Frame):
+    # accounts_df = mypandasfile.customer_df
+
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        self.Colors = Colors
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        self.upper_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.upper_frame.place(relx=0.01, rely=0.01, relheight=0.09, relwidth=0.98)
+        self.table_selector()
+
+        self.table_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.table_frame.place(relx=0.01, rely=0.11, relheight=0.88, relwidth=0.98)
+
+        # self.default_lable = tk.Label(self.table_frame, bg=Colors.ACTIVE_BACKGROUND, text="Select a table", font="Consolas 36")
+        # self.default_lable.pack(expand=1, fill=tk.BOTH)
+
+        # self.sort_by_dropdown.set("Customer Id")
+        # self.sort_by_combobox_select()
+
+
+    
+    def table_selector(self):
+        font = "Consolas 16"
+        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db", "bills.db"]
+        db_label = tk.Label(self.upper_frame, text="Database:", bg=self.Colors.BACKGROUND, fg=self.Colors.ACTIVE_FOREGROUND, font=font)
+        db_label.pack(side="left", padx=5, pady=5)
+        self.db_dropdown = ttk.Combobox(self.upper_frame, values=database_names, width=20, font=font)
+        self.db_dropdown.pack(side="left", padx=5, pady=5)
+        self.db_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
+
+
+        # self.db_dropdown.bind('<Enter>', lambda e: db_dropdown.config(values=get_item_list()))
+        # self.db_dropdown.bind('<Down>', lambda e: update_listbox_items(db_dropdown, get_item_list(), b_in1.get()))
+
+
+        # Create table dropdown
+        self.table_list = []
+        table_label = tk.Label(self.upper_frame, text="Table:", bg=self.Colors.BACKGROUND, fg=self.Colors.ACTIVE_FOREGROUND, font=font)
+        table_label.pack(side="left", padx=5, pady=5)
+        self.table_dropdown = ttk.Combobox(self.upper_frame, values= self.table_list, width=20, font=font)
+        self.table_dropdown.pack(side="left", padx=5, pady=5)
+        # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
+
+        # Create button
+        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=self.Colors.BACKGROUND3, fg=self.Colors.FG_SHADE_3, relief='groove', font="Consolas 14")
+        show_button.pack(side="left", padx=5, pady=5)
+
+    def parallel_process_combo(self, accounts_df):
+        for widget in self.upper_frame.winfo_children():
+            widget.destroy()
+        # sort by
+        self.table_selector()
+        self.accounts_df = accounts_df
+        sort_options_list = ['Customer Id', 'Amount', 'Days', 'Customer Id R', 'Amount R', "Days R"]
+        self.sort_by_dropdown = ttk.Combobox(self.upper_frame, values=sort_options_list, width=20, font="Consolas 16")
+        self.sort_by_dropdown.pack(side="left", padx=5, pady=5)
+        self.sort_by_dropdown.bind('<<ComboboxSelected>>', lambda e : self.sort_by_combobox_select())
+        self.sort_by_dropdown.set("Customer Id")
+        self.sort_by_combobox_select()
+        
+    def sort_by_combobox_select(self):
+        value = self.sort_by_dropdown.get()
+        if value == "Amount":
+            self.make_my_table(self.accounts_df.sort_values('Amount'))
+        elif value == "Days":
+            self.make_my_table(self.accounts_df.sort_values('Days'))
+        elif value == "Customer Id":
+            self.make_my_table(self.accounts_df.sort_values('customer_id'))
+        elif value == "Amount R":
+            self.make_my_table(self.accounts_df.sort_values('Amount', ascending=False))
+        elif value == "Days R":
+            self.make_my_table(self.accounts_df.sort_values('Days', ascending=False))
+        elif value == "Customer Id R":
+            self.make_my_table(self.accounts_df.sort_values('customer_id', ascending=False))
+        else:
+            self.make_my_table(self.accounts_df)
+
+    def make_my_table(self, df):
+        for widget in self.table_frame.winfo_children():
+                widget.destroy()
+        columns = df.columns.tolist()
+            
+        tree = ttk.Treeview(self.table_frame)
+        tree['columns'] = columns
+        tree.heading("#0", text="")
+        tree.column('#0', width=0, stretch="no")
+        for column in columns:
+            tree.heading(column, text=column)
+        
+        c = 0
+        for index, row in df.iterrows():
+            tg='even'
+            if c%2:
+                tg='odd'
+            c+=1
+            tree.insert("", 'end', text=c, values=row.tolist(), tags=tg)
+
+        # tree.tag_configure('odd', background=Colors.ACTIVE_BACKGROUND, foreground=Colors.FG_SHADE_1)
+        # tree.tag_configure('even', background=Colors.ACTIVE_FOREGROUND, foreground=Colors.BG_SHADE_2)
+        tree.tag_configure('odd', background=self.Colors.BACKGROUND, foreground=self.Colors.ACTIVE_FOREGROUND)
+        tree.tag_configure('even', background=self.Colors.BACKGROUND1, foreground=self.Colors.ACTIVE_FOREGROUND)
+        tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
+
+    def update_table_names(self):
+        selected_db = self.db_dropdown.get()
+        if selected_db:
+            if selected_db == "accounts.db":
+                accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = accounts.accounts_cursor.fetchall()
+                self.table_dropdown.set("customers")
+            if selected_db == "inventory.db":
+                inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = inventory.inventory_cursor.fetchall()
+                self.table_dropdown.set("items")
+            if selected_db == "daily_notes.db":
+                database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = database.daily_cursor.fetchall()
+                today_date = datetime.date.today()
+                if today_date.month<10:
+                    self.table_dropdown.set(f"d{today_date.year}_0{today_date.month}_{today_date.day}")
+                else:
+                    self.table_dropdown.set(f"d{today_date.year}_{today_date.month}_{today_date.day}")
+            if selected_db == "krar.db":
+                krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = krar.cursor.fetchall()
+                self.table_dropdown.set("all_krar")
+            if selected_db == "bills.db":
+                bill_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = bill_cursor.fetchall()
+                self.table_dropdown.set("item_details")
+            
+            self.table_dropdown.config(values=self.table_list)
+            self.show_table()
+            # print(selected_db, self.table_list)
+
+    def show_data(self):
+        # Get selected database and table
+        selected_db = self.db_dropdown.get()
+        selected_table = self.table_dropdown.get()
+        column_names = []
+        column_list = []
+        table_data = []
+        column_width_list= [1,1,1,1,1,1,1,1,1,1]
+        tag = 0
+        if selected_db and selected_table:
+            if selected_db == "accounts.db":
+                tag = 1
+                # table_id = self.table_dropdown.get().split("_")[1]  # Extract customer ID
+                # self.generate_compound_interest_report(table_id) 
+                accounts.accounts_cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = accounts.accounts_cursor.fetchall()
+                table_data = accounts.get_table(selected_table)
+                column_names, table_data, column_width_list = self.make_table_accounts(column_list, table_data)
+                
+
+            if selected_db == "inventory.db":
+                tag = 1
+                inventory.inventory_cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = inventory.inventory_cursor.fetchall()
+                table_data = inventory.get_table(selected_table)
+                column_names, table_data, column_width_list = self.make_table_items(column_list, table_data)
+
+            if selected_db == "daily_notes.db":
+                database.daily_cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = database.daily_cursor.fetchall()
+                table_data = database.get_table(selected_table)
+
+            if selected_db == "krar.db":
+                krar.cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = krar.cursor.fetchall()
+                table_data = krar.cursor.execute(f"SELECT * FROM {selected_table}").fetchall()
+
+            if selected_db == "bills.db":
+                bill_cursor.execute(f"PRAGMA table_info({selected_table})")
+                column_list = bill_cursor.fetchall()
+                table_data = bill_cursor.execute(f"SELECT * FROM {selected_table}").fetchall()
+
+        # print(column_list)
+        if tag:
+            pass
+        else:
+            for column in column_list:
+                column_names.append(column[1])
+        
+        return column_names, table_data, column_width_list
+    
+    def show_table(self):
+        column_name, table_data, column_width_list = self.show_data()
+        if column_name and table_data:
+            for widget in self.table_frame.winfo_children():
+                    widget.destroy()
+                
+            self.tree = ttk.Treeview(self.table_frame)
+            self.tree['columns'] = column_name
+            self.tree.column('#0', width=0, stretch='no')
+
+
+            for i in range(len(column_name)):
+                self.tree.column(column_name[i], width=column_width_list[i], anchor='w')
+                self.tree.heading(column_name[i], text=column_name[i], anchor="w")
+            
+            c = 0
+            for i in table_data:
+                c += 1
+                tg = 'odd'
+                if c%2 == 0:
+                    tg = "even"
+                self.tree.insert('', c, text=c, values=i, tags = tg)
+
+            # tree.tag_configure('odd', background="#fff")
+            # tree.tag_configure('even', background="#fafafa")
+            self.tree.tag_configure('odd', background=self.Colors.BACKGROUND, foreground=self.Colors.ACTIVE_FOREGROUND)
+            self.tree.tag_configure('even', background=self.Colors.BACKGROUND1, foreground=self.Colors.ACTIVE_FOREGROUND)
+            self.tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
+            if self.table_dropdown.get() in ['customers', 'items']:
+                self.tree.bind("<Double-1>", self.on_double_click)
+        else:
+            if __name__ != "__main__":
+                self.master.master.set_status("Data Not Avilable")
+            print("Empty fields for reports")
+
+    def on_double_click(self, event):
+        """Handles double-click event on Treeview items and retrieves the ID."""
+        region = self.tree.identify("region", event.x, event.y)
+        if region == "cell":
+            item_id = self.tree.identify_row(event.y)
+            # print(f"Double-clicked item ID: {item_id}")
+            row_data = self.tree.item(item_id)['values']
+            if self.db_dropdown.get() == "accounts.db":
+                self.table_dropdown.set(f"customer_{row_data[0]}")
+            else:
+                self.table_dropdown.set(f"item_{row_data[0]}")
+            self.show_table()
+    
+    # important funcition for simple intrest
+    def calculate_interest1(self, amt, from_date, today_date_1=datetime.date.today()):
+        interest_rate_one_day = 0.0006575342465753425
+        dt2 = from_date.split("-")
+        date_of_entry = datetime.date(int(dt2[0]), int(dt2[1]), int(dt2[2]))
+        date_difference = today_date_1 - date_of_entry
+        interest = amt*date_difference.days*interest_rate_one_day
+        return round(interest, 2)
+    
+    def calculate_interest(self, principle_amount, from_date, to_date=datetime.date.today()):
+        """
+        Calculates interest earned on a principle amount, considering financial year-end (March 31st).
+
+        Args:
+            principle_amount (float): The initial amount of money.
+            from_date (datetime.date): The starting date for interest calculation.
+            to_date (datetime.date, optional): The ending date for interest calculation. Defaults to today.
+
+        Returns:
+            float: The calculated interest amount.
+        """
+        daily_interest_rate = 0.0006575342465753425 
+
+        def is_leap_year(year):
+            """Checks if a given year is a leap year."""
+            return (year % 4 == 0 and year % 100 != 0) or year % 400 == 0
+
+        def days_in_year(year):
+            """Returns the number of days in a given year."""
+            return 366 if is_leap_year(year) else 365
+
+        def get_next_march_31st(date):
+            """Finds the next March 31st from a given date."""
+            year = date.year
+            if date.month > 3:
+                year += 1
+            return datetime.date(year, 3, 31)
+
+        def calculate_interest_for_period(amount, start_date, end_date):
+            """Calculates interest for a specific period."""
+            days = (end_date - start_date).days
+            return amount * days * daily_interest_rate
+
+        current_date = datetime.datetime.strptime(from_date, "%Y-%m-%d").date()
+        total_interest = 0
+
+        while current_date < to_date:
+            next_march_31st = get_next_march_31st(current_date)
+            end_date = min(next_march_31st, to_date)  # Choose the earlier date
+
+            interest = calculate_interest_for_period(principle_amount, current_date, end_date)
+            total_interest += interest
+            principle_amount += interest  # Add interest to principle for next period
+
+            current_date = end_date + datetime.timedelta(days=1)  # Start from the next day
+            # current_date = end_date # Start from the next day
+
+        return round(total_interest, 2)
+
+    def make_table_accounts(self, column_list, table_data):
+        total_sum = 0.0
+        total_sum_without_interest = 0.0
+        total_interest = 0.0
+        updated_column_list = []
+        updated_table_data = []
+        # print(column_list)
+        for i in column_list:
+            updated_column_list.append(i[1])
+        if len(column_list) == 3:
+            updated_table_data = table_data
+            column_width_list = [10, 400, 400]
+        else:
+            column_width_list = [10, 50, 400, 10, 40, 40, 50]
+            updated_column_list = ['ID', 'Date', 'Particulars', 'Intrest', 'Debit', 'Credit', 'Balance']
+    
+            for row in table_data:
+                date = row[1]
+                amount = row[3]
+                transction_type = row[4]
+                tag = row[5]
+                if tag == "1":
+                    intrest = self.calculate_interest(amount, date)
+                elif tag == "0":
+                    intrest = 0
+                    amount = 0
+                else:
+                    intrest = 0
+                ttl = float(amount) + intrest
+                if transction_type.upper() == "P":
+                    debit = amount
+                    credit =  "" 
+                    total_interest += intrest
+                    total_sum_without_interest += float(amount)
+                    total_sum += ttl
+                else:
+                    debit = ""
+                    credit =  amount
+                    total_interest -= intrest
+                    total_sum_without_interest -= float(amount)
+                    total_sum -= ttl
+                temp_list = [row[0], date, row[2], intrest, debit, credit, total_sum_without_interest]
+                # for i in row:
+                #     temp_list.append(i)
+                # temp_list.append(intrest)
+                updated_table_data.append(temp_list)
+            if __name__ != "__main__":
+                table_id = self.table_dropdown.get().split("_")[1]
+                customer_name = accounts.get_customer_details(table_id)
+                status = f"{customer_name}    {round(total_sum_without_interest,2)} + {round(total_interest, 2)} = {round(total_sum,2)} "
+                self.master.master.set_status(status)
+        return updated_column_list, updated_table_data, column_width_list
+    
+    def make_table_items(self, column_list, table_data):
+        updated_column_list = []
+        updated_table_data = []
+        for i in column_list:
+            updated_column_list.append(i[1])
+    
+
+        if len(column_list) != 10:
+            updated_table_data = table_data
+            column_width_list = [1,1,1,1,400,1]
+            if __name__ != "__main__":
+                table_id = self.table_dropdown.get().split("_")[1]
+                item_name = inventory.get_item_by_id(table_id)[1]
+                item_instock = inventory.get_item_quantity(table_id)
+                status = f"{item_name}   [{item_instock}] "
+                self.master.master.set_status(status)
+        else:
+            column_width_list = [1,1,1,1,1,1,1,1,1,1,1]
+            updated_column_list.append("In Stock")
+            # updated_column_list.append("Stock Value")
+            # updated_column_list.append("Last Value")
+            for row in table_data:
+                # print(row)
+                item_id = int(row[0])
+                temp_list = []
+                for i in row:
+                    temp_list.append(i)
+
+                in_stock = inventory.get_item_quantity(item_id)
+                # total_stock_value = inventory.get_item_value(item_id)
+                # last_value = inventory.get_last_value(item_id)
+                temp_list.append(in_stock)
+                # temp_list.append(total_stock_value)
+                # temp_list.append(last_value)
+                updated_table_data.append(temp_list)
+
+            
+
+        return updated_column_list, updated_table_data, column_width_list
+
+
+
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    h = ReportsPage(app)
+    h.pack(expand=1, fill="both")
+    app.mainloop()
+
+
+
++sales.py
+#code
+import tkinter as tk
+import tkinter.ttk as ttk
+import re
+from mytheme import Colors
+from datetime import datetime
+
+
+import accounts
+import inventory
+import database
+
+class SalesPage(tk.Frame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+
+        img = tk.PhotoImage(file="myicons\\framebg2.png")
+
+        self.background_title = tk.Label(self, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.img = img
+
+        # main frame to include all frames
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
+        self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
+
+        self.background_title = tk.Label(self.main_frame, image=img)
+        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        # title frame
+        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
+        title_frame.pack(fill='x', pady=2, padx=10)
+        title_name_label = tk.Label(title_frame, text="Sales", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(padx=40, fill='x')
+
+        # Date Entry Box
+        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        date_frame.pack( fill='x', pady=10, padx=10)
+        date_label = tk.Label(date_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label.pack(padx=40, fill='x')
+        today_date = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
+        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry.pack(padx=40, pady=(0,10), fill='x')
+
+        # Account Dropdown Menu
+        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        account_frame.pack( fill='x', pady=10, padx=10)
+        account_label = tk.Label(account_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, fill='x')
+        account_choices = self.get_accounts()
+        self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
+        self.account_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+        self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
+        self.account_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.account_dropdown, self.get_accounts(), self.account_dropdown.get().upper()))
+
+        # Item Dropdown Menu
+        item_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        item_frame.pack( fill='x', pady=10, padx=10)
+        item_label = tk.Label(item_frame, text="Item", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        item_label.pack(padx=40, fill='x')
+        item_choices = self.get_items_from_inventory()
+        self.item_dropdown = ttk.Combobox(item_frame, values=item_choices, font="Consolas 14")
+        self.item_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+        self.item_dropdown.bind('<Enter>', lambda e: self.item_dropdown.config(values=self.get_items_from_inventory()))
+        self.item_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.item_dropdown, self.get_items_from_inventory(), self.item_dropdown.get().upper()))
+        self.item_dropdown.bind('<<ComboboxSelected>>', lambda e : self.set_price())
+
+        # Quantity Entry Box
+        quantity_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        quantity_frame.pack( fill='x', pady=10, padx=10)
+        quantity_label = tk.Label(quantity_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        quantity_label.pack(padx=40, fill='x')
+        self.quantity_entry = tk.Entry(quantity_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.quantity_entry.pack(padx=40, pady=(0, 10), fill='x')
+
+        # Price Entry Box
+        price_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        price_frame.pack( fill='x', pady=10, padx=10)
+        price_label = tk.Label(price_frame, text="Price", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        price_label.pack(padx=40, fill='x')
+        self.price_entry = tk.Entry(price_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.price_entry.pack(padx=40, pady=(0, 10), fill='x')
+
+
+        # Item Dropdown Menu
+        tag_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        tag_frame.pack( fill='x', pady=10, padx=10)
+        tag_label = tk.Label(tag_frame, text="Tag", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        tag_label.pack(padx=40, fill='x')
+        tag_choices = ["0 Set Nill", "1 Normal", "2 No interest"]
+        self.tag_dropdown = ttk.Combobox(tag_frame, values=tag_choices, font="Consolas 14")
+        self.tag_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+        self.tag_dropdown.set("1 Normal")
+
+
+        # Sale recieve Button
+        sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
+        sale_button_frame.pack( fill='x', pady=10, padx=10)
+        sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button.pack(padx=(40,5), fill='x', pady=20, side='left', expand=1)
+        recieve_button = tk.Button(sale_button_frame, text="Recieve", font="Consolas 14", command=self.recieve, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        recieve_button.pack(padx=(5, 40), fill='x', pady=20, side='right', expand=1)
+
+    def update_listbox_items(self, lb, lst, pat):
+        lsts = []
+        # print(lb,lst, pat)
+        for i in lst:
+            if re.search(pat, f"{i[0]} {i[1]}"):
+                lsts.append(i)
+        lb.config(values=lsts)
+
+    def get_items_from_inventory(self):
+        item_list = inventory.get_all_items()
+        # code to fetch items from inventory database
+        # replace this with actual code to fetch items from your database
+        return item_list
+
+    def get_accounts(self):
+        accoount_list = accounts.get_all_customers()
+        # code to fetch accounts from accounts database
+        # replace this with actual code to fetch accounts from your database
+        return accoount_list
+    
+    def set_price(self):
+        item_name = self.item_dropdown.get()
+        item_id = item_name.split()[0]
+        last_value = inventory.get_last_value(item_id)
+        self.price_entry.delete(0, tk.END) 
+        self.price_entry.insert(0, last_value)
+        # self.price_entry.setvar(last_value)
+        # print(last_value)
+
+
+
+    def sale(self):
+        # date item account quatity price
+        date = self.date_entry.get()
+        item_name = self.item_dropdown.get()
+        account_name = self.account_dropdown.get()
+        quantity = self.quantity_entry.get()
+        price = self.price_entry.get()
+        tag_value = self.tag_dropdown.get()
+        # print(date, item_id,account_id, quantity, price)
+        if date and item_name and account_name and quantity and price and tag_value:
+            item_id = item_name.split()[0]
+            account_id = account_name.split()[0]
+            if "{" in account_name:
+                aname = account_name.split("{")[1].split("}")[0]
+            else:
+                aname = account_name
+            if "{" in item_name:    
+                iname = item_name.split("{")[1].split("}")[0]
+            else:
+                iname = item_name
+
+            
+            # to account
+            tagint = tag_value[0]
+            detail = f"{quantity} = {iname}"
+            amount = int(price) * float(quantity)
+            if tagint == "0":
+                total_amount = accounts.get_account_balace(account_id)
+                discount = total_amount + amount
+                accounts.add_customer_transaction(account_id, date, "Aaj tak total", total_amount, "P" , 0)
+                accounts.add_customer_transaction(account_id, date, detail, amount, "P", tagint)
+                accounts.add_customer_transaction(account_id, date, "DISCOUNT", discount, "P" , 0)
+                accounts.set_all_transaction_tags_to_zero(account_id)
+            
+            else:
+                accounts.add_customer_transaction(account_id, date, detail, amount, "P" , tagint)
+
+            
+            # update inventory
+            inventory.add_item_transaction(item_id, date, 0, int(float(quantity)), aname)
+            inventory.set_last_value(item_id, price)
+
+            # daily note
+            note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
+            note_id = database.add_note_to_date(note)
+
+            if __name__ != "__main__":
+                self.master.master.set_status(f"{note_id} Note {note}")
+        else:
+            pass
+    
+    def recieve(self):
+        # date item account quatity price
+        date = self.date_entry.get()
+        item_name = self.item_dropdown.get()
+        account_name = self.account_dropdown.get()
+        quantity = self.quantity_entry.get()
+        price = self.price_entry.get()
+        tag_value = self.tag_dropdown.get()
+        # print(date, item_id,account_id, quantity, price)
+        if date and item_name and account_name and quantity and price and tag_value:
+            item_id = item_name.split()[0]
+            account_id = account_name.split()[0]
+            # aname = account_name.split("{")[1].split("}")[0]
+            # iname = item_name.split("{")[1].split("}")[0]
+
+            if "{" in account_name:
+                aname = account_name.split("{")[1].split("}")[0]
+            else:
+                aname = account_name
+            if "{" in item_name:    
+                iname = item_name.split("{")[1].split("}")[0]
+            else:
+                iname = item_name
+            
+            # to account
+            tagint = tag_value[0]
+            detail = f"{quantity} = {iname}"
+            amount = int(price) * float(quantity)
+            if tagint == "0":
+                total_amount = accounts.get_account_balace(account_id)
+                discount = total_amount - amount
+                accounts.add_customer_transaction(account_id, date, "Aaj tak total", total_amount, "M" , 0)
+                accounts.add_customer_transaction(account_id, date, detail, amount, "M", tagint)
+                accounts.add_customer_transaction(account_id, date, "DISCOUNT", discount, "M" , 0)
+                accounts.set_all_transaction_tags_to_zero(account_id)
+            
+            else:
+                accounts.add_customer_transaction(account_id, date, detail, amount, "M" , tagint)
+
+            
+            # update inventory
+            inventory.add_item_transaction(item_id, date, int(float(quantity)), 0, aname)
+            inventory.set_last_value(item_id, price)
+
+            # daily note
+            note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
+            note_id = database.add_note_to_date(note)
+
+            if __name__ != "__main__":
+                self.master.master.set_status(f"{note_id} Note {note}")
+        else:
+            pass
+        
+            
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.state("zoomed")
+    h = SalesPage(app)
+    h.pack(expand=1, fill="both")
+    app.mainloop()
+
+
++test.py
+#code
+# from bills.billshowpage import BillShowPage as bill
+# from bills.billpage import BillPage as bill
+# import tkinter as tk
+
+
+# if __name__ == "__main__":
+#     app = tk.Tk()
+#     app.state("zoomed")
+#     h = bill(app)
+#     h.pack(expand=1, fill="both")
+#     app.mainloop()
+
+import os
+
+def write_python_code(folder_path, output_file):
+  """
+  Reads all Python files in a folder and writes their code with filenames to an output file.
+
+  Args:
+      folder_path (str): The path to the folder containing Python files.
+      output_file (str): The name of the output file to write the code to.
+  """
+  with open(output_file, 'w') as f:
+    for filename in os.listdir(folder_path):
+      if filename.endswith('.py'):
+        full_path = os.path.join(folder_path, filename)
+        with open(full_path, 'r') as code_file:
+          code = code_file.read()
+          f.write(f"+{filename}\n#code\n{code}\n\n")  # Add newline for separation
+
+if __name__ == "__main__":
+  folder_path = "."  # Replace with your actual folder path
+  output_file = "output.txt"
+  write_python_code(folder_path, output_file)
+  print(f"Python code written to {output_file}")
+
++wismy.py
+#code
+
+
+
+# import tkinter as tk
+# from matplotlib.figure import Figure
+# from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+# import matplotlib.cm as cm
+
+# # Sample data
+# data = [
+#     ['John', '2022-01-01', 1000, 5],
+#     ['Alice', '2022-02-15', 2000, 3],
+#     ['Bob', '2022-03-10', 1500, 7],
+#     ['Sarah', '2022-04-20', 1800, 4]
+# ]
+
+# # Select columns for display and merge customer name and date
+# display_data = ['{} {}'.format(row[0], row[1]) for row in data]
+
+# # Create the Tkinter window
+# root = tk.Tk()
+# root.title('Table Plot')
+
+# # Create a Matplotlib figure
+# fig = Figure(figsize=(8, 4), dpi=100)
+
+# # Create a subplot for the table
+# ax = fig.add_subplot(111)
+# ax.axis('off')
+
+# # Create the table plot
+# table = ax.table(cellText=[[row] for row in display_data],
+#                  colLabels=['Customer & Krar Date'],
+#                  loc='center',
+#                  cellLoc='center',
+#                  cellColours=[[cm.Blues(0.2)] for _ in range(len(display_data))])
+
+# # Set table properties
+# table.auto_set_font_size(False)
+# table.set_fontsize(12)
+# table.scale(1.2, 1.2)  # Adjust the table size if needed
+
+# # Create a FigureCanvasTkAgg instance
+# canvas = FigureCanvasTkAgg(fig, master=root)
+# canvas.draw()
+
+# # Pack the canvas into the Tkinter window
+# canvas.get_tk_widget().pack()
+
+# # Start the Tkinter event loop
+# root.mainloop()
+
+
++__init__.py
+#code
+
+

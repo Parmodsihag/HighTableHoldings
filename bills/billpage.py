@@ -14,6 +14,7 @@ from datetime import datetime
 class BillPage(tk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        self.Colors = Colors
 
         img = tk.PhotoImage(file="myicons\\framebg2.png")
 
@@ -165,9 +166,9 @@ class BillPage(tk.Frame):
         for item_index, item in enumerate(items_list):
             self.listbox.insert('end', item)
             if item_index % 2 == 0:
-                self.listbox.itemconfig(item_index, background=Colors.BACKGROUND, foreground=Colors.ACTIVE_FOREGROUND)
+                self.listbox.itemconfig(item_index, background=self.Colors.BACKGROUND, foreground=self.Colors.ACTIVE_FOREGROUND)
             else:
-                self.listbox.itemconfig(item_index, background=Colors.BACKGROUND1, foreground=Colors.ACTIVE_FOREGROUND)
+                self.listbox.itemconfig(item_index, background=self.Colors.BACKGROUND1, foreground=self.Colors.ACTIVE_FOREGROUND)
 
     def add_item(self):
         month = self.month_dropdown.get()
