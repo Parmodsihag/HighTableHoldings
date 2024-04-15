@@ -2,6 +2,7 @@
 
 * v3.6
     * [v3.6.1](#v361)
+    * [v3.6.2](#v362)
 
 * v3.5
     * [v3.5.5](#v355)
@@ -11,6 +12,16 @@
     * [v3.5.1](#v351)
 
 
+## v3.6.2
+    * added documentation.md
+    * added more screenshots 
+        * accountslight
+        * krardark
+        * krarlight
+        * modifydark
+        * modifylight
+        * saleslight
+    * updated readme.md with additional screenshots
 
 ## v3.6.1
     * added readme.md

@@ -81,12 +81,23 @@ These basic tutorials provide a starting point for using Ledgerly. Explore the s
    * HomePage
      
      ![HomePage Dark](screenshots/homepagedark.png)
+
    * Accounts
      
      ![Accounts](screenshots/accountsdark.png)
+
    * Items
      
      ![Items](screenshots/itemsdark.png)
+
+   * Krar
+
+     ![Krar](screenshots/krardark.png)
+
+   * Modify
+
+     ![Modify](screenshots/modifydark.png)
+
    * Reports
      
      ![Reports1](screenshots/reportsdark1.png)
@@ -97,9 +108,22 @@ These basic tutorials provide a starting point for using Ledgerly. Explore the s
    * HomePage
      
      ![HomePage](screenshots/homepagelight.png)
+
+   * Accounts
+     
+     ![Accounts](screenshots/accountslight.png)
+
    * Items
      
      ![Items](screenshots/itemslight.png)
+    
+    * Krar
+
+     ![Krar](screenshots/krarlight.png)
+
+   * Modify
+
+     ![Modify](screenshots/modifylight.png)
    * Reports
      
      ![Reports1](screenshots/reportslight1.png)
