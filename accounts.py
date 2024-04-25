@@ -54,6 +54,10 @@ def get_all_customers():
     accounts_cursor.execute(f"select * from customers")
     return accounts_cursor.fetchall()
 
+def get_all_customers_name_and_id():
+    accounts_cursor.execute(f"select id, name from customers")
+    return accounts_cursor.fetchall()
+
 # Function to get all transactions for a specific customer
 def get_customer_transactions(customer_id):
     table_name = f'customer_{customer_id}'
@@ -186,3 +190,10 @@ def get_account_balace(customer_id):
 
 
 # print(get_account_balace(1))
+
+
+if __name__ =='__main__':
+    x = get_all_customers_name_and_id()
+    x = [f"{i[0]} {i[1]}" for i in x]
+    for i in x:
+        print(i)

@@ -114,6 +114,13 @@ class BillPage(tk.Frame):
         self.show_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.show_dropdown, bill_db.get_all_month_years(), self.show_dropdown.get().upper()))
         self.show_dropdown.bind('<<ComboboxSelected>>', lambda e : self.show_table())
 
+        start_bill_frame = tk.Frame(self.main_frame2, bg=Colors.BACKGROUND)
+        start_bill_frame.pack(fill='x', pady=10, padx=10)
+        start_bill_label = tk.Label(start_bill_frame, text="Start bill number", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        start_bill_label.pack(padx=40, fill='x')
+        self.start_bill_entry = tk.Entry(start_bill_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.start_bill_entry.pack(padx=40, pady=(0,10), fill='x')
+
         listbox_frame = tk.Frame(self.main_frame2, bg= Colors.BACKGROUND)
         listbox_frame.pack( fill='both', expand=1, pady=10, padx=10)
         # listbox_label = tk.Label(listbox_frame, text="Year Month", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
@@ -131,11 +138,12 @@ class BillPage(tk.Frame):
 
     def genrate_bills(self):
         year_month = self.show_dropdown.get()
+        start_bill_number = int(self.start_bill_entry.get())
         if year_month:
             if bill_db.check_bills_exist_for_month_year(year_month):
                 print(f'[-] Bills for {year_month} already exists')
             else:
-                status = randombillgen.make_bills(year_month, 80)
+                status = randombillgen.make_bills(year_month, 80, start_bill_number)
                 if status:
                     if __name__ != "__main__":
                         self.master.master.set_status(f"Bills genrated sucessfully: {year_month}")

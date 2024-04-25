@@ -112,7 +112,7 @@ class BillShowPage(tk.Frame):
             temp = [item_name, quantity, unit, batch, exp, rate, total, gst_rate, gst_cost]
             table_data.append(temp)
 
-        self.total_amount.set(grand_total)
+        self.total_amount.set(round(grand_total, 2))
 
         return column_name, table_data
 

@@ -3,6 +3,7 @@ import os
 from tkinter import ttk
 from tkinter import PhotoImage
 from datetime import datetime
+# from PIL import Image, ImageTk
 
 from mytheme import Colors, Colors1
 from homepage import HomePage
@@ -157,7 +158,7 @@ class MyApp(tk.Tk):
         self.create_folder_and_subfolder()
         self.themeint = 0
         self.is_graph_ready = 0
-        self.title("JBB")
+        self.title("High Table Holdings")
         self.state("zoomed")
         self.config(background=Colors.BACKGROUND1)
         # self.clrs = Colors
@@ -213,7 +214,7 @@ class MyApp(tk.Tk):
         # logo
         self.logo_frame = tk.Frame(self)
         self.logo_frame.place(relx=0.005, rely=0.05, relheight=0.2, relwidth=0.095)
-        self.logo_image = PhotoImage(file="myicons/logo.png")
+        self.logo_image = PhotoImage(file="myicons/logos.png")
         logo_image_label = tk.Label(self.logo_frame, image=self.logo_image, background=Colors.BACKGROUND1)
         logo_image_label.pack( fill="both", expand=1)
         
@@ -300,11 +301,15 @@ class MyApp(tk.Tk):
         folder_path = "C:/JBB"
         subfolder_path_data = os.path.join(folder_path, "data")
         subfolder_path_bills = os.path.join(folder_path, "bills")
+        subfolder_path_pdfs = os.path.join(folder_path, "pdfs")
+        subfolder_path_merged_pdfs = os.path.join(folder_path, "merged_pdfs")
 
         try:
             os.makedirs(folder_path, exist_ok=True)  # Create parent folders if needed
             os.makedirs(subfolder_path_data, exist_ok=True)  # Create parent folders if needed
             os.makedirs(subfolder_path_bills, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_pdfs, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_merged_pdfs, exist_ok=True)  # Create parent folders if needed
             # print(f"Folder structure created successfully: {subfolder_path}")
         except OSError as e:
             print(f"Error creating folder structure: {e}")

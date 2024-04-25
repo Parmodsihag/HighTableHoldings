@@ -181,7 +181,7 @@ class Bill:
             self.item_unit_list.append(item_details[1])
             self.item_batch_list.append(item_details[2])
             self.item_expiry_list.append(item_details[3])
-            self.item_rate_list.append(item_details[4])
+            self.item_rate_list.append(int(item_details[4]))
             self.item_type_list.append(item_details[5])
             self.item_quantity_list.append(item_details[6])
             self.item_counts += 1
@@ -201,7 +201,7 @@ class Bill:
             sum_total_tax, comp_cgst_rate_str, comp_cgst_cost_str, comp_sgst_cost_str = self.total_cgst_sale()
             comp_total_relief_str = self.comp_total_relief(self.item_counts)
             comp_igst_rate_str = self.comp_total_relief(self.item_counts, 3)
-            grand_total = sum_total_sale + sum_total_tax + sum_total_tax
+            grand_total = round(sum_total_sale + sum_total_tax + sum_total_tax, 2)
             p = Num2wordshindi(grand_total)
             total_in_words = p.to_currency()
 
@@ -285,7 +285,7 @@ class Bill:
             total_tax += tax
             total_cgst_str += self.comp_str(str(tax), 8)
             total_sgst_str += self.comp_str(str(tax), 7)
-        return total_tax, total_rate_str, total_cgst_str, total_sgst_str
+        return round(total_tax,2), total_rate_str, total_cgst_str, total_sgst_str
                 
     def comp_total_relief(self, m,n=6):
         comp = ''

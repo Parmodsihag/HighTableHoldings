@@ -92,7 +92,7 @@ def distribute_quantities(items_with_quantities_and_start_dates, final_distribut
             if quantity[1] <= date
         }
         if len(items_remaining_today) > 1:
-            total_items_in_bill = random.randint(1, min(6, len(items_remaining_today)))
+            total_items_in_bill = random.randint(1, min(3, len(items_remaining_today)))
         else:
             total_items_in_bill = len(items_remaining_today)
 
@@ -103,7 +103,7 @@ def distribute_quantities(items_with_quantities_and_start_dates, final_distribut
             if date >= item_start_date:
                 # Use the pre-calculated x value
                 x = x_values[item_id]
-                quantity_to_sell = random.randint(max(1, x - 2), min(x + 2, quantity))
+                quantity_to_sell = random.randint(max(1, x - 2), min(x+1, quantity))
 
                 # quantity_to_sell = random.randint(1, min(quantity, 5 ))
                 bill_items[item_id] = quantity_to_sell
@@ -136,17 +136,19 @@ def distribute_quantities(items_with_quantities_and_start_dates, final_distribut
 
 
 
-def make_bills(year_month, number_of_bills):
+def make_bills(year_month, number_of_bills, start_bill_number):
     year, month = map(int, year_month.split("-"))
     start_date = datetime.date(year, month, 1)
     if month == 12:
         end_date = (datetime.date(year+1, 1, 1) - datetime.timedelta(days=1))
     else:
         end_date = (datetime.date(year, month + 1, 1) - datetime.timedelta(days=1))
-    if month<10:
-        start_bill_number = int(f"{year}0{month}001")
-    else:    
-        start_bill_number = int(f"{year}{month}001")
+    # if month<10:
+    #     start_bill_number = int(f"{year}0{month}001")
+    # else:    
+    #     start_bill_number = int(f"{year}{month}001")
+    # start_bill_number = 2324379
+    # start_bill_number = 2324481
     item_details = bill_db.get_items_by_month_year(year_month)
 
     if not number_of_bills:

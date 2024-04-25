@@ -8,6 +8,8 @@ import accounts
 import inventory
 import database
 import krar
+import sqlite3
+from bills import bill_db
 
 class ModifyPage(tk.Frame):
     def __init__(self, master, **kwargs):
@@ -35,7 +37,7 @@ class ModifyPage(tk.Frame):
         title_name_label.pack(padx=40, fill='x')
 
         # Database Dropdown Menu
-        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db"]
+        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db", "bills.db"]
         account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         account_frame.pack( fill='x', pady=10, padx=10)
         account_label = tk.Label(account_frame, text="Database", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
@@ -61,7 +63,8 @@ class ModifyPage(tk.Frame):
         date_frame.pack( fill='x', pady=10, padx=10)
         date_label = tk.Label(date_frame, text="Row ID", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
-        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.row_id_var = tk.IntVar()
+        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.row_id_var, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
         self.row_id_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Show Button
@@ -172,6 +175,12 @@ class ModifyPage(tk.Frame):
             if selected_db == "krar.db":
                 krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = krar.cursor.fetchall()
+            if selected_db == "bills.db":
+                conn = sqlite3.connect(bill_db.db_name)
+                cursor = conn.cursor()
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                self.table_list = cursor.fetchall()
+                conn.close()
             
             self.table_dropdown.config(values=self.table_list)
             
@@ -205,6 +214,12 @@ class ModifyPage(tk.Frame):
                     x = 'uid'
                 row = krar.cursor.execute(f"SELECT * FROM {selected_table} where {x} = {row_id}").fetchone()
 
+            if selected_db == "bills.db":
+                conn = sqlite3.connect(bill_db.db_name)
+                cursor = conn.cursor()
+                row = cursor.execute(f"SELECT * FROM {selected_table} where id = {row_id}").fetchone()
+                conn.close()
+
         new_row = "|".join(map(str, row))
         self.table_row.set(new_row)
     
@@ -218,25 +233,17 @@ class ModifyPage(tk.Frame):
             if selected_db == "accounts.db":
                 if selected_table == "customers":
                     accounts.update_customer_details(row_id, row_list[1], row_list[2])
-                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                    database.add_note_to_date(note)
-                    
+                                        
                 else:
                     accounts.update_customer_transaction(selected_table, row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5])
-                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                    database.add_note_to_date(note)
-
+                    
             if selected_db == "inventory.db":
                 if selected_table == "items":
                     inventory.modify_item(row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5], row_list[6], row_list[7], row_list[8], row_list[9])
-                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                    database.add_note_to_date(note)
-                    
+                                        
                 else:
                     item_id  = int(selected_table.split("_")[1])
                     inventory.modify_transaction(item_id, row_id, row_list[1], row_list[2], row_list[3], row_list[4], row_list[5])
-                    note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                    database.add_note_to_date(note)
 
             if selected_db == "krar.db":
                 if selected_table == "all_krar":
@@ -244,14 +251,26 @@ class ModifyPage(tk.Frame):
                 else:
                     krar.modify_by_krar_id(int(row_id), row_list[1], row_list[2])
 
-                note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                database.add_note_to_date(note)
+            if selected_db == 'bills.db':
+                conn = sqlite3.connect(bill_db.db_name)
+                cursor = conn.cursor()
+                if selected_table == "item_details":
+                    bill_db.modify_item_details(int(row_id), tuple(row_list[1:]))
+                
+                elif selected_table == "bill_details":
+                    bill_db.modify_bill_details(int(row_list[1]), tuple(row_list[2:]))
+                
+                else:
+                    bill_db.modify_bill_item(int(row_list[1]), int(row_list[2]), int(row_list[3]))
+
+            note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+            database.add_note_to_date(note)
+
             
             if __name__ != "__main__":
                 self.master.master.set_status(f"Row updated: {row_id}")
                     
                     
-
 
     def delete_row_function(self):
         table_row = self.table_row.get().upper()
@@ -262,35 +281,31 @@ class ModifyPage(tk.Frame):
             if selected_db == "accounts.db":
                 if selected_table == "customers":
                     accounts.delete_customer(row_id)
-                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
-                    database.add_note_to_date(note)
                 
                 else:
                     customer_id = int(selected_table.split("_")[1])
                     accounts.delete_customer_transaction(customer_id, row_id)
-                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
-                    database.add_note_to_date(note)
 
             if selected_db == "inventory.db":
                 if selected_table == "items":
                     inventory.delete_item(row_id)
-                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
-                    database.add_note_to_date(note)
                 
                 else:
                     item_id = int(selected_table.split("_")[1])
                     inventory.delete_transaction(item_id, row_id)
-                    note = f"06 = {selected_db}, {selected_table}, {row_id} {table_row}"
-                    database.add_note_to_date(note)
 
             if selected_db == "krar.db":
                 if selected_table == "all_krar":
                     krar.delete_from_all_krar(int(row_id))
                 else:
                     krar.delete_from_by_krar_id(int(row_id))
+            
+            if selected_db == 'bills.db':
+                bill_db.delete_row(selected_table, row_id)
 
-                note = f"06 = {selected_db}, {selected_table}, {row_id}, {table_row}"
-                database.add_note_to_date(note)
+
+            note = f"06 = {selected_db}, {selected_table}, {row_id}, {table_row}"
+            database.add_note_to_date(note)
             if __name__ != "__main__":
                 self.master.master.set_status(f"Row deleted: {row_id}")
                 

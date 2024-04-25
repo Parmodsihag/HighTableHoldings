@@ -1,8 +1,9 @@
-# MYNEWAI changelog
+# High Table Holdings changelog
 
 * v3.6
     * [v3.6.1](#v361)
     * [v3.6.2](#v362)
+    * [v3.6.3](#v363)
 
 * v3.5
     * [v3.5.5](#v355)
@@ -11,6 +12,13 @@
     * [v3.5.2](#v352)
     * [v3.5.1](#v351)
 
+
+## v3.6.3
+    * now you can modify and delete bill realted data in modifypage module
+    * bind reports/tree to (ctrl + click) event when we ctrl + click any row in reports, it will take us to modify page and show the row there to modify
+    * bug fixed in bill class total cgst/sgst tax sometimes get to large floating point 
+        so we round off the tax to 2 decimal points
+    * now you can search in reports module 's table dropdown based on item/account name or date for accounts, items, dailypage
 
 ## v3.6.2
     * added documentation.md

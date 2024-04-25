@@ -4,8 +4,11 @@ import tkinter as tk
 from mytheme import Colors
 from tkinter import ttk
 
+import calendar
 import sqlite3
 import datetime
+import re
+
 import accounts
 import inventory
 import database
@@ -46,7 +49,7 @@ class ReportsPage(tk.Frame):
     
     def table_selector(self):
         font = "Consolas 16"
-        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db", "bills.db"]
+        database_names = ["accounts.db", "inventory.db", "daily_notes.db", "krar.db", "bills.db"]
         db_label = tk.Label(self.upper_frame, text="Database:", bg=self.Colors.BACKGROUND, fg=self.Colors.ACTIVE_FOREGROUND, font=font)
         db_label.pack(side="left", padx=5, pady=5)
         self.db_dropdown = ttk.Combobox(self.upper_frame, values=database_names, width=20, font=font)
@@ -64,6 +67,8 @@ class ReportsPage(tk.Frame):
         table_label.pack(side="left", padx=5, pady=5)
         self.table_dropdown = ttk.Combobox(self.upper_frame, values= self.table_list, width=20, font=font)
         self.table_dropdown.pack(side="left", padx=5, pady=5)
+        self.table_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.table_dropdown, self.table_list, self.table_dropdown.get().upper()))
+        
         # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
 
         # Create button
@@ -130,12 +135,19 @@ class ReportsPage(tk.Frame):
         selected_db = self.db_dropdown.get()
         if selected_db:
             if selected_db == "accounts.db":
-                accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = accounts.accounts_cursor.fetchall()
+                self.table_list = ['customers']
+                for account in accounts.get_all_customers_name_and_id():
+                    self.table_list.append(f"{account[0]} {account[1]}")
+                # self.table_list = [f"{i[0]} {i[1]}" for i in table_list]
+                # accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                # self.table_list = accounts.accounts_cursor.fetchall()
                 self.table_dropdown.set("customers")
             if selected_db == "inventory.db":
-                inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = inventory.inventory_cursor.fetchall()
+                self.table_list = ['items']
+                for item in inventory.get_all_items_id_and_name():
+                    self.table_list.append(f"{item[0]} {item[1]}")
+                # inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                # self.table_list = inventory.inventory_cursor.fetchall()
                 self.table_dropdown.set("items")
             if selected_db == "daily_notes.db":
                 database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -171,7 +183,9 @@ class ReportsPage(tk.Frame):
             if selected_db == "accounts.db":
                 tag = 1
                 # table_id = self.table_dropdown.get().split("_")[1]  # Extract customer ID
-                # self.generate_compound_interest_report(table_id) 
+                # self.generate_compound_interest_report(table_id)
+                if selected_table != 'customers':
+                    selected_table = f"customer_{selected_table.split()[0]}"
                 accounts.accounts_cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = accounts.accounts_cursor.fetchall()
                 table_data = accounts.get_table(selected_table)
@@ -180,6 +194,8 @@ class ReportsPage(tk.Frame):
 
             if selected_db == "inventory.db":
                 tag = 1
+                if selected_table != 'items':
+                    selected_table = f"item_{selected_table.split()[0]}"
                 inventory.inventory_cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = inventory.inventory_cursor.fetchall()
                 table_data = inventory.get_table(selected_table)
@@ -239,6 +255,7 @@ class ReportsPage(tk.Frame):
             self.tree.pack(fill=tk.BOTH, expand=True, side=tk.TOP)
             if self.table_dropdown.get() in ['customers', 'items']:
                 self.tree.bind("<Double-1>", self.on_double_click)
+            self.tree.bind("<Control-Button-1>", self.on_control_click)
         else:
             if __name__ != "__main__":
                 self.master.master.set_status("Data Not Avilable")
@@ -249,14 +266,44 @@ class ReportsPage(tk.Frame):
         region = self.tree.identify("region", event.x, event.y)
         if region == "cell":
             item_id = self.tree.identify_row(event.y)
-            # print(f"Double-clicked item ID: {item_id}")
+            # print(f"Double-clicked item ID: {item_id}") 
             row_data = self.tree.item(item_id)['values']
             if self.db_dropdown.get() == "accounts.db":
-                self.table_dropdown.set(f"customer_{row_data[0]}")
+                self.table_dropdown.set(f"{row_data[0]} {row_data[1]}")
             else:
-                self.table_dropdown.set(f"item_{row_data[0]}")
+                self.table_dropdown.set(f"{row_data[0]} {row_data[1]}")
             self.show_table()
+
+    def on_control_click(self, event):
+        """Handles double-click event on Treeview items and retrieves the ID."""
+        region = self.tree.identify("region", event.x, event.y)
+        if region == "cell" and __name__ != "__main__":
+            item_id = self.tree.identify_row(event.y)
+            # print(f"Double-clicked item ID: {item_id}")
+            row_id = self.tree.item(item_id)['values'][0]
+            # print(row_id[0])
+            self.master.master.modifyframe.db_dropdown.set(self.db_dropdown.get())
+            self.master.master.modifyframe.table_dropdown.set(self.table_dropdown.get())
+            self.master.master.modifyframe.row_id_var.set(row_id)
+            self.master.master.modifyframe.show_row()
+            self.master.master.modify_frame_label.set_active()
+            self.master.master.report_frame_label.set_inactive()
+
     
+    def update_listbox_items(self, lb, lst, pat):
+        lsts = []
+        if self.db_dropdown.get() in ['inventory.db', 'accounts.db']:
+            for i in lst:
+                if re.search(pat, i):
+                    lsts.append(i)
+            lb.config(values=lsts)
+        elif self.db_dropdown.get() == "daily_notes.db":
+            for i in lst:
+                if re.search(pat, i[0]):
+                    lsts.append(i)
+            lb.config(values=lsts)
+
+
     # important funcition for simple intrest
     def calculate_interest1(self, amt, from_date, today_date_1=datetime.date.today()):
         interest_rate_one_day = 0.0006575342465753425
@@ -266,53 +313,33 @@ class ReportsPage(tk.Frame):
         interest = amt*date_difference.days*interest_rate_one_day
         return round(interest, 2)
     
-    def calculate_interest(self, principle_amount, from_date, to_date=datetime.date.today()):
+    
+    def calculate_interest(self, principle_amount, from_date_str, to_date=datetime.date.today()):
         """
         Calculates interest earned on a principle amount, considering financial year-end (March 31st).
 
         Args:
             principle_amount (float): The initial amount of money.
-            from_date (datetime.date): The starting date for interest calculation.
+            from_date_str (str): The starting date for interest calculation in "YYYY-MM-DD" format.
             to_date (datetime.date, optional): The ending date for interest calculation. Defaults to today.
 
         Returns:
             float: The calculated interest amount.
         """
         daily_interest_rate = 0.0006575342465753425 
-
-        def is_leap_year(year):
-            """Checks if a given year is a leap year."""
-            return (year % 4 == 0 and year % 100 != 0) or year % 400 == 0
-
-        def days_in_year(year):
-            """Returns the number of days in a given year."""
-            return 366 if is_leap_year(year) else 365
-
-        def get_next_march_31st(date):
-            """Finds the next March 31st from a given date."""
-            year = date.year
-            if date.month > 3:
-                year += 1
-            return datetime.date(year, 3, 31)
-
-        def calculate_interest_for_period(amount, start_date, end_date):
-            """Calculates interest for a specific period."""
-            days = (end_date - start_date).days
-            return amount * days * daily_interest_rate
-
-        current_date = datetime.datetime.strptime(from_date, "%Y-%m-%d").date()
+        from_date = datetime.datetime.strptime(from_date_str, "%Y-%m-%d").date()
         total_interest = 0
 
-        while current_date < to_date:
-            next_march_31st = get_next_march_31st(current_date)
-            end_date = min(next_march_31st, to_date)  # Choose the earlier date
-
-            interest = calculate_interest_for_period(principle_amount, current_date, end_date)
+        while from_date < to_date:
+            year_end = datetime.date(from_date.year, 3, 31) 
+            if from_date.month > 3:
+                year_end = datetime.date(from_date.year + 1, 3, 31)
+            end_date = min(year_end, to_date)
+            days = (end_date - from_date).days
+            interest = principle_amount * days * daily_interest_rate
             total_interest += interest
-            principle_amount += interest  # Add interest to principle for next period
-
-            current_date = end_date + datetime.timedelta(days=1)  # Start from the next day
-            # current_date = end_date # Start from the next day
+            principle_amount += interest 
+            from_date = end_date + datetime.timedelta(days=1)
 
         return round(total_interest, 2)
 
@@ -363,7 +390,7 @@ class ReportsPage(tk.Frame):
                 # temp_list.append(intrest)
                 updated_table_data.append(temp_list)
             if __name__ != "__main__":
-                table_id = self.table_dropdown.get().split("_")[1]
+                table_id = self.table_dropdown.get().split()[0]
                 customer_name = accounts.get_customer_details(table_id)
                 status = f"{customer_name}    {round(total_sum_without_interest,2)} + {round(total_interest, 2)} = {round(total_sum,2)} "
                 self.master.master.set_status(status)
@@ -380,7 +407,7 @@ class ReportsPage(tk.Frame):
             updated_table_data = table_data
             column_width_list = [1,1,1,1,400,1]
             if __name__ != "__main__":
-                table_id = self.table_dropdown.get().split("_")[1]
+                table_id = self.table_dropdown.get().split()[0]
                 item_name = inventory.get_item_by_id(table_id)[1]
                 item_instock = inventory.get_item_quantity(table_id)
                 status = f"{item_name}   [{item_instock}] "

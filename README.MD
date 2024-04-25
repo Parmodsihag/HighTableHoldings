@@ -1,5 +1,5 @@
-# Ledgerly: A Python Accounting and Inventory Management System
-Ledgerly is a comprehensive Python software designed to simplify accounting and inventory management tasks for businesses and individuals. It provides a user-friendly interface and a range of features to manage accounts, track inventory, generate reports, and more.
+# High Table Holdings: A Python Accounting and Inventory Management System
+High Table Holdings is a comprehensive Python software designed to simplify accounting and inventory management tasks for businesses and individuals. It provides a user-friendly interface and a range of features to manage accounts, track inventory, generate reports, and more.
 ## Key Features:
 * **Account Management:**
     * Create and manage customer accounts with details and opening balances.
@@ -31,7 +31,7 @@ Ledgerly is a comprehensive Python software designed to simplify accounting and 
   ```
   pip install tkinter pandas matplotlib docx2pdf PyPDF2
 ### Launching the Software:
-1. **Download:** Download the Ledgerly source code.
+1. **Download:** Download the High Table Holdings source code.
 2. **Extract:** Extract the downloaded files to a desired location on your computer.
 3. **Run:** Open a terminal or command prompt in the extracted folder.
 4. **Execute:** Run the following command:
@@ -74,7 +74,7 @@ Ledgerly is a comprehensive Python software designed to simplify accounting and 
    4. Click the Show Data button to display the report.
 
 
-These basic tutorials provide a starting point for using Ledgerly. Explore the software further to discover its full potential and customize it to your specific needs.
+These basic tutorials provide a starting point for using High Table Holdings. Explore the software further to discover its full potential and customize it to your specific needs.
    
 ## Screenshots:
 * Dark Theme
@@ -139,4 +139,4 @@ These basic tutorials provide a starting point for using Ledgerly. Explore the s
 * **Contact:** For any questions or feedback, please contact [Linkedin](https://www.linkedin.com/in/parmodsihag/).
 
 
-**We hope Ledgerly helps you streamline your accounting and inventory management processes!**
+**We hope High Table Holdings helps you streamline your accounting and inventory management processes!**

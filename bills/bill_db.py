@@ -45,6 +45,84 @@ cursor.execute("""
 conn.commit()
 conn.close()
 
+def modify_item_details(item_id, new_item_data):
+    """
+    Modifies an item in the item_details table.
+
+    Args:
+        item_id (int): The ID of the item to modify.
+        new_item_data (tuple): A tuple containing the new values for 
+                              (name, unit, month_year, rate, type, start_date, batch, expiry_date, quantity).
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    update_query = """
+        UPDATE item_details 
+        SET name = ?, unit = ?, month_year = ?, rate = ?, type = ?, start_date = ?,
+            batch = ?, expiry_date = ?, quantity = ?
+        WHERE id = ?
+    """
+    cursor.execute(update_query, new_item_data + (item_id,))
+    conn.commit()
+    conn.close()
+
+
+def modify_bill_details(bill_number, new_bill_data):
+    """
+    Modifies a bill in the bill_details table.
+
+    Args:
+        bill_number (int): The bill number to modify.
+        new_bill_data (tuple): A tuple containing the new values for 
+                               (date, customer_name, customer_address).
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    update_query = """
+        UPDATE bill_details 
+        SET date = ?, customer_name = ?, customer_address = ?
+        WHERE bill_number = ?
+    """
+    cursor.execute(update_query, new_bill_data + (bill_number,))
+    conn.commit()
+    conn.close()
+
+def modify_bill_item(bill_number, item_id, new_item_quantity):
+    """
+    Modifies the quantity of an item associated with a bill in the bill_and_items table.
+
+    Args:
+        bill_number (int): The bill number.
+        item_id (int): The ID of the item.
+        new_item_quantity (int): The new quantity of the item.
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    update_query = """
+        UPDATE bill_and_items
+        SET item_quantity = ?
+        WHERE bill_number = ? AND item_id = ?
+    """
+    cursor.execute(update_query, (new_item_quantity, bill_number, item_id))
+    conn.commit()
+    conn.close()
+
+def delete_row(table_name, row_id):
+    """
+    Deletes a row from a specified table based on its ID.
+
+    Args:
+        table_name (str): The name of the table.
+        row_id (int): The ID of the row to delete.
+    """
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    delete_query = f"DELETE FROM {table_name} WHERE id = ?"
+    cursor.execute(delete_query, (row_id,))
+    conn.commit()
+    conn.close()
+
+
 def insert_item(item_data):
     """Inserts an item into the item_details table."""
 
@@ -259,3 +337,58 @@ def delete_bills_for_month_year(month_year):
 # x = check_bills_exist_for_month_year("2024-01")
 
 # print(x)
+
+
+
+def get_item_date_matrix(month_year):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    # Get distinct dates and item names
+    cursor.execute("SELECT DISTINCT date FROM bill_details WHERE strftime('%Y-%m', date) = ?", (month_year,))
+    dates = [row[0] for row in cursor.fetchall()]
+    cursor.execute("SELECT DISTINCT name FROM item_details")
+    item_names = [row[0] for row in cursor.fetchall()]
+
+    # Create a matrix filled with zeros
+    matrix = [[0 for _ in dates] for _ in item_names]
+
+    # Query to get item counts for each date
+    cursor.execute("""
+        SELECT i.name, bd.date, SUM(bi.item_quantity)
+        FROM bill_and_items bi
+        JOIN bill_details bd ON bi.bill_number = bd.bill_number
+        JOIN item_details i ON bi.item_id = i.id
+        WHERE strftime('%Y-%m', bd.date) = ?
+        GROUP BY i.name, bd.date
+    """, (month_year,))
+
+    # Fill the matrix with item counts
+    for item_name, date, count in cursor:
+        row_index = item_names.index(item_name)
+        col_index = dates.index(date)
+        matrix[row_index][col_index] = count
+
+    conn.close()
+    return matrix, dates, item_names
+
+
+if __name__ == "__main__":
+    # Replace with desired month_year
+    matrix , dates, item_names = get_item_date_matrix("2024-03")
+    print(" "*20, end="")
+    for i in dates:
+        print(i.split('-')[2], end="  ")
+
+    print()
+    j = 0
+    for row in matrix:
+        print(item_names[j], end=" "*(20 -len(item_names[j])))
+        j += 1
+        for i in row:
+            if i:
+                print(i, end='   ')
+            else:
+                print('-', end='   ')
+        print()
+

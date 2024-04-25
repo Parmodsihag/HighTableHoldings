@@ -105,6 +105,11 @@ def get_all_items():
     items = inventory_cursor.fetchall()
     return items
 
+def get_all_items_id_and_name():
+    inventory_cursor.execute('SELECT id, name FROM items')
+    items = inventory_cursor.fetchall()
+    return items
+
 # Define function to get item by id
 def get_item_by_id(item_id):
     inventory_cursor.execute('SELECT * FROM items WHERE id=?', (item_id,))

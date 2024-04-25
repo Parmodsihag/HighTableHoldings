@@ -1,5 +1,5 @@
-# Ledgerly Documentation
-This documentation provides a detailed guide on using the Ledgerly software for accounting and inventory management.
+# High Table Holdings Documentation
+This documentation provides a detailed guide on using the High Table Holdings software for accounting and inventory management.
 ## 1. Modules:
 ### Home:
 ![HomePageDark](screenshots/homepagedark.png)
@@ -67,4 +67,4 @@ This documentation provides a detailed guide on using the Ledgerly software for 
 * Customize the software's appearance by switching between light and dark themes.
 * Keep the software updated to benefit from the latest improvements and bug fixes.
   
-**We believe this documentation will assist you in effectively using Ledgerly for your accounting and inventory  management needs.**
+**We believe this documentation will assist you in effectively using High Table Holdings for your accounting and inventory  management needs.**
