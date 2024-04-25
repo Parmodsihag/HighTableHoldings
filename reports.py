@@ -282,8 +282,15 @@ class ReportsPage(tk.Frame):
             # print(f"Double-clicked item ID: {item_id}")
             row_id = self.tree.item(item_id)['values'][0]
             # print(row_id[0])
-            self.master.master.modifyframe.db_dropdown.set(self.db_dropdown.get())
-            self.master.master.modifyframe.table_dropdown.set(self.table_dropdown.get())
+            table_name = self.table_dropdown.get()
+            db_name = self.db_dropdown.get()
+            if db_name == 'accounts.db' and table_name!= 'customers':
+                table_name = f'customer_{table_name.split()[0]}'
+            elif db_name == 'inventory.db' and table_name != 'items':
+                table_name = f'item_{table_name.split()[0]}'
+    
+            self.master.master.modifyframe.db_dropdown.set(db_name)
+            self.master.master.modifyframe.table_dropdown.set(table_name)
             self.master.master.modifyframe.row_id_var.set(row_id)
             self.master.master.modifyframe.show_row()
             self.master.master.modify_frame_label.set_active()
