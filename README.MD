@@ -117,7 +117,7 @@ These basic tutorials provide a starting point for using High Table Holdings. Ex
      
      ![Items](screenshots/itemslight.png)
     
-    * Krar
+   * Krar
 
      ![Krar](screenshots/krarlight.png)
 
