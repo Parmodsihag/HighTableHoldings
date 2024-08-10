@@ -1,3 +1,6 @@
+# import time
+# st = time.time()
+
 import tkinter as tk
 import os
 from tkinter import ttk
@@ -82,8 +85,8 @@ class CustomLabel(tk.Frame):
     
         self.is_active = True
         self.is_hovering = False
-        self.customlabel.configure( foreground=self.active_fg)#, relief='groove')
-        self.customlabel1.configure( background=self.active_fg)#, relief='groove')
+        self.customlabel.configure( foreground=self.active_fg)#, relief='solid')
+        self.customlabel1.configure( background=self.active_fg)#, relief='solid')
         self.frame1.tkraise()
         
     def set_inactive(self):
@@ -95,60 +98,10 @@ class CustomLabel(tk.Frame):
     def set_active(self):
         self.is_active = True
         self.is_hovering = False
-        self.customlabel.configure(foreground=self.active_fg)#, relief='groove')
-        self.customlabel1.configure(background=self.active_fg)#, relief='groove')
+        self.customlabel.configure(foreground=self.active_fg)#, relief='solid')
+        self.customlabel1.configure(background=self.active_fg)#, relief='solid')
         self.frame1.tkraise()
 
-# class CustomLabel(tk.Label):
-#     def __init__(self, master, text, frame_to_link, **kwargs):
-#         super().__init__(master, text=text, font=("Consolas", 14), padx=20, pady=10, anchor="w", highlightthickness=0, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
-
-#         self.frame1 = frame_to_link
-#         self.bind("<Enter>", self.on_enter)
-#         self.bind("<Leave>", self.on_leave)
-#         self.bind("<Button-1>", self.on_click)
-        
-#         self.normal_bg = Colors.BACKGROUND1
-#         self.normal_fg = Colors.FOREGROUND
-#         self.hover_bg = Colors.LIGHT_BG
-#         self.hover_fg = Colors.FOREGROUND
-#         self.active_bg = Colors.ACTIVE_BACKGROUND
-#         self.active_fg = Colors.FG_SHADE_1
-        
-#         self.is_active = False
-#         self.is_hovering = False
-#         self.configure(background=self.normal_bg, foreground=self.normal_fg)
-
-        
-#     def on_enter(self, event):
-#         if not self.is_active:
-#             self.configure(background=self.hover_bg, foreground=self.hover_fg)
-#             self.is_hovering = True
-            
-#     def on_leave(self, event):
-#         if not self.is_active:
-#             self.configure(background=self.normal_bg, foreground=self.normal_fg)
-#             self.is_hovering = False
-            
-#     def on_click(self, event):
-#         for  i in self.master.winfo_children():
-#             i.set_inactive()
-    
-#         self.is_active = True
-#         self.is_hovering = False
-#         self.configure( foreground=self.active_fg)#, relief='groove')
-#         self.frame1.tkraise()
-        
-#     def set_inactive(self):
-#         self.is_active = False
-#         self.is_hovering = False
-#         self.configure(background=self.normal_bg, foreground=self.normal_fg)#
-#     def set_active(self):
-#         self.is_active = True
-#         self.is_hovering = False
-#         self.configure(foreground=self.active_fg)#, relief='groove')
-#         self.frame1.tkraise()
-    
 
 
 class MyApp(tk.Tk):
@@ -160,26 +113,27 @@ class MyApp(tk.Tk):
         self.is_graph_ready = 0
         self.title("High Table Holdings")
         self.state("zoomed")
-        self.config(background=Colors.BACKGROUND1)
+        # self.config(background=Colors.BACKGROUND1)
         # self.clrs = Colors
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         self.style=ttk.Style()
-        self.style.theme_create('mytheme', parent='alt', 
+        self.style.theme_create('mytheme', parent='default', 
                         settings={
-                            'TCombobox':
-                            {
-                                'configure':
-                                {
-                                'arrowsize': 18,
-                                'font':"Consolas 14"
-                                }
-                            },
+                            # 'TCombobox':
+                            # {
+                            #     'configure':
+                            #     {
+                            #     # 'arrowsize': 12,
+                            #     'font':"Consolas 14",
+                            #     'relief':'flat'
+                            #     }
+                            # },
                             'Treeview':{
                                 'configure':
                                 {
@@ -189,12 +143,13 @@ class MyApp(tk.Tk):
                             }
                         }
                     )
-        self.style.theme_use('mytheme')
-        self.style.configure('TCombobox', selectbackground=Colors.FG_SHADE_1, 
-                            fieldbackground=Colors.BACKGROUND3, 
-                            background=Colors.BACKGROUND3, 
-                            foreground=Colors.FG_SHADE_1, 
-                            arrowcolor=Colors.FOREGROUND)
+        # self.style.theme_use('mytheme')
+        # self.style.configure('TCombobox', selectbackground=Colors.FG_SHADE_1, 
+        #                     fieldbackground=Colors.BACKGROUND, 
+        #                     background=Colors.BACKGROUND, 
+        #                     foreground=Colors.FG_SHADE_1, 
+        #                     arrowcolor=Colors.FOREGROUND,
+        #                     borderwidth=1)
         self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND)
         self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 12')
 
@@ -259,30 +214,30 @@ class MyApp(tk.Tk):
         # self.home_page_label.pack( fill="x")
         # self.sale_page_label = CustomFrame(self.menu_frame, "Sale", self.saleframe)
         # self.sale_page_label.pack( fill="x")
-        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe, "h")
+        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe, "H")
         self.home_page_label.pack( fill="x")
-        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe, "s")
+        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe, "S")
         self.sale_page_label.pack( fill="x")
-        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe, 'a')
+        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe, 'A')
         self.account_page_label.pack( fill="x")
-        self.add_item_page_label = CustomLabel(self.menu_frame, "Items ", self.additemframe, 'i')
+        self.add_item_page_label = CustomLabel(self.menu_frame, "Items ", self.additemframe, 'I')
         self.add_item_page_label.pack( fill="x")
-        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe, 'k')
+        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe, 'K')
         self.karar_frame_label.pack( fill="x")
-        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe, 'm')
+        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe, 'M')
         self.modify_frame_label.pack( fill="x")
-        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'r')
+        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'R')
         self.report_frame_label.pack( fill="x")
-        self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'b')
+        self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'B')
         self.bill_frame_label.pack( fill="x")
-        self.bill_show_frame_label = CustomLabel(self.menu_frame, "Bill ", self.billshowframe, 't')
+        self.bill_show_frame_label = CustomLabel(self.menu_frame, "Bill ", self.billshowframe, 'T')
         self.bill_show_frame_label.pack( fill="x")
 
         # activating home page
         self.home_page_label.set_active()
 
         self.bind()
-        # self.sale_page_label.set_active()
+        self.sale_page_label.set_active()
         # self.account_page_label.set_active()
         # self.report_frame_label.set_active()
         # self.modify_frame_label.set_active()
@@ -429,6 +384,7 @@ if __name__ == "__main__":
     # app.start_processing()
     # data_process = multiprocessing.Process(target=app.my_parallel_processes, args=(1,))
     # data_process.start()
+    # print(time.time()-st)
     app.mainloop()
     # page 52 clouse 6.3
     # app.my_parallel_processes(1)

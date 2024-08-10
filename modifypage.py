@@ -13,22 +13,12 @@ from bills import bill_db
 
 class ModifyPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, **kwargs)
 
         font = "Consolas 16"
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
-
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
-
-        self.img = img
-
-        self.main_frame = tk.Frame(self)
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
-
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         # title frame
         title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
@@ -64,13 +54,13 @@ class ModifyPage(tk.Frame):
         date_label = tk.Label(date_frame, text="Row ID", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
         self.row_id_var = tk.IntVar()
-        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.row_id_var, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.row_id_var, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.row_id_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Show Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Show", font="Consolas 14", command=self.show_row, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(sale_button_frame, text="Show", font="Consolas 14", command=self.show_row, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # modify row entry
@@ -79,19 +69,19 @@ class ModifyPage(tk.Frame):
         date_frame.pack( fill='x', pady=10, padx=10)
         date_label = tk.Label(date_frame, text="Modify Row", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
-        self.modify_row_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.table_row, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.modify_row_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.table_row, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.modify_row_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Modify Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Modify", font="Consolas 14", command=self.modify_row_function, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(sale_button_frame, text="Modify", font="Consolas 14", command=self.modify_row_function, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # Delete Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Delete", font="Consolas 14", command=self.delete_row_function, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(sale_button_frame, text="Delete", font="Consolas 14", command=self.delete_row_function, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # # --------------------------------------------------------

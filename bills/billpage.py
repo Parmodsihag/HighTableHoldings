@@ -13,22 +13,22 @@ from datetime import datetime
 
 class BillPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        super().__init__(master, **kwargs)
         self.Colors = Colors
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         # main frame to include all frames
         self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.1, rely=0.01, relwidth=.4, relheight=.98)
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self.main_frame, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
 
 
@@ -53,7 +53,7 @@ class BillPage(tk.Frame):
         year_frame.pack(fill='x', pady=10, padx=10)
         year_label = tk.Label(year_frame, text="Year", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         year_label.pack(padx=40, fill='x')
-        self.year_entry = tk.Entry(year_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.year_entry = tk.Entry(year_frame, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.year_entry.pack(padx=40, pady=(0,10), fill='x')
         self.year_entry.insert(0, 2024)
 
@@ -73,7 +73,7 @@ class BillPage(tk.Frame):
         quantity_frame.pack(fill='x', pady=10, padx=10)
         quantity_label = tk.Label(quantity_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         quantity_label.pack(padx=40, fill='x')
-        self.quantity_entry = tk.Entry(quantity_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.quantity_entry = tk.Entry(quantity_frame, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.quantity_entry.pack(padx=40, pady=(0,10), fill='x')
 
         start_date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
@@ -81,21 +81,21 @@ class BillPage(tk.Frame):
         start_date_label = tk.Label(start_date_frame, text="Start Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         start_date_label.pack(padx=40, fill='x')
         self.start_date = tk.StringVar()
-        self.start_date_entry = tk.Entry(start_date_frame, textvariable=self.start_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.start_date_entry = tk.Entry(start_date_frame, textvariable=self.start_date, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.start_date_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # button frame
         button_frame2 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame2.pack(fill='x', pady=(10,0), padx=10)
-        add_button = tk.Button(button_frame2, text="Add", font="Consolas 14", command=self.add_item, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        add_button = tk.Button(button_frame2, text="Add", font="Consolas 14", command=self.add_item, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         add_button.pack(padx=40, fill='x', pady=(10, 10))
 
 
-        self.main_frame2 = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame2 = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame2.place(relx=0.5, rely=0.01, relwidth=.4, relheight=.98)
         
-        self.background_title = tk.Label(self.main_frame2, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self.main_frame2, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
         
         # title frame2
         title_frame2 = tk.Frame(self.main_frame2, bg=Colors.BACKGROUND1)
@@ -118,22 +118,22 @@ class BillPage(tk.Frame):
         start_bill_frame.pack(fill='x', pady=10, padx=10)
         start_bill_label = tk.Label(start_bill_frame, text="Start bill number", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         start_bill_label.pack(padx=40, fill='x')
-        self.start_bill_entry = tk.Entry(start_bill_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.start_bill_entry = tk.Entry(start_bill_frame, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.start_bill_entry.pack(padx=40, pady=(0,10), fill='x')
 
         listbox_frame = tk.Frame(self.main_frame2, bg= Colors.BACKGROUND)
         listbox_frame.pack( fill='both', expand=1, pady=10, padx=10)
         # listbox_label = tk.Label(listbox_frame, text="Year Month", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         # listbox_label.pack(padx=40, fill='x')
-        self.listbox = tk.Listbox(listbox_frame, bg= Colors.BACKGROUND, font="Ubantu 12", relief='flat', bd=4)
+        self.listbox = tk.Listbox(listbox_frame, bg= Colors.BACKGROUND, font="Ubantu 12", relief='solid', bd=4)
         self.listbox.pack(fill='both', expand=1)
 
         # button frame
         button_frame3 = tk.Frame(self.main_frame2, bg=Colors.BACKGROUND)
         button_frame3.pack(fill='x', pady=(10,10), padx=10)
-        add_button = tk.Button(button_frame3, text="Genrate bills", font="Consolas 14", command=self.genrate_bills, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        add_button = tk.Button(button_frame3, text="Genrate bills", font="Consolas 14", command=self.genrate_bills, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         add_button.pack(padx=(40, 10), fill='x', pady=10, side='left', expand=1)
-        add_button = tk.Button(button_frame3, text="Delete bills", font="Consolas 14", command=self.delete_bills, bg=Colors.DELETE, fg=Colors.FG_SHADE_3, relief='groove')
+        add_button = tk.Button(button_frame3, text="Delete bills", font="Consolas 14", command=self.delete_bills, bg=Colors.DELETE, fg=Colors.FG_SHADE_3, relief='solid')
         add_button.pack(padx=(10, 40), fill='x', pady=10, side='right', expand=1)
 
     def genrate_bills(self):

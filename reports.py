@@ -22,15 +22,15 @@ class ReportsPage(tk.Frame):
     # accounts_df = mypandasfile.customer_df
 
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, **kwargs)
         self.Colors = Colors
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         self.upper_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.upper_frame.place(relx=0.01, rely=0.01, relheight=0.09, relwidth=0.98)
@@ -72,7 +72,7 @@ class ReportsPage(tk.Frame):
         # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
 
         # Create button
-        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=self.Colors.BACKGROUND3, fg=self.Colors.FG_SHADE_3, relief='groove', font="Consolas 14")
+        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=self.Colors.BACKGROUND3, fg=self.Colors.FG_SHADE_3, relief='solid', font="Consolas 14")
         show_button.pack(side="left", padx=5, pady=5)
 
     def parallel_process_combo(self, accounts_df):
@@ -350,7 +350,7 @@ class ReportsPage(tk.Frame):
 
         return round(total_interest, 2)
 
-    def make_table_accounts(self, column_list, table_data):
+    def make_table_accounts1(self, column_list, table_data):
         total_sum = 0.0
         total_sum_without_interest = 0.0
         total_interest = 0.0
@@ -403,6 +403,80 @@ class ReportsPage(tk.Frame):
                 self.master.master.set_status(status)
         return updated_column_list, updated_table_data, column_width_list
     
+
+    def make_table_accounts(self, column_list, table_data):
+        """Prepares account transaction data for display, 
+           including interest and settlement handling.
+        """
+        total_sum_without_interest = 0.0
+        total_interest = 0.0
+        updated_column_list = []
+        updated_table_data = []
+
+        for i in column_list:
+            updated_column_list.append(i[1])
+
+        if len(column_list) == 3:  # Assuming 'customers' table
+            updated_table_data = table_data
+            column_width_list = [10, 400, 400]
+        else:
+            column_width_list = [10, 50, 400, 10, 40, 40, 50]
+            updated_column_list = ['ID', 'Date', 'Particulars', 'Interest', 'Debit', 'Credit', 'Balance']
+
+            current_balance = 0.0
+            last_settlement_date = self._find_last_settlement_date(table_data)
+
+            for row in table_data:
+                id, date, particulars, amount, transaction_type, tag  = row # extract from row
+                date_obj = datetime.datetime.strptime(date, "%Y-%m-%d").date()  # Convert to date object
+                interest = 0.0
+                debit = amount if transaction_type.upper() == "P" else ""
+                credit = amount if transaction_type.upper() == "M" else ""
+
+                if tag == '0':  # Settlement transaction
+                    current_balance = 0.0
+                    total_interest = 0.0
+                    total_sum_without_interest = 0.0
+                else: 
+                    if tag == '1' and (last_settlement_date is None or (date_obj > last_settlement_date)):
+                        interest = self.calculate_interest(amount, date)
+                        total_interest += interest
+
+                    current_balance += (amount if transaction_type.upper() == "P" else -amount)
+                    total_sum_without_interest += (amount if transaction_type.upper() == "P" else -amount)
+
+                temp_list = [id, date, particulars, interest, debit, credit, current_balance] 
+                updated_table_data.append(temp_list)
+
+            if __name__ != "__main__":
+                table_id = self.table_dropdown.get().split()[0]
+                customer_name = accounts.get_customer_details(table_id)
+                status = (
+                    f"{customer_name}    "
+                    f"{round(total_sum_without_interest, 2)} + "
+                    f"{round(total_interest, 2)} = "
+                    f"{round(total_sum_without_interest + total_interest, 2)}"
+                )
+                self.master.master.set_status(status)
+
+        return updated_column_list, updated_table_data, column_width_list
+
+    def _find_last_settlement_date(self, table_data):
+        """Finds the date of the last settled transaction from the provided data.
+
+        Args:
+            table_data (list): List of transaction rows.
+
+        Returns:
+            datetime.date or None: Date of the last settlement or None if no settlements found.
+        """
+        last_settlement_date = None 
+        for row in reversed(table_data):  # Iterate in reverse to find the last settlement quickly 
+            if row[5] == '0': 
+                last_settlement_date = datetime.datetime.strptime(row[1], "%Y-%m-%d").date()
+                break
+        return last_settlement_date 
+
     def make_table_items(self, column_list, table_data):
         updated_column_list = []
         updated_table_data = []

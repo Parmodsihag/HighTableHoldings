@@ -11,24 +11,15 @@ import database
 
 class AccountPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        super().__init__(master, **kwargs)
 
         APP_FONT = "Consolas 12"
         APP_FONT1 = "Consolas 14"
-
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
-
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
-
-        self.img = img
 
         # main frame to include all frames
         self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
         title_frame.pack(fill='x', pady=2, padx=10)
@@ -41,7 +32,7 @@ class AccountPage(tk.Frame):
 
         name_label = tk.Label(name_frame, text="Name", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         name_label.pack(padx=40, fill='x')
-        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.name_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Other Details Entry Box
@@ -49,7 +40,7 @@ class AccountPage(tk.Frame):
         details_frame.pack(fill='x', pady=10, padx=10)
         details_label = tk.Label(details_frame, text="Other Details", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         details_label.pack(padx=40, fill='x')
-        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.details_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Date Entry Box
@@ -57,7 +48,7 @@ class AccountPage(tk.Frame):
         date_frame.pack(fill='x', pady=10, padx=10)
         date_label = tk.Label(date_frame, text="Date", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
-        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.date_entry.pack(padx=40, pady=(0,10), fill='x')
         self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
 
@@ -66,7 +57,7 @@ class AccountPage(tk.Frame):
         balance_frame.pack(fill='x', pady=10, padx=10)
         balance_label = tk.Label(balance_frame, text="Opening Balance", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         balance_label.pack(padx=40, fill='x')
-        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.balance_entry.pack(padx=40, pady=(0,10), fill='x')
         
         # Status Entry Box
@@ -74,20 +65,20 @@ class AccountPage(tk.Frame):
         status_frame.pack(fill='x', pady=10, padx=10)
         status_label = tk.Label(status_frame, text="Source | P/M | TAG 1", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         status_label.pack(padx=40, fill='x')
-        self.status_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.status_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.status_entry.insert(0, "New Account")
         self.status_entry.pack(padx=40, pady=(0,10), fill='x')
-        self.pm_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.pm_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.pm_entry.insert(0, "P")
         self.pm_entry.pack(padx=40, pady=(0,10), fill='x')
-        self.tag_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.tag_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.tag_entry.insert(0, "1")
         self.tag_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Add Account Button
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame.pack(fill='x', pady=(10,0), padx=10)
-        self.add_button = tk.Button(button_frame, text="Add Account", font=APP_FONT1, command=self.add_account, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button = tk.Button(button_frame, text="Add Account", font=APP_FONT1, command=self.add_account, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         self.add_button.pack(padx=40, fill='x', pady=(10, 10))
 
 
@@ -184,6 +175,10 @@ def get_all_customers():
     accounts_cursor.execute(f"select * from customers")
     return accounts_cursor.fetchall()
 
+def get_all_customers_name_and_id():
+    accounts_cursor.execute(f"select id, name from customers")
+    return accounts_cursor.fetchall()
+
 # Function to get all transactions for a specific customer
 def get_customer_transactions(customer_id):
     table_name = f'customer_{customer_id}'
@@ -264,58 +259,101 @@ def get_table1(table_name):
     return accounts_cursor.fetchall()
 
 
-def set_all_transaction_tags_to_zero(customer_id):
-    """
-    Updates all transactions in a customer's account to have "0" as the tags value.
+def calculate_interest(self, principle_amount, from_date_str, to_date=datetime.date.today()):
+        """
+        Calculates interest earned on a principle amount, considering financial year-end (March 31st).
 
-    Args:
-        customer_id (int): The ID of the customer whose transactions need to be updated.
-    """
+        Args:
+            principle_amount (float): The initial amount of money.
+            from_date_str (str): The starting date for interest calculation in "YYYY-MM-DD" format.
+            to_date (datetime.date, optional): The ending date for interest calculation. Defaults to today.
 
+        Returns:
+            float: The calculated interest amount.
+        """
+        daily_interest_rate = 0.0006575342465753425 
+        from_date = datetime.datetime.strptime(from_date_str, "%Y-%m-%d").date()
+        total_interest = 0
+
+        while from_date < to_date:
+            year_end = datetime.date(from_date.year, 3, 31) 
+            if from_date.month > 3:
+                year_end = datetime.date(from_date.year + 1, 3, 31)
+            end_date = min(year_end, to_date)
+            days = (end_date - from_date).days
+            interest = principle_amount * days * daily_interest_rate
+            total_interest += interest
+            principle_amount += interest 
+            from_date = end_date + datetime.timedelta(days=1)
+
+        return round(total_interest, 2)
+
+def find_last_settlement_date(customer_id):
+    """Finds the date of the last settled transaction."""
     table_name = f"customer_{customer_id}"
-    query = f"UPDATE {table_name} SET tags = '0'"
-    accounts_cursor.execute(query)
-    accounts_conn.commit()
+    accounts_cursor.execute(f"SELECT MAX(date) FROM {table_name} WHERE tags = '0'")
+    result = accounts_cursor.fetchone()
+    return result[0] if result[0] is not None else None
 
+def get_account_balance(customer_id):
+    """Calculates the account balance for a customer, including interest,
+       considering only the current (unsettled) period.
+    """
+    table_name = f"customer_{customer_id}"
+    last_settlement_date = find_last_settlement_date(customer_id)
+    
+    if last_settlement_date is not None:
+        last_settlement_id_on_date = find_last_settlement_id_on_date(customer_id, last_settlement_date)
 
-def calculate_interest(amt, from_date, today_date_1=datetime.date.today()):
-    interest_rate_one_day = 0.0006575342465753425
-    dt2 = from_date.split("-")
-    date_of_entry = datetime.date(int(dt2[0]), int(dt2[1]), int(dt2[2]))
-    date_difference = today_date_1 - date_of_entry
-    interest = amt*date_difference.days*interest_rate_one_day
-    return round(interest, 2)
+        accounts_cursor.execute(f"""
+            SELECT * FROM {table_name}
+            WHERE (date > ?) OR (date = ? AND id > ?) 
+            ORDER BY date, id
+        """, (last_settlement_date, last_settlement_date, last_settlement_id_on_date))
 
+    else:
+        # No settlements, include all transactions 
+        accounts_cursor.execute(f"SELECT * FROM {table_name} ORDER BY date, id")
 
-def get_account_balace(customer_id):
-    table_data = get_table1(f"customer_{customer_id}")
-    total_sum = 0.0
-    # total_sum_without_interest = 0.0
-    # total_interest = 0.0
-    for row in table_data:
-        date = row[0]
-        amount = row[1]
-        transction_type = row[2]
-        tag = row[3]
-        # print(tag == "1")
-        if tag == "1":
-            intrest = calculate_interest(amount, date)
-        else:
-            intrest = 0
-        ttl = float(amount) + intrest
-        if transction_type.upper() == "P":
-            # total_interest += intrest
-            # total_sum_without_interest += float(amount)
-            total_sum += ttl
-        else:
-            # total_interest -= intrest
-            # total_sum_without_interest -= float(amount)
-            total_sum -= ttl
+    transactions = accounts_cursor.fetchall()
+    balance = 0.0
 
-    return round(total_sum, 2)
+    for row in transactions:
+        date_str = row[1]
+        amount = row[3]
+        transaction_type = row[4]
+        tag = row[5]
 
+        if tag == '1':  # Interest-bearing transaction
+            interest = calculate_interest(amount, date_str)
+            total = amount + interest
+        else:  # No-interest transaction (tag=2) 
+            total = amount
+
+        if transaction_type == "P":
+            balance += total
+        else: # if transaciton type = "M"
+            balance -= total
+
+    return round(balance, 2)
 
 # print(get_account_balace(1))
+
+
+if __name__ =='__main__':
+    while True:
+        
+        x = input(": ")
+        if x == "q":
+            break
+        accounts_cursor.execute(x)
+        for i in accounts_cursor.fetchall():
+            print(i)
+        accounts_conn.commit()
+    # x = get_all_customers_name_and_id()
+    # x = [f"{i[0]} {i[1]}" for i in x]
+    # for i in x:
+    #     print(i)
  
 import tkinter as tk
 # from tkinter import ttk
@@ -331,26 +369,26 @@ import database
 
 class AddItemsPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        super().__init__(master, **kwargs)
 
         APP_FONT = "Consolas 12"
         APP_FONT1 = "Consolas 14"
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
 
         # main frame to include all frames
-        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.2, rely=0.01, relwidth=.6, relheight=.98)
 
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self.main_frame, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
 
         # title frame
@@ -367,14 +405,14 @@ class AddItemsPage(tk.Frame):
         name_frame.pack(fill='x', side='left', expand=1)
         name_label = tk.Label(name_frame, text="Item Name: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         name_label.pack(fill='x', padx=(40, 10), pady=(10,0))
-        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.name_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         # Other Details Entry Box
         details_frame = tk.Frame(frame1, bg=Colors.BACKGROUND)
         details_frame.pack(fill='x', side='left', expand=1)
         details_label = tk.Label(details_frame, text="Source: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         details_label.pack(fill='x')
-        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.details_entry.pack(fill='x', padx=(0,40))
 
         # GROUP 2
@@ -385,7 +423,7 @@ class AddItemsPage(tk.Frame):
         date_frame.pack(fill='x', side='left', expand=1)
         date_label = tk.Label(date_frame, text="Date: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(fill='x', padx=(40,10), pady=(10,0))
-        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.date_entry.pack(fill='x', padx=(40,10), pady=(0,10))
         self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
         # Opening Balance Entry Box
@@ -393,7 +431,7 @@ class AddItemsPage(tk.Frame):
         balance_frame.pack(fill='x', side='left', expand=1)
         balance_label = tk.Label(balance_frame, text="Opening Balance: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         balance_label.pack(fill='x')
-        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.balance_entry.pack(padx=(0, 40), fill='x')
 
         # GROUP 3
@@ -404,14 +442,14 @@ class AddItemsPage(tk.Frame):
         stock_value_frame.pack(fill='x', side='left', expand=1)
         stock_value_label = tk.Label(stock_value_frame, text="Stock Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         stock_value_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.stock_value_entry = tk.Entry(stock_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.stock_value_entry = tk.Entry(stock_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.stock_value_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         # Last Value Entry Box
         last_value_frame = tk.Frame(frame3, bg=Colors.BACKGROUND)
         last_value_frame.pack(fill='x', side='left', expand=1)
         last_value_label = tk.Label(last_value_frame, text="Last Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         last_value_label.pack(fill='x')
-        self.last_value_entry = tk.Entry(last_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.last_value_entry = tk.Entry(last_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.last_value_entry.pack(padx=(0, 40), fill='x')
 
         # GROUP 4
@@ -422,7 +460,7 @@ class AddItemsPage(tk.Frame):
         pk_frame.pack(fill='x', side='left', expand=1)
         pk_label = tk.Label(pk_frame, text="Pakka Kacha: [P/K] ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         pk_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.pk_entry = tk.Entry(pk_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.pk_entry = tk.Entry(pk_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.pk_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         self.pk_entry.insert(0, 'P')
         # GST Value Entry Box
@@ -430,7 +468,7 @@ class AddItemsPage(tk.Frame):
         gst_value_frame.pack(fill='x', side='left', expand=1)
         gst_value_label = tk.Label(gst_value_frame, text="GST Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         gst_value_label.pack(fill='x')
-        self.gst_value_entry = tk.Entry(gst_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.gst_value_entry = tk.Entry(gst_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.gst_value_entry.pack(padx=(0, 40), fill='x')
 
         # GROUP 5
@@ -441,7 +479,7 @@ class AddItemsPage(tk.Frame):
         batch_frame.pack(fill='x', side='left', expand=1)
         batch_label = tk.Label(batch_frame, text="Batch: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         batch_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.batch_entry = tk.Entry(batch_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.batch_entry = tk.Entry(batch_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.batch_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         self.batch_entry.insert(0, 'NA')
         # GST Value Entry Box
@@ -449,7 +487,7 @@ class AddItemsPage(tk.Frame):
         expiry_frame.pack(fill='x', side='left', expand=1)
         expiry_label = tk.Label(expiry_frame, text="Expiry: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         expiry_label.pack(fill='x')
-        self.expiry_value_entry = tk.Entry(expiry_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.expiry_value_entry = tk.Entry(expiry_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.expiry_value_entry.pack(padx=(0, 40), fill='x')
         self.expiry_value_entry.insert(0, 'NA')
 
@@ -461,7 +499,7 @@ class AddItemsPage(tk.Frame):
         unit_frame.pack(fill='x', side='left', expand=1)
         unit_label = tk.Label(unit_frame, text="Unit: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         unit_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.unit_entry = tk.Entry(unit_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.unit_entry = tk.Entry(unit_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.unit_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         self.unit_entry.insert(0, 'PCS')
         # GST Value Entry Box
@@ -469,7 +507,7 @@ class AddItemsPage(tk.Frame):
         type_value_frame.pack(fill='x', side='left', expand=1)
         type_value_label = tk.Label(type_value_frame, text="Type: [F, P, S, O] ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         type_value_label.pack(fill='x')
-        self.type_value_entry = tk.Entry(type_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.type_value_entry = tk.Entry(type_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.type_value_entry.pack(padx=(0, 40), fill='x')
         self.type_value_entry.insert(0, 'O')
 
@@ -477,7 +515,7 @@ class AddItemsPage(tk.Frame):
         # Add Item Button
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame.pack(fill='x', pady=(10,0), padx=10)
-        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         self.add_button.pack(padx=40, fill='x', pady=(10, 10))
 
 
@@ -523,109 +561,6 @@ if __name__ == "__main__":
     a.pack(expand=1, fill="both")
     app.mainloop()
 
- 
-import google.generativeai as genai
-# import whisper
-import pyttsx3
-import speech_recognition as sr
-import mypandasfile
-
-def speech_to_text_sr():
-    """
-    Transcribes speech from microphone input using the SpeechRecognition library.
-
-    Returns:
-        str: The transcribed text.
-    """
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening...")
-        audio = r.listen(source)
-
-    try:
-        text = r.recognize_google(audio)
-        print(f"You said: {text}")
-        return text
-    except sr.UnknownValueError:
-        print("Could not understand audio")
-        return None
-    except sr.RequestError as e:
-        print(f"Could not request results from Google Speech Recognition service; {e}")
-        return None
-
-def text_to_speech(text):
-    engine = pyttsx3.init()
-    engine.say(text)
-    engine.runAndWait()
-
-
-
-# Replace with your actual API key from AI Studio
-API_KEY = "AIzaSyACTuQ6H1p45h3LTwLtOKXB3ORQQGlb_iU"
-
-def initialize_api():
-    """
-    Initializes the connection to Gemini 1.5 Pro API
-    """
-    try:
-      genai.configure(api_key=API_KEY)
-    except Exception as e:
-      print(f"An error occurred during API configuration: {e}")
-      exit(1)
-
-def generate_response(prompt):
-    """
-    Sends a prompt to Gemini 1.5 Pro and retrieves the response
-    """
-    # Set up the model generation configuration
-    generation_config = {
-        "temperature": 0.7,  # Adjust for more creative or informative responses (0-1)
-        "top_p": 1,
-        "top_k": 10,
-        "max_output_tokens": 2048,  # Maximum number of tokens in the response
-    }
-
-    # Specify the model name (v1beta for preview access)
-    model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest", generation_config=generation_config)
-  
-    # Send the prompt as a list
-    prompt_parts = [prompt]
-  
-    try:
-      response = model.generate_content(prompt_parts)
-      return response.text
-    except Exception as e:
-      print(f"An error occurred during generation: {e}")
-      return None
-
-if __name__ == "__main__":
-    # while True:
-    #     print('Say something')
-    #     text = speech_to_text_st()
-    #     if text:
-    #         # print(text)
-    #         # Here, you would process the text with your chatbot logic
-    #         response = "This is where your chatbot would generate a response based on the user's input."
-            # text_to_speech(response)
-    initialize_api()
-    # with open("output.txt", "r") as f:
-    #     code_text = f.read()
-
-    cdf = mypandasfile.get_all_list()
-    cdfx = cdf.to_json()
-    print("-"*100)
-    cdf = f"RESPONSE IN HINGLISH \n Here is the data of customers in json format, tell me a report of lilu \n {cdfx}"
-    print(generate_response(cdf))
-    # while 1:
-    #     prompt = input("Enter your prompt for Gemini 1.5 Pro: ")
-    #     if prompt == "q":
-    #         break
-    #     else:
-    #         response = generate_response(prompt)
-    #         if response:
-    #             print(f"Gemini 1.5 Pro responded: \n{response}")
-    #         else:
-    #             print("An error occurred, please try again.")
  
 import sqlite3
 
@@ -765,12 +700,12 @@ class HomePage(tk.Frame):
         super().__init__(master, **kwargs)
         self.Colors = Colors
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
@@ -780,8 +715,8 @@ class HomePage(tk.Frame):
         for widget in self.winfo_children():
             widget.destroy()
         
-        self.background_title = tk.Label(self, image=self.img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=self.img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
 
@@ -801,8 +736,8 @@ class HomePage(tk.Frame):
         for widget in self.winfo_children():
             widget.destroy()
         
-        self.background_title = tk.Label(self, image=self.img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=self.img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
         self.sales_data_frame = SalesData(self)
@@ -1132,6 +1067,11 @@ def get_all_items():
     items = inventory_cursor.fetchall()
     return items
 
+def get_all_items_id_and_name():
+    inventory_cursor.execute('SELECT id, name FROM items')
+    items = inventory_cursor.fetchall()
+    return items
+
 # Define function to get item by id
 def get_item_by_id(item_id):
     inventory_cursor.execute('SELECT * FROM items WHERE id=?', (item_id,))
@@ -1284,21 +1224,21 @@ from datetime import datetime
 
 class KararPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        super().__init__(master, **kwargs)
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         # main frame to include all frames
         self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self.main_frame, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
 
 
@@ -1314,7 +1254,7 @@ class KararPage(tk.Frame):
         date_label = tk.Label(date_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
         today_date = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
-        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.date_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Account Dropdown Menu
@@ -1330,7 +1270,7 @@ class KararPage(tk.Frame):
         # button frame
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame.pack(fill='x', pady=(10,10), padx=10)
-        sale_button = tk.Button(button_frame, text="Add krar", font="Consolas 14", command=self.add_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(button_frame, text="Add krar", font="Consolas 14", command=self.add_krar, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # Account dropdown Menu for Settlement
@@ -1346,7 +1286,7 @@ class KararPage(tk.Frame):
         # button frame
         button_frame2 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame2.pack(fill='x', pady=(10,0), padx=10)
-        settle_button = tk.Button(button_frame2, text="Settle", font="Consolas 14", command=self.settle_krar, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        settle_button = tk.Button(button_frame2, text="Settle", font="Consolas 14", command=self.settle_krar, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         settle_button.pack(padx=40, fill='x', pady=(10, 10))
 
     def get_accounts(self):
@@ -1651,6 +1591,9 @@ def delete_krar(krar_id):
 
 
  
+# import time
+# st = time.time()
+
 import tkinter as tk
 import os
 from tkinter import ttk
@@ -1735,8 +1678,8 @@ class CustomLabel(tk.Frame):
     
         self.is_active = True
         self.is_hovering = False
-        self.customlabel.configure( foreground=self.active_fg)#, relief='groove')
-        self.customlabel1.configure( background=self.active_fg)#, relief='groove')
+        self.customlabel.configure( foreground=self.active_fg)#, relief='solid')
+        self.customlabel1.configure( background=self.active_fg)#, relief='solid')
         self.frame1.tkraise()
         
     def set_inactive(self):
@@ -1748,60 +1691,10 @@ class CustomLabel(tk.Frame):
     def set_active(self):
         self.is_active = True
         self.is_hovering = False
-        self.customlabel.configure(foreground=self.active_fg)#, relief='groove')
-        self.customlabel1.configure(background=self.active_fg)#, relief='groove')
+        self.customlabel.configure(foreground=self.active_fg)#, relief='solid')
+        self.customlabel1.configure(background=self.active_fg)#, relief='solid')
         self.frame1.tkraise()
 
-# class CustomLabel(tk.Label):
-#     def __init__(self, master, text, frame_to_link, **kwargs):
-#         super().__init__(master, text=text, font=("Consolas", 14), padx=20, pady=10, anchor="w", highlightthickness=0, highlightbackground=Colors.ACTIVE_FOREGROUND, **kwargs)
-
-#         self.frame1 = frame_to_link
-#         self.bind("<Enter>", self.on_enter)
-#         self.bind("<Leave>", self.on_leave)
-#         self.bind("<Button-1>", self.on_click)
-        
-#         self.normal_bg = Colors.BACKGROUND1
-#         self.normal_fg = Colors.FOREGROUND
-#         self.hover_bg = Colors.LIGHT_BG
-#         self.hover_fg = Colors.FOREGROUND
-#         self.active_bg = Colors.ACTIVE_BACKGROUND
-#         self.active_fg = Colors.FG_SHADE_1
-        
-#         self.is_active = False
-#         self.is_hovering = False
-#         self.configure(background=self.normal_bg, foreground=self.normal_fg)
-
-        
-#     def on_enter(self, event):
-#         if not self.is_active:
-#             self.configure(background=self.hover_bg, foreground=self.hover_fg)
-#             self.is_hovering = True
-            
-#     def on_leave(self, event):
-#         if not self.is_active:
-#             self.configure(background=self.normal_bg, foreground=self.normal_fg)
-#             self.is_hovering = False
-            
-#     def on_click(self, event):
-#         for  i in self.master.winfo_children():
-#             i.set_inactive()
-    
-#         self.is_active = True
-#         self.is_hovering = False
-#         self.configure( foreground=self.active_fg)#, relief='groove')
-#         self.frame1.tkraise()
-        
-#     def set_inactive(self):
-#         self.is_active = False
-#         self.is_hovering = False
-#         self.configure(background=self.normal_bg, foreground=self.normal_fg)#
-#     def set_active(self):
-#         self.is_active = True
-#         self.is_hovering = False
-#         self.configure(foreground=self.active_fg)#, relief='groove')
-#         self.frame1.tkraise()
-    
 
 
 class MyApp(tk.Tk):
@@ -1813,26 +1706,27 @@ class MyApp(tk.Tk):
         self.is_graph_ready = 0
         self.title("High Table Holdings")
         self.state("zoomed")
-        self.config(background=Colors.BACKGROUND1)
+        # self.config(background=Colors.BACKGROUND1)
         # self.clrs = Colors
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         self.style=ttk.Style()
-        self.style.theme_create('mytheme', parent='alt', 
+        self.style.theme_create('mytheme', parent='default', 
                         settings={
-                            'TCombobox':
-                            {
-                                'configure':
-                                {
-                                'arrowsize': 18,
-                                'font':"Consolas 14"
-                                }
-                            },
+                            # 'TCombobox':
+                            # {
+                            #     'configure':
+                            #     {
+                            #     # 'arrowsize': 12,
+                            #     'font':"Consolas 14",
+                            #     'relief':'flat'
+                            #     }
+                            # },
                             'Treeview':{
                                 'configure':
                                 {
@@ -1842,12 +1736,13 @@ class MyApp(tk.Tk):
                             }
                         }
                     )
-        self.style.theme_use('mytheme')
-        self.style.configure('TCombobox', selectbackground=Colors.FG_SHADE_1, 
-                            fieldbackground=Colors.BACKGROUND3, 
-                            background=Colors.BACKGROUND3, 
-                            foreground=Colors.FG_SHADE_1, 
-                            arrowcolor=Colors.FOREGROUND)
+        # self.style.theme_use('mytheme')
+        # self.style.configure('TCombobox', selectbackground=Colors.FG_SHADE_1, 
+        #                     fieldbackground=Colors.BACKGROUND, 
+        #                     background=Colors.BACKGROUND, 
+        #                     foreground=Colors.FG_SHADE_1, 
+        #                     arrowcolor=Colors.FOREGROUND,
+        #                     borderwidth=1)
         self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND)
         self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 12')
 
@@ -1912,30 +1807,30 @@ class MyApp(tk.Tk):
         # self.home_page_label.pack( fill="x")
         # self.sale_page_label = CustomFrame(self.menu_frame, "Sale", self.saleframe)
         # self.sale_page_label.pack( fill="x")
-        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe, "h")
+        self.home_page_label = CustomLabel(self.menu_frame, "Home ",self.homeframe, "H")
         self.home_page_label.pack( fill="x")
-        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe, "s")
+        self.sale_page_label = CustomLabel(self.menu_frame, "Sale ", self.saleframe, "S")
         self.sale_page_label.pack( fill="x")
-        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe, 'a')
+        self.account_page_label = CustomLabel(self.menu_frame, "Account ", self.accountframe, 'A')
         self.account_page_label.pack( fill="x")
-        self.add_item_page_label = CustomLabel(self.menu_frame, "Items ", self.additemframe, 'i')
+        self.add_item_page_label = CustomLabel(self.menu_frame, "Items ", self.additemframe, 'I')
         self.add_item_page_label.pack( fill="x")
-        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe, 'k')
+        self.karar_frame_label = CustomLabel(self.menu_frame, "Karar ", self.kararframe, 'K')
         self.karar_frame_label.pack( fill="x")
-        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe, 'm')
+        self.modify_frame_label = CustomLabel(self.menu_frame, "Modify ", self.modifyframe, 'M')
         self.modify_frame_label.pack( fill="x")
-        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'r')
+        self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'R')
         self.report_frame_label.pack( fill="x")
-        self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'b')
+        self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'B')
         self.bill_frame_label.pack( fill="x")
-        self.bill_show_frame_label = CustomLabel(self.menu_frame, "Bill ", self.billshowframe, 't')
+        self.bill_show_frame_label = CustomLabel(self.menu_frame, "Bill ", self.billshowframe, 'T')
         self.bill_show_frame_label.pack( fill="x")
 
         # activating home page
         self.home_page_label.set_active()
 
         self.bind()
-        # self.sale_page_label.set_active()
+        self.sale_page_label.set_active()
         # self.account_page_label.set_active()
         # self.report_frame_label.set_active()
         # self.modify_frame_label.set_active()
@@ -1961,6 +1856,7 @@ class MyApp(tk.Tk):
             os.makedirs(folder_path, exist_ok=True)  # Create parent folders if needed
             os.makedirs(subfolder_path_data, exist_ok=True)  # Create parent folders if needed
             os.makedirs(subfolder_path_bills, exist_ok=True)  # Create parent folders if needed
+            os.makedirs(subfolder_path_pdfs, exist_ok=True)  # Create parent folders if needed
             os.makedirs(subfolder_path_merged_pdfs, exist_ok=True)  # Create parent folders if needed
             # print(f"Folder structure created successfully: {subfolder_path}")
         except OSError as e:
@@ -2081,6 +1977,7 @@ if __name__ == "__main__":
     # app.start_processing()
     # data_process = multiprocessing.Process(target=app.my_parallel_processes, args=(1,))
     # data_process.start()
+    # print(time.time()-st)
     app.mainloop()
     # page 52 clouse 6.3
     # app.my_parallel_processes(1)
@@ -2101,22 +1998,12 @@ from bills import bill_db
 
 class ModifyPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, **kwargs)
 
         font = "Consolas 16"
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
-
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
-
-        self.img = img
-
-        self.main_frame = tk.Frame(self)
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
-
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         # title frame
         title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
@@ -2152,13 +2039,13 @@ class ModifyPage(tk.Frame):
         date_label = tk.Label(date_frame, text="Row ID", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
         self.row_id_var = tk.IntVar()
-        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.row_id_var, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.row_id_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.row_id_var, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.row_id_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Show Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Show", font="Consolas 14", command=self.show_row, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(sale_button_frame, text="Show", font="Consolas 14", command=self.show_row, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # modify row entry
@@ -2167,19 +2054,19 @@ class ModifyPage(tk.Frame):
         date_frame.pack( fill='x', pady=10, padx=10)
         date_label = tk.Label(date_frame, text="Modify Row", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
-        self.modify_row_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.table_row, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.modify_row_entry = tk.Entry(date_frame, font="Consolas 14", textvariable=self.table_row, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.modify_row_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Modify Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Modify", font="Consolas 14", command=self.modify_row_function, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(sale_button_frame, text="Modify", font="Consolas 14", command=self.modify_row_function, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # Delete Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Delete", font="Consolas 14", command=self.delete_row_function, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button = tk.Button(sale_button_frame, text="Delete", font="Consolas 14", command=self.delete_row_function, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=40, fill='x', pady=(10, 10))
 
         # # --------------------------------------------------------
@@ -2407,75 +2294,63 @@ if __name__ == "__main__":
     app.mainloop()
 
  
+import tkinter
 
+
+ 
 from docx2pdf import convert
 from PyPDF2 import PdfMerger, PdfReader
 import os
 
 def get_all_list():
-    lst = os.listdir("C://JBB/bills")
-    lst2 = os.listdir("C://JBB//pdfs")
-    docx_list = []
-    num_list = []
-    for i in lst:
-        if i.endswith(".docx"):
-            first = i.split(".")[0]
-            docx_list.append(first)
-    for i in lst2:
-        if i.endswith(".pdf"):
-            first = i.split(".")[0]
-            num_list.append(first)
-            
-    # print(docx_list, num_list)
-    return docx_list, num_list
-    
+    bills_dir = "C://JBB/bills"
+    pdfs_dir = "C://JBB//pdfs"
+    docx_list = [f.split(".")[0] for f in os.listdir(bills_dir) if f.endswith(".docx")]
+    pdf_list = [f.split(".")[0] for f in os.listdir(pdfs_dir) if f.endswith(".pdf")]
+    return docx_list, pdf_list
+
+def my_sort(start, end, lst):
+    return [str(i) for i in range(start, end+1) if str(i) in lst]
+
+def convert_to_pdf(i):
+    if not os.path.exists(f"C://JBB//pdfs/{str(i)}.pdf"):
+        try:
+            convert(f"C://JBB//bills/"+str(i)+".docx", f"C://JBB//pdfs/{str(i)}.pdf")
+            print(f"{i} converted to PDF")
+        except Exception as e:
+            print(f"!!!! Error in Converting {i} \n Error {e}")
+    else:
+        print(f'Pdf found {i}')
 
 
-def my_sort(strt, nd, lst):
-    res = []
-    for i in range(strt, nd+1):
-        if str(i) in lst:
-            res.append(str(i))
-    return res
-
-def my_converter(docx_list, num_list):
-    for i in docx_list:
-        if i in num_list:
-            print(i+" Pdf Found")
-        else:
-            print(i)
-            try:
-                convert(f"C://JBB//bills/"+str(i)+".docx", f"C://JBB//pdfs/{str(i)}.pdf")
-                
-            except Exception as e:
-                print(f"!!!! Error in Converting {i} \n Error {e}")
 
 def my_merger(lst, from_num, to_num):
-    merged_object = PdfMerger()
+    merger = PdfMerger()
     print(f"Merging {from_num} to {to_num}")
     for num in lst:
         try:
-            merged_object.append(PdfReader("C://JBB//pdfs/"+num+ '.pdf', 'rb'))
+            merger.append(PdfReader(f"C://JBB//pdfs/{num}.pdf", 'rb'))
             print(num, end=" done ")
         except Exception as e:
             print(f"*** Error in Merging {num} \n Error {e}")
-    merged_name = "C://JBB//merged_pdfs/"+str(from_num) + "to" + str(to_num)+".pdf"
-    merged_object.write(merged_name)
+    merger.write(f"C://JBB//merged_pdfs/{from_num}to{to_num}.pdf")
 
 def docs_to_pdf_main(from_num, to_num):
     docxs, pdfs = get_all_list()
     docxsm = my_sort(int(from_num), int(to_num), docxs)
     pdfsm = my_sort(int(from_num), int(to_num), pdfs)
-    
-    my_converter(docxsm, pdfsm)
-    
+
+    for i in docxsm:
+        convert_to_pdf(i)
+
+    # Merge PDFs (Existing code)
     my_merger(docxsm, from_num, to_num)
-    
-    
+
     x = input('\n Operation completed successfully!!!!!!!!')
 
+if __name__ == "__main__":
+    docs_to_pdf_main(2324379, 2324608)
 
-docs_to_pdf_main(2323379, 2324557)
  
 import pandas as pd
 import accounts
@@ -2536,7 +2411,7 @@ def get_one_total(customer_id):
  
 
 
-class Colors:
+class Colors1:
     BACKGROUND = "#2C3333"
     BACKGROUND1 = "#1C2323"
     BACKGROUND2 = "#2f3636"
@@ -2561,7 +2436,7 @@ class Colors:
     REMINDER = "#FB8C00"
     DELETE = "#6C2323"
 
-class Colors1:
+class Colors:
     BACKGROUND = "#F5F5F5" 
     BACKGROUND1 = "#E8E8E8"  
     BACKGROUND2 = "#E0E0E0" 
@@ -2595,6 +2470,8 @@ from tkinter import ttk
 import calendar
 import sqlite3
 import datetime
+import re
+
 import accounts
 import inventory
 import database
@@ -2608,15 +2485,15 @@ class ReportsPage(tk.Frame):
     # accounts_df = mypandasfile.customer_df
 
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.ACTIVE_BACKGROUND, **kwargs)
+        super().__init__(master, **kwargs)
         self.Colors = Colors
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         self.upper_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.upper_frame.place(relx=0.01, rely=0.01, relheight=0.09, relwidth=0.98)
@@ -2635,7 +2512,7 @@ class ReportsPage(tk.Frame):
     
     def table_selector(self):
         font = "Consolas 16"
-        database_names = ["accounts.db", "daily_notes.db", "inventory.db", "krar.db", "bills.db"]
+        database_names = ["accounts.db", "inventory.db", "daily_notes.db", "krar.db", "bills.db"]
         db_label = tk.Label(self.upper_frame, text="Database:", bg=self.Colors.BACKGROUND, fg=self.Colors.ACTIVE_FOREGROUND, font=font)
         db_label.pack(side="left", padx=5, pady=5)
         self.db_dropdown = ttk.Combobox(self.upper_frame, values=database_names, width=20, font=font)
@@ -2653,10 +2530,12 @@ class ReportsPage(tk.Frame):
         table_label.pack(side="left", padx=5, pady=5)
         self.table_dropdown = ttk.Combobox(self.upper_frame, values= self.table_list, width=20, font=font)
         self.table_dropdown.pack(side="left", padx=5, pady=5)
+        self.table_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.table_dropdown, self.table_list, self.table_dropdown.get().upper()))
+        
         # self.table_dropdown.bind('<<ComboboxSelected>>', lambda e : self.update_table_names())
 
         # Create button
-        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=self.Colors.BACKGROUND3, fg=self.Colors.FG_SHADE_3, relief='groove', font="Consolas 14")
+        show_button = tk.Button(self.upper_frame, text="Show Data", command=self.show_table, bg=self.Colors.BACKGROUND3, fg=self.Colors.FG_SHADE_3, relief='solid', font="Consolas 14")
         show_button.pack(side="left", padx=5, pady=5)
 
     def parallel_process_combo(self, accounts_df):
@@ -2719,12 +2598,19 @@ class ReportsPage(tk.Frame):
         selected_db = self.db_dropdown.get()
         if selected_db:
             if selected_db == "accounts.db":
-                accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = accounts.accounts_cursor.fetchall()
+                self.table_list = ['customers']
+                for account in accounts.get_all_customers_name_and_id():
+                    self.table_list.append(f"{account[0]} {account[1]}")
+                # self.table_list = [f"{i[0]} {i[1]}" for i in table_list]
+                # accounts.accounts_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                # self.table_list = accounts.accounts_cursor.fetchall()
                 self.table_dropdown.set("customers")
             if selected_db == "inventory.db":
-                inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = inventory.inventory_cursor.fetchall()
+                self.table_list = ['items']
+                for item in inventory.get_all_items_id_and_name():
+                    self.table_list.append(f"{item[0]} {item[1]}")
+                # inventory.inventory_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                # self.table_list = inventory.inventory_cursor.fetchall()
                 self.table_dropdown.set("items")
             if selected_db == "daily_notes.db":
                 database.daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -2760,7 +2646,9 @@ class ReportsPage(tk.Frame):
             if selected_db == "accounts.db":
                 tag = 1
                 # table_id = self.table_dropdown.get().split("_")[1]  # Extract customer ID
-                # self.generate_compound_interest_report(table_id) 
+                # self.generate_compound_interest_report(table_id)
+                if selected_table != 'customers':
+                    selected_table = f"customer_{selected_table.split()[0]}"
                 accounts.accounts_cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = accounts.accounts_cursor.fetchall()
                 table_data = accounts.get_table(selected_table)
@@ -2769,6 +2657,8 @@ class ReportsPage(tk.Frame):
 
             if selected_db == "inventory.db":
                 tag = 1
+                if selected_table != 'items':
+                    selected_table = f"item_{selected_table.split()[0]}"
                 inventory.inventory_cursor.execute(f"PRAGMA table_info({selected_table})")
                 column_list = inventory.inventory_cursor.fetchall()
                 table_data = inventory.get_table(selected_table)
@@ -2839,12 +2729,12 @@ class ReportsPage(tk.Frame):
         region = self.tree.identify("region", event.x, event.y)
         if region == "cell":
             item_id = self.tree.identify_row(event.y)
-            # print(f"Double-clicked item ID: {item_id}")
+            # print(f"Double-clicked item ID: {item_id}") 
             row_data = self.tree.item(item_id)['values']
             if self.db_dropdown.get() == "accounts.db":
-                self.table_dropdown.set(f"customer_{row_data[0]}")
+                self.table_dropdown.set(f"{row_data[0]} {row_data[1]}")
             else:
-                self.table_dropdown.set(f"item_{row_data[0]}")
+                self.table_dropdown.set(f"{row_data[0]} {row_data[1]}")
             self.show_table()
 
     def on_control_click(self, event):
@@ -2855,19 +2745,35 @@ class ReportsPage(tk.Frame):
             # print(f"Double-clicked item ID: {item_id}")
             row_id = self.tree.item(item_id)['values'][0]
             # print(row_id[0])
-            self.master.master.modifyframe.db_dropdown.set(self.db_dropdown.get())
-            self.master.master.modifyframe.table_dropdown.set(self.table_dropdown.get())
+            table_name = self.table_dropdown.get()
+            db_name = self.db_dropdown.get()
+            if db_name == 'accounts.db' and table_name!= 'customers':
+                table_name = f'customer_{table_name.split()[0]}'
+            elif db_name == 'inventory.db' and table_name != 'items':
+                table_name = f'item_{table_name.split()[0]}'
+    
+            self.master.master.modifyframe.db_dropdown.set(db_name)
+            self.master.master.modifyframe.table_dropdown.set(table_name)
             self.master.master.modifyframe.row_id_var.set(row_id)
             self.master.master.modifyframe.show_row()
             self.master.master.modify_frame_label.set_active()
             self.master.master.report_frame_label.set_inactive()
 
-            # if self.db_dropdown.get() == "accounts.db":
-            #     self.table_dropdown.set(f"customer_{row_data[0]}")
-            # else:
-            #     self.table_dropdown.set(f"item_{row_data[0]}")
-            # self.show_table()
     
+    def update_listbox_items(self, lb, lst, pat):
+        lsts = []
+        if self.db_dropdown.get() in ['inventory.db', 'accounts.db']:
+            for i in lst:
+                if re.search(pat, i):
+                    lsts.append(i)
+            lb.config(values=lsts)
+        elif self.db_dropdown.get() == "daily_notes.db":
+            for i in lst:
+                if re.search(pat, i[0]):
+                    lsts.append(i)
+            lb.config(values=lsts)
+
+
     # important funcition for simple intrest
     def calculate_interest1(self, amt, from_date, today_date_1=datetime.date.today()):
         interest_rate_one_day = 0.0006575342465753425
@@ -2907,7 +2813,7 @@ class ReportsPage(tk.Frame):
 
         return round(total_interest, 2)
 
-    def make_table_accounts(self, column_list, table_data):
+    def make_table_accounts1(self, column_list, table_data):
         total_sum = 0.0
         total_sum_without_interest = 0.0
         total_interest = 0.0
@@ -2954,12 +2860,86 @@ class ReportsPage(tk.Frame):
                 # temp_list.append(intrest)
                 updated_table_data.append(temp_list)
             if __name__ != "__main__":
-                table_id = self.table_dropdown.get().split("_")[1]
+                table_id = self.table_dropdown.get().split()[0]
                 customer_name = accounts.get_customer_details(table_id)
                 status = f"{customer_name}    {round(total_sum_without_interest,2)} + {round(total_interest, 2)} = {round(total_sum,2)} "
                 self.master.master.set_status(status)
         return updated_column_list, updated_table_data, column_width_list
     
+
+    def make_table_accounts(self, column_list, table_data):
+        """Prepares account transaction data for display, 
+           including interest and settlement handling.
+        """
+        total_sum_without_interest = 0.0
+        total_interest = 0.0
+        updated_column_list = []
+        updated_table_data = []
+
+        for i in column_list:
+            updated_column_list.append(i[1])
+
+        if len(column_list) == 3:  # Assuming 'customers' table
+            updated_table_data = table_data
+            column_width_list = [10, 400, 400]
+        else:
+            column_width_list = [10, 50, 400, 10, 40, 40, 50]
+            updated_column_list = ['ID', 'Date', 'Particulars', 'Interest', 'Debit', 'Credit', 'Balance']
+
+            current_balance = 0.0
+            last_settlement_date = self._find_last_settlement_date(table_data)
+
+            for row in table_data:
+                id, date, particulars, amount, transaction_type, tag  = row # extract from row
+                date_obj = datetime.datetime.strptime(date, "%Y-%m-%d").date()  # Convert to date object
+                interest = 0.0
+                debit = amount if transaction_type.upper() == "P" else ""
+                credit = amount if transaction_type.upper() == "M" else ""
+
+                if tag == '0':  # Settlement transaction
+                    current_balance = 0.0
+                    total_interest = 0.0
+                    total_sum_without_interest = 0.0
+                else: 
+                    if tag == '1' and (last_settlement_date is None or (date_obj > last_settlement_date)):
+                        interest = self.calculate_interest(amount, date)
+                        total_interest += interest
+
+                    current_balance += (amount if transaction_type.upper() == "P" else -amount)
+                    total_sum_without_interest += (amount if transaction_type.upper() == "P" else -amount)
+
+                temp_list = [id, date, particulars, interest, debit, credit, current_balance] 
+                updated_table_data.append(temp_list)
+
+            if __name__ != "__main__":
+                table_id = self.table_dropdown.get().split()[0]
+                customer_name = accounts.get_customer_details(table_id)
+                status = (
+                    f"{customer_name}    "
+                    f"{round(total_sum_without_interest, 2)} + "
+                    f"{round(total_interest, 2)} = "
+                    f"{round(total_sum_without_interest + total_interest, 2)}"
+                )
+                self.master.master.set_status(status)
+
+        return updated_column_list, updated_table_data, column_width_list
+
+    def _find_last_settlement_date(self, table_data):
+        """Finds the date of the last settled transaction from the provided data.
+
+        Args:
+            table_data (list): List of transaction rows.
+
+        Returns:
+            datetime.date or None: Date of the last settlement or None if no settlements found.
+        """
+        last_settlement_date = None 
+        for row in reversed(table_data):  # Iterate in reverse to find the last settlement quickly 
+            if row[5] == '0': 
+                last_settlement_date = datetime.datetime.strptime(row[1], "%Y-%m-%d").date()
+                break
+        return last_settlement_date 
+
     def make_table_items(self, column_list, table_data):
         updated_column_list = []
         updated_table_data = []
@@ -2971,7 +2951,7 @@ class ReportsPage(tk.Frame):
             updated_table_data = table_data
             column_width_list = [1,1,1,1,400,1]
             if __name__ != "__main__":
-                table_id = self.table_dropdown.get().split("_")[1]
+                table_id = self.table_dropdown.get().split()[0]
                 item_name = inventory.get_item_by_id(table_id)[1]
                 item_instock = inventory.get_item_quantity(table_id)
                 status = f"{item_name}   [{item_instock}] "
@@ -3018,6 +2998,7 @@ import tkinter.ttk as ttk
 import re
 from mytheme import Colors
 from datetime import datetime
+from searchbar import SearchBar
 
 
 import accounts
@@ -3026,94 +3007,68 @@ import database
 
 class SalesPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
-
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
-
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
-
-        self.img = img
+        super().__init__(master, **kwargs)
 
         # main frame to include all frames
         self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
-
         # title frame
-        title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
-        title_frame.pack(fill='x', pady=2, padx=10)
-        title_name_label = tk.Label(title_frame, text="Sales", font="Consolas 18", bg=Colors.BACKGROUND1, fg=Colors.FG_SHADE_3, anchor='center')
-        title_name_label.pack(padx=40, fill='x')
+        title_name_label = tk.Label(self.main_frame, text="Sales", font="Consolas 18", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, anchor='center')
+        title_name_label.pack(pady=10, fill='x')
 
         # Date Entry Box
-        date_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        date_frame.pack( fill='x', pady=10, padx=10)
-        date_label = tk.Label(date_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        date_label = tk.Label(self.main_frame, text="Date", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
         today_date = tk.StringVar(value=datetime.now().strftime('%Y-%m-%d'))
-        self.date_entry = tk.Entry(date_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry = tk.Entry(self.main_frame, textvariable=today_date, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.date_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Account Dropdown Menu
-        account_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        account_frame.pack( fill='x', pady=10, padx=10)
-        account_label = tk.Label(account_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
-        account_label.pack(padx=40, fill='x')
+        account_label = tk.Label(self.main_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        account_label.pack(padx=40, pady=(20,0), fill='x')
         account_choices = self.get_accounts()
-        self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
+        self.account_dropdown = SearchBar(self.main_frame, data=account_choices)
         self.account_dropdown.pack(padx=40, pady=(0, 10), fill='x')
-        self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
-        self.account_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.account_dropdown, self.get_accounts(), self.account_dropdown.get().upper()))
+        self.account_dropdown.search_bar.bind('<Enter>', lambda e: self.account_dropdown.set_data(self.get_accounts()))
 
         # Item Dropdown Menu
-        item_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        item_frame.pack( fill='x', pady=10, padx=10)
-        item_label = tk.Label(item_frame, text="Item", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
-        item_label.pack(padx=40, fill='x')
-        item_choices = self.get_items_from_inventory()
-        self.item_dropdown = ttk.Combobox(item_frame, values=item_choices, font="Consolas 14")
+        item_label = tk.Label(self.main_frame, text="Item", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        item_label.pack(padx=40, pady=(20, 0), fill='x')
+        self.item_choices = self.get_items_from_inventory()
+        self.item_dropdown = SearchBar(self.main_frame, data=self.item_choices)
         self.item_dropdown.pack(padx=40, pady=(0, 10), fill='x')
-        self.item_dropdown.bind('<Enter>', lambda e: self.item_dropdown.config(values=self.get_items_from_inventory()))
-        self.item_dropdown.bind('<Down>', lambda e: self.update_listbox_items(self.item_dropdown, self.get_items_from_inventory(), self.item_dropdown.get().upper()))
-        self.item_dropdown.bind('<<ComboboxSelected>>', lambda e : self.set_price())
+        self.item_dropdown.search_bar.bind('<Enter>', lambda e: self.item_dropdown.set_data(self.get_items_from_inventory()))
+        self.item_dropdown.search_bar.bind('<FocusOut>', lambda e: self.set_price())
 
         # Quantity Entry Box
-        quantity_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        quantity_frame.pack( fill='x', pady=10, padx=10)
-        quantity_label = tk.Label(quantity_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
-        quantity_label.pack(padx=40, fill='x')
-        self.quantity_entry = tk.Entry(quantity_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        quantity_label = tk.Label(self.main_frame, text="Quantity", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        quantity_label.pack(padx=40, pady=(20,0), fill='x')
+        self.quantity_entry = tk.Entry(self.main_frame, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.quantity_entry.pack(padx=40, pady=(0, 10), fill='x')
 
         # Price Entry Box
-        price_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        price_frame.pack( fill='x', pady=10, padx=10)
-        price_label = tk.Label(price_frame, text="Price", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
-        price_label.pack(padx=40, fill='x')
-        self.price_entry = tk.Entry(price_frame, font="Consolas 14", bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        price_label = tk.Label(self.main_frame, text="Price", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        price_label.pack(padx=40, pady=(20,0), fill='x')
+        self.price_entry = tk.Entry(self.main_frame, font="Consolas 14", bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.price_entry.pack(padx=40, pady=(0, 10), fill='x')
 
 
         # Item Dropdown Menu
-        tag_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        tag_frame.pack( fill='x', pady=10, padx=10)
-        tag_label = tk.Label(tag_frame, text="Tag", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
-        tag_label.pack(padx=40, fill='x')
+        tag_label = tk.Label(self.main_frame, text="Tag", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
+        tag_label.pack(padx=40, pady=(20,0), fill='x')
         tag_choices = ["0 Set Nill", "1 Normal", "2 No interest"]
-        self.tag_dropdown = ttk.Combobox(tag_frame, values=tag_choices, font="Consolas 14")
+        self.tag_dropdown = ttk.Combobox(self.main_frame, values=tag_choices, font="Consolas 14")
         self.tag_dropdown.pack(padx=40, pady=(0, 10), fill='x')
         self.tag_dropdown.set("1 Normal")
 
 
         # Sale recieve Button
         sale_button_frame  = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
-        sale_button_frame.pack( fill='x', pady=10, padx=10)
-        sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        sale_button_frame.pack( fill='x', pady=10, padx=0)
+        sale_button = tk.Button(sale_button_frame, text="Sale", font="Consolas 14", command=self.sale, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         sale_button.pack(padx=(40,5), fill='x', pady=20, side='left', expand=1)
-        recieve_button = tk.Button(sale_button_frame, text="Recieve", font="Consolas 14", command=self.recieve, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        recieve_button = tk.Button(sale_button_frame, text="Recieve", font="Consolas 14", command=self.receive, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         recieve_button.pack(padx=(5, 40), fill='x', pady=20, side='right', expand=1)
 
     def update_listbox_items(self, lb, lst, pat):
@@ -3125,132 +3080,110 @@ class SalesPage(tk.Frame):
         lb.config(values=lsts)
 
     def get_items_from_inventory(self):
+        """Fetches items from the inventory, formatting for the search bar."""
         item_list = inventory.get_all_items()
-        # code to fetch items from inventory database
-        # replace this with actual code to fetch items from your database
-        return item_list
+        return [f"{i[0]} {i[1]} {i[5]}" for i in item_list]  # Format for SearchBar 
 
     def get_accounts(self):
-        accoount_list = accounts.get_all_customers()
-        # code to fetch accounts from accounts database
-        # replace this with actual code to fetch accounts from your database
-        return accoount_list
+        """Fetches accounts, formatting them for the search bar."""
+        account_list = accounts.get_all_customers()
+        return [f"{i[0]} {i[1]} {i[2]}" for i in account_list] 
     
     def set_price(self):
-        item_name = self.item_dropdown.get()
-        item_id = item_name.split()[0]
-        last_value = inventory.get_last_value(item_id)
-        self.price_entry.delete(0, tk.END) 
-        self.price_entry.insert(0, last_value)
-        # self.price_entry.setvar(last_value)
-        # print(last_value)
+        self.item_dropdown.hide_listbox(1)
+        item_name = self.item_dropdown.get_text()
+        if item_name in self.item_choices:
+            item_id = item_name.split()[0]
+            last_value = inventory.get_last_value(item_id)
+            self.price_entry.delete(0, tk.END) 
+            self.price_entry.insert(0, last_value)
+
+    def _get_transaction_data(self):
+        """Retrieves and validates transaction data from input fields."""
+        date = self.date_entry.get()
+        item_name = self.item_dropdown.get_text()
+        account_name = self.account_dropdown.get_text()
+        quantity = self.quantity_entry.get()
+        price = self.price_entry.get()
+        tag_value = self.tag_dropdown.get()
+
+        if not all([date, item_name, account_name, quantity, price, tag_value]):
+            return None  # Indicate missing data 
+
+        item_id, iname = item_name.split(" ", 1) # Split and unpack
+        account_id, aname = account_name.split(" ", 1)
+        item_id = int(item_id)
+        account_id = int(account_id)
+
+        tagint = int(tag_value[0])  # Convert to integer
+        amount = float(price) * float(quantity)
+        detail = f"{quantity} = {iname}"
+
+        return date, item_id, account_id, iname, aname, quantity, price, tagint, amount, detail, item_name
+
+    def _process_transaction(self, transaction_type): 
+        """Processes sales (P) or receive (M) transactions."""
+
+        data = self._get_transaction_data()
+        if data is None:
+            if __name__ != "__main__":
+                self.master.master.set_status("[-]|Some fields are empty|")
+            return 
+
+        date, item_id, account_id, iname, aname, quantity, price, tagint, amount, detail, item_name = data
+
+        item_exists = self._check_item_exists(item_name)
+
+        if tagint == 0:
+            self._handle_settlement(account_id, date, detail, amount, transaction_type) 
+        else:
+            accounts.add_customer_transaction(account_id, date, detail, amount, transaction_type, tagint)
+
+        if item_exists:  # Update inventory only if the item exists
+            inventory.add_item_transaction(item_id, date,
+                                        int(float(quantity)) if transaction_type == "M" else 0,
+                                        int(float(quantity)) if transaction_type == "P" else 0,
+                                        aname)
+            inventory.set_last_value(item_id, int(price)) 
+        else:
+            if __name__ != "__main__":
+                self.master.master.set_status(f"Warning: Item not found, inventory not updated.") 
+
+        note_id = self._add_daily_note(date, iname, aname, quantity, price, tagint, transaction_type)
+
+        if __name__ != "__main__":
+            self.master.master.set_status(f"Success (inventory may not be updated). Note ID: {note_id}") 
+
+    def _handle_settlement(self, account_id, date, detail, amount, transaction_type):
+        """Handles account settlements (Tag = 0)."""
+        total_amount = accounts.get_account_balance(account_id)  # Before adding new transaction
+        discount = total_amount + amount if transaction_type == "P" else total_amount - amount 
+
+        accounts.add_customer_transaction(account_id, date, detail, amount, transaction_type, 0) # original transaction
+        accounts.add_customer_transaction(account_id, date, "Settled Amount", total_amount, "M" , 0)  # record settled amount 
+        accounts.add_customer_transaction(account_id, date, "Discount", discount, "M", 0)  # record discount (if any)
+
+    def _check_item_exists(self, item_name):
+        """Checks if the complete item string exists in the choices."""
+        return item_name in self.item_choices  
 
 
+    def _add_daily_note(self, date, iname, aname, quantity, price, tagint, transaction_type):
+        """Adds a note to the daily_notes database."""
+        note = (
+            f"03 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
+            if transaction_type == "P" 
+            else f"04 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
+        )
+        return database.add_note_to_date(note)
 
     def sale(self):
-        # date item account quatity price
-        date = self.date_entry.get()
-        item_name = self.item_dropdown.get()
-        account_name = self.account_dropdown.get()
-        quantity = self.quantity_entry.get()
-        price = self.price_entry.get()
-        tag_value = self.tag_dropdown.get()
-        # print(date, item_id,account_id, quantity, price)
-        if date and item_name and account_name and quantity and price and tag_value:
-            item_id = item_name.split()[0]
-            account_id = account_name.split()[0]
-            if "{" in account_name:
-                aname = account_name.split("{")[1].split("}")[0]
-            else:
-                aname = account_name
-            if "{" in item_name:    
-                iname = item_name.split("{")[1].split("}")[0]
-            else:
-                iname = item_name
+        """Handles sale transactions."""
+        self._process_transaction("P")
 
-            
-            # to account
-            tagint = tag_value[0]
-            detail = f"{quantity} = {iname}"
-            amount = int(price) * float(quantity)
-            if tagint == "0":
-                total_amount = accounts.get_account_balace(account_id)
-                discount = total_amount + amount
-                accounts.add_customer_transaction(account_id, date, "Aaj tak total", total_amount, "P" , 0)
-                accounts.add_customer_transaction(account_id, date, detail, amount, "P", tagint)
-                accounts.add_customer_transaction(account_id, date, "DISCOUNT", discount, "P" , 0)
-                accounts.set_all_transaction_tags_to_zero(account_id)
-            
-            else:
-                accounts.add_customer_transaction(account_id, date, detail, amount, "P" , tagint)
-
-            
-            # update inventory
-            inventory.add_item_transaction(item_id, date, 0, int(float(quantity)), aname)
-            inventory.set_last_value(item_id, price)
-
-            # daily note
-            note = f"03 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
-            note_id = database.add_note_to_date(note)
-
-            if __name__ != "__main__":
-                self.master.master.set_status(f"{note_id} Note {note}")
-        else:
-            pass
-    
-    def recieve(self):
-        # date item account quatity price
-        date = self.date_entry.get()
-        item_name = self.item_dropdown.get()
-        account_name = self.account_dropdown.get()
-        quantity = self.quantity_entry.get()
-        price = self.price_entry.get()
-        tag_value = self.tag_dropdown.get()
-        # print(date, item_id,account_id, quantity, price)
-        if date and item_name and account_name and quantity and price and tag_value:
-            item_id = item_name.split()[0]
-            account_id = account_name.split()[0]
-            # aname = account_name.split("{")[1].split("}")[0]
-            # iname = item_name.split("{")[1].split("}")[0]
-
-            if "{" in account_name:
-                aname = account_name.split("{")[1].split("}")[0]
-            else:
-                aname = account_name
-            if "{" in item_name:    
-                iname = item_name.split("{")[1].split("}")[0]
-            else:
-                iname = item_name
-            
-            # to account
-            tagint = tag_value[0]
-            detail = f"{quantity} = {iname}"
-            amount = int(price) * float(quantity)
-            if tagint == "0":
-                total_amount = accounts.get_account_balace(account_id)
-                discount = total_amount - amount
-                accounts.add_customer_transaction(account_id, date, "Aaj tak total", total_amount, "M" , 0)
-                accounts.add_customer_transaction(account_id, date, detail, amount, "M", tagint)
-                accounts.add_customer_transaction(account_id, date, "DISCOUNT", discount, "M" , 0)
-                accounts.set_all_transaction_tags_to_zero(account_id)
-            
-            else:
-                accounts.add_customer_transaction(account_id, date, detail, amount, "M" , tagint)
-
-            
-            # update inventory
-            inventory.add_item_transaction(item_id, date, int(float(quantity)), 0, aname)
-            inventory.set_last_value(item_id, price)
-
-            # daily note
-            note = f"04 = {date}, {iname}, {aname}, {quantity}, {price}, {tagint}"
-            note_id = database.add_note_to_date(note)
-
-            if __name__ != "__main__":
-                self.master.master.set_status(f"{note_id} Note {note}")
-        else:
-            pass
-        
+    def receive(self):
+        """Handles receive transactions."""
+        self._process_transaction("M") 
             
 
 
@@ -3261,6 +3194,161 @@ if __name__ == "__main__":
     h.pack(expand=1, fill="both")
     app.mainloop()
 
+ 
+import tkinter as tk
+import tkinter.font as tkfont
+from mytheme import Colors
+
+class SearchBar(tk.Frame):
+    def __init__(self, master, data, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.data = data
+
+        # Search Bar
+        self.text_variable = tk.StringVar()  # Text variable
+        self.search_bar = tk.Entry(self, textvariable=self.text_variable, 
+                                    font="Consolas 14",
+                                    borderwidth=0,
+                                    # relief="groove",
+                                    background=Colors.BACKGROUND,
+                                    fg=Colors.FG_SHADE_1,
+                                    highlightthickness=2,
+                                    highlightbackground=Colors.BG_SHADE_2,
+                                    highlightcolor=Colors.ACTIVE_FOREGROUND
+                                    )
+        self.search_bar.pack(fill='both', expand=True)
+        self.search_bar.bind("<KeyRelease>", self.search)
+        self.search_bar.bind("<Down>", self.focus_listbox)
+        self.search_bar.bind("<FocusOut>", self.hide_listbox)
+        self.highlight_border_color = self.search_bar.cget("highlightbackground")
+        self.default_border_color = self.search_bar.cget("highlightcolor")
+
+        # Suggestion Listbox (in a Toplevel)
+        self.suggestion_toplevel = None
+        self.suggestion_listbox = None
+
+        self.current_suggestion_index = -1
+
+    def search(self, event):
+        if event.keysym == "Return":  # Ignore Enter key
+            return
+
+        search_term = self.search_bar.get().lower()
+        suggestions = self.get_suggestions(search_term)
+
+        if suggestions:
+            if self.suggestion_toplevel is None:
+                self.suggestion_toplevel = tk.Toplevel(self)
+                self.suggestion_toplevel.wm_overrideredirect(True)
+                self.suggestion_toplevel.wm_geometry("+%d+%d" % (
+                    self.search_bar.winfo_rootx(),
+                    self.search_bar.winfo_rooty() + self.search_bar.winfo_height()
+                ))
+                entry_font = tkfont.Font(font=self.search_bar.cget("font"))
+                char_width = entry_font.measure("0")
+                listbox_width_chars = int(self.search_bar.winfo_width() / (char_width+1 ))
+
+                self.suggestion_listbox = tk.Listbox(
+                    self.suggestion_toplevel,
+                    width=listbox_width_chars,
+                    font=entry_font.actual(),
+                    bg=Colors.BACKGROUND,
+                    fg=Colors.FG_SHADE_1,
+                    bd=1,
+                    highlightthickness=0,
+                    selectbackground=Colors.ACTIVE_BACKGROUND,
+                    selectforeground=Colors.FOREGROUND,
+                    activestyle="none",
+                    relief='flat'
+                )
+                self.suggestion_listbox.pack(fill='both', expand=True)
+                self.suggestion_listbox.bind("<FocusOut>", self.hide_listbox)
+                self.suggestion_listbox.bind("<Return>", self.select_suggestion)
+                self.suggestion_listbox.bind("<Up>", self.navigate_listbox)
+                self.suggestion_listbox.bind("<Down>", self.navigate_listbox)
+
+                max_height = 6
+                listbox_height = min(len(suggestions), max_height)
+                self.suggestion_listbox.config(height=listbox_height)
+
+            self.suggestion_listbox.delete(0, tk.END)
+            max_height = 6
+            listbox_height = min(len(suggestions), max_height)
+            self.suggestion_listbox.config(height=listbox_height)
+            for suggestion in suggestions:
+                self.suggestion_listbox.insert(tk.END, suggestion)
+            self.current_suggestion_index = -1
+            self.search_bar.config(highlightbackground=self.highlight_border_color)
+            self.search_bar.config(highlightcolor=self.default_border_color)
+        else:
+            self.hide_listbox(None)  # Hide if no suggestions
+            self.search_bar.config(highlightbackground="red")
+            self.search_bar.config(highlightcolor="red")
+
+    def get_suggestions(self, search_term):
+        suggestions = [item for item in self.data if search_term in item.lower()]
+        return suggestions
+
+    def focus_listbox(self, event):
+        if self.suggestion_listbox and self.suggestion_listbox.winfo_ismapped():
+            self.suggestion_listbox.focus()
+            self.suggestion_listbox.selection_set(0)
+            self.current_suggestion_index = 0
+
+    def hide_listbox(self, event):
+        if self.suggestion_toplevel:
+            focused_widget = self.focus_get()
+            if focused_widget != self.suggestion_listbox and focused_widget != self.search_bar:
+                self.suggestion_toplevel.destroy()
+                self.suggestion_toplevel = None
+                self.suggestion_listbox = None
+
+    def select_suggestion(self, event):
+        selection = self.suggestion_listbox.curselection()
+        if selection:
+            choice = self.suggestion_listbox.get(selection[0])
+            self.search_bar.delete(0, tk.END)
+            self.search_bar.insert(0, choice)
+            self.hide_listbox(None)
+
+            self.search_bar.focus_set()
+
+    def navigate_listbox(self, event):
+        if self.suggestion_listbox:
+            size = self.suggestion_listbox.size()
+            if event.keysym == "Up":
+                self.current_suggestion_index = max(0, self.current_suggestion_index - 1)
+            elif event.keysym == "Down":
+                self.current_suggestion_index = min(size - 1, self.current_suggestion_index + 1)
+            self.suggestion_listbox.selection_clear(0, tk.END)
+            self.suggestion_listbox.selection_set(self.current_suggestion_index)
+            self.suggestion_listbox.see(self.current_suggestion_index)
+
+    def get_text(self):
+        return self.search_bar.get()
+
+    def set_text(self, text):
+        self.text_variable.set(text)
+
+    def set_data(self, data):
+        self.data = data
+
+
+if __name__ == "__main__":
+    app = tk.Tk()
+    app.geometry("400x300")
+    app.config(background='#dddddd')
+
+    data = ["apple", "banana", "cherry", "grape", "orange", "watermelon", "sdiuo ho "]
+
+    entry1 = SearchBar(app, data)
+    entry1.pack(pady=20, padx=20, fill='x')
+
+    entry2 = SearchBar(app, data)
+    entry2.pack(pady=20, padx=20, fill='x')
+
+    app.mainloop()
  
 import sqlite3
 
@@ -3431,7 +3519,10 @@ def save_code_to_file(filepaths, output_filename):
   with open(output_filename, 'w') as output_file:
     for filepath in filepaths:
       with open(filepath, 'r') as input_file:
-        output_file.write(input_file.read() + "\n \n")
+        print(filepath)
+        if "bill" not in filepath:
+
+            output_file.write(input_file.read() + "\n \n")
 
 if __name__ == "__main__":
   # Get the current working directory
@@ -3446,58 +3537,64 @@ if __name__ == "__main__":
   print("Python code saved to output.txt")
 
  
+import sqlite3
+import accounts
 
+# --- DATABASE CONNECTION (Adjust path if needed) ---
+accounts_conn = sqlite3.connect('C://JBB//data//accounts.db')
+accounts_cursor = accounts_conn.cursor() 
 
+def update_settlement_tags():
+    """Updates tag values for settlement transactions in the accounts database."""
+    customer_ids = accounts.get_customer_ids() 
 
-# import tkinter as tk
-# from matplotlib.figure import Figure
-# from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-# import matplotlib.cm as cm
+    for customer_id in customer_ids:
+        table_name = f"customer_{customer_id}"
+        try:
+            accounts_cursor.execute(f"SELECT * FROM {table_name} ORDER BY date, id")
+            transactions = accounts_cursor.fetchall()
+            i = 0
+            while i < len(transactions):
+                row = transactions[i] 
+                tag = row[5]
 
-# # Sample data
-# data = [
-#     ['John', '2022-01-01', 1000, 5],
-#     ['Alice', '2022-02-15', 2000, 3],
-#     ['Bob', '2022-03-10', 1500, 7],
-#     ['Sarah', '2022-04-20', 1800, 4]
-# ]
+                if tag == '0' and row[2] == "Aaj tak total": 
+                    if i + 2 < len(transactions):  # Make sure there are enough rows
+                        next_row = transactions[i+1] 
+                        next_next_row = transactions[i+2]
+                        
+                        if next_next_row[2] == "DISCOUNT" and next_row[5] == "0" and next_next_row[5] == '0':
+                            # We've found the settlement group (3 transactions)
+                            i += 2  # Skip the next two rows (original, discount) 
+                        else:
+                            # The tag=0 transaction isn't part of a settlement group, so update it 
+                            accounts_cursor.execute(
+                                f"UPDATE {table_name} SET tags = '1' WHERE id = ?",
+                                (row[0],)
+                            )
+                    else:
+                        # Handle cases where you're at the end of the table
+                        accounts_cursor.execute(
+                                f"UPDATE {table_name} SET tags = '1' WHERE id = ?",
+                                (row[0],)
+                            )
+                else: 
+                    if tag == '0': # handle transactions those are accidently set to 0
+                        accounts_cursor.execute(
+                            f"UPDATE {table_name} SET tags = '1' WHERE id = ?",
+                            (row[0],)
+                        )
+                i += 1
+            accounts_conn.commit()
+            print(f"Updated settlement tags for customer ID: {customer_id}")
 
-# # Select columns for display and merge customer name and date
-# display_data = ['{} {}'.format(row[0], row[1]) for row in data]
+        except sqlite3.Error as e:
+            print(f"Error updating settlement tags for customer ID: {customer_id}: {e}") 
 
-# # Create the Tkinter window
-# root = tk.Tk()
-# root.title('Table Plot')
-
-# # Create a Matplotlib figure
-# fig = Figure(figsize=(8, 4), dpi=100)
-
-# # Create a subplot for the table
-# ax = fig.add_subplot(111)
-# ax.axis('off')
-
-# # Create the table plot
-# table = ax.table(cellText=[[row] for row in display_data],
-#                  colLabels=['Customer & Krar Date'],
-#                  loc='center',
-#                  cellLoc='center',
-#                  cellColours=[[cm.Blues(0.2)] for _ in range(len(display_data))])
-
-# # Set table properties
-# table.auto_set_font_size(False)
-# table.set_fontsize(12)
-# table.scale(1.2, 1.2)  # Adjust the table size if needed
-
-# # Create a FigureCanvasTkAgg instance
-# canvas = FigureCanvasTkAgg(fig, master=root)
-# canvas.draw()
-
-# # Pack the canvas into the Tkinter window
-# canvas.get_tk_widget().pack()
-
-# # Start the Tkinter event loop
-# root.mainloop()
-
+if __name__ == "__main__":
+    update_settlement_tags() 
+    print("Database updated!") 
+    accounts_conn.close()
  
 
  

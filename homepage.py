@@ -25,12 +25,12 @@ class HomePage(tk.Frame):
         super().__init__(master, **kwargs)
         self.Colors = Colors
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
@@ -40,8 +40,8 @@ class HomePage(tk.Frame):
         for widget in self.winfo_children():
             widget.destroy()
         
-        self.background_title = tk.Label(self, image=self.img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=self.img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
 
@@ -61,8 +61,8 @@ class HomePage(tk.Frame):
         for widget in self.winfo_children():
             widget.destroy()
         
-        self.background_title = tk.Label(self, image=self.img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=self.img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.karar_data_frame = KrarData(self)
         self.karar_data_frame.place(relx=0.78, rely=0.01, relheight=0.98, relwidth=0.21)
         self.sales_data_frame = SalesData(self)

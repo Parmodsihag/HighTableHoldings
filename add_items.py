@@ -12,26 +12,26 @@ import database
 
 class AddItemsPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        super().__init__(master, **kwargs)
 
         APP_FONT = "Consolas 12"
         APP_FONT1 = "Consolas 14"
 
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
+        # img = tk.PhotoImage(file="myicons\\framebg2.png")
 
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        self.img = img
+        # self.img = img
 
 
         # main frame to include all frames
-        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND1)
+        self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.2, rely=0.01, relwidth=.6, relheight=.98)
 
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
+        # self.background_title = tk.Label(self.main_frame, image=img)
+        # self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
 
         # title frame
@@ -48,14 +48,14 @@ class AddItemsPage(tk.Frame):
         name_frame.pack(fill='x', side='left', expand=1)
         name_label = tk.Label(name_frame, text="Item Name: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         name_label.pack(fill='x', padx=(40, 10), pady=(10,0))
-        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.name_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         # Other Details Entry Box
         details_frame = tk.Frame(frame1, bg=Colors.BACKGROUND)
         details_frame.pack(fill='x', side='left', expand=1)
         details_label = tk.Label(details_frame, text="Source: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         details_label.pack(fill='x')
-        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.details_entry.pack(fill='x', padx=(0,40))
 
         # GROUP 2
@@ -66,7 +66,7 @@ class AddItemsPage(tk.Frame):
         date_frame.pack(fill='x', side='left', expand=1)
         date_label = tk.Label(date_frame, text="Date: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(fill='x', padx=(40,10), pady=(10,0))
-        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.date_entry.pack(fill='x', padx=(40,10), pady=(0,10))
         self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
         # Opening Balance Entry Box
@@ -74,7 +74,7 @@ class AddItemsPage(tk.Frame):
         balance_frame.pack(fill='x', side='left', expand=1)
         balance_label = tk.Label(balance_frame, text="Opening Balance: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         balance_label.pack(fill='x')
-        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.balance_entry.pack(padx=(0, 40), fill='x')
 
         # GROUP 3
@@ -85,14 +85,14 @@ class AddItemsPage(tk.Frame):
         stock_value_frame.pack(fill='x', side='left', expand=1)
         stock_value_label = tk.Label(stock_value_frame, text="Stock Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         stock_value_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.stock_value_entry = tk.Entry(stock_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.stock_value_entry = tk.Entry(stock_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.stock_value_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         # Last Value Entry Box
         last_value_frame = tk.Frame(frame3, bg=Colors.BACKGROUND)
         last_value_frame.pack(fill='x', side='left', expand=1)
         last_value_label = tk.Label(last_value_frame, text="Last Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         last_value_label.pack(fill='x')
-        self.last_value_entry = tk.Entry(last_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.last_value_entry = tk.Entry(last_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.last_value_entry.pack(padx=(0, 40), fill='x')
 
         # GROUP 4
@@ -103,7 +103,7 @@ class AddItemsPage(tk.Frame):
         pk_frame.pack(fill='x', side='left', expand=1)
         pk_label = tk.Label(pk_frame, text="Pakka Kacha: [P/K] ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         pk_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.pk_entry = tk.Entry(pk_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.pk_entry = tk.Entry(pk_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.pk_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         self.pk_entry.insert(0, 'P')
         # GST Value Entry Box
@@ -111,7 +111,7 @@ class AddItemsPage(tk.Frame):
         gst_value_frame.pack(fill='x', side='left', expand=1)
         gst_value_label = tk.Label(gst_value_frame, text="GST Value: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         gst_value_label.pack(fill='x')
-        self.gst_value_entry = tk.Entry(gst_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.gst_value_entry = tk.Entry(gst_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.gst_value_entry.pack(padx=(0, 40), fill='x')
 
         # GROUP 5
@@ -122,7 +122,7 @@ class AddItemsPage(tk.Frame):
         batch_frame.pack(fill='x', side='left', expand=1)
         batch_label = tk.Label(batch_frame, text="Batch: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         batch_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.batch_entry = tk.Entry(batch_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.batch_entry = tk.Entry(batch_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.batch_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         self.batch_entry.insert(0, 'NA')
         # GST Value Entry Box
@@ -130,7 +130,7 @@ class AddItemsPage(tk.Frame):
         expiry_frame.pack(fill='x', side='left', expand=1)
         expiry_label = tk.Label(expiry_frame, text="Expiry: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         expiry_label.pack(fill='x')
-        self.expiry_value_entry = tk.Entry(expiry_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.expiry_value_entry = tk.Entry(expiry_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.expiry_value_entry.pack(padx=(0, 40), fill='x')
         self.expiry_value_entry.insert(0, 'NA')
 
@@ -142,7 +142,7 @@ class AddItemsPage(tk.Frame):
         unit_frame.pack(fill='x', side='left', expand=1)
         unit_label = tk.Label(unit_frame, text="Unit: ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         unit_label.pack(fill='x', padx=(40, 10), pady=(10, 0))
-        self.unit_entry = tk.Entry(unit_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.unit_entry = tk.Entry(unit_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.unit_entry.pack(fill='x', padx=(40, 10), pady=(0,10))
         self.unit_entry.insert(0, 'PCS')
         # GST Value Entry Box
@@ -150,7 +150,7 @@ class AddItemsPage(tk.Frame):
         type_value_frame.pack(fill='x', side='left', expand=1)
         type_value_label = tk.Label(type_value_frame, text="Type: [F, P, S, O] ", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         type_value_label.pack(fill='x')
-        self.type_value_entry = tk.Entry(type_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.type_value_entry = tk.Entry(type_value_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.type_value_entry.pack(padx=(0, 40), fill='x')
         self.type_value_entry.insert(0, 'O')
 
@@ -158,7 +158,7 @@ class AddItemsPage(tk.Frame):
         # Add Item Button
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame.pack(fill='x', pady=(10,0), padx=10)
-        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button = tk.Button(button_frame, text="Add Item", font=APP_FONT, command=self.add_item, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         self.add_button.pack(padx=40, fill='x', pady=(10, 10))
 
 

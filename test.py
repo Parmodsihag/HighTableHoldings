@@ -40,7 +40,10 @@ def save_code_to_file(filepaths, output_filename):
   with open(output_filename, 'w') as output_file:
     for filepath in filepaths:
       with open(filepath, 'r') as input_file:
-        output_file.write(input_file.read() + "\n \n")
+        print(filepath)
+        if "bill" not in filepath:
+
+            output_file.write(input_file.read() + "\n \n")
 
 if __name__ == "__main__":
   # Get the current working directory

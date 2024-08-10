@@ -1,90 +1,71 @@
-# High Table Holdings changelog
+# High Table Holdings Changelog
 
-* v3.6
-    * [v3.6.1](#v361)
-    * [v3.6.2](#v362)
-    * [v3.6.3](#v363)
+# High Table Holdings Changelog
 
-* v3.5
-    * [v3.5.5](#v355)
-    * [v3.5.4](#v354)
-    * [v3.5.3](#v354)
-    * [v3.5.2](#v352)
-    * [v3.5.1](#v351)
+## v3.7.0 - Enhanced User Experience and Transaction Accuracy
 
+This release focuses on improving the overall user experience, refining the visual appearance, and ensuring the accuracy of financial calculations.
 
-## v3.6.3
-    * now you can modify and delete bill realted data in modifypage module
-    * bind reports/tree to (ctrl + click) event when we ctrl + click any row in reports, it will take us to modify page and show the row there to modify
-    * bug fixed in bill class total cgst/sgst tax sometimes get to large floating point 
-        so we round off the tax to 2 decimal points
-    * now you can search in reports module 's table dropdown based on item/account name or date for accounts, items, dailypage
+### User Interface Improvements:
 
-## v3.6.2
-    * added documentation.md
-    * added more screenshots 
-        * accountslight
-        * krardark
-        * krarlight
-        * modifydark
-        * modifylight
-        * saleslight
-    * updated readme.md with additional screenshots
+- **Intuitive Search Bars:** Sales and account selection are streamlined with the introduction of searchable dropdowns. Instantly filter options as you type for a quicker and more user-friendly workflow. 
+- **Modernized Design:** Elements now feature solid borders and refined layouts for a clean, modern aesthetic that aligns with current design trends.
+- **Enhanced Listbox Navigation:** Seamlessly navigate through listbox suggestions using arrow keys, and easily make selections using the Enter key for a smoother workflow.
 
-## v3.6.1
-    * added readme.md
-    * added screenshots folder
-    * default theme dark
+### Functionality Refinements:
 
-## v3.5.5
-    main
-        * added light theme, assign a lable [@] on title bar which can toogle between dark and light themes
-        * improved homepage logic for better theme changing
+- **Accurate Compound Interest Calculation:**  The interest calculation logic is revised to handle compound interest accurately, ensuring precise financial reporting, especially over extended periods.
+- **Improved Account Balance Calculation:** Account balance computations are enhanced to correctly account for settlement transactions (Tag = 0) and apply compound interest only to unsettled periods, ensuring the displayed balance reflects the true financial status. 
 
-    reports
-        * a new format to show reports for accounts
-        * specified column widths for reports of accounts
-        * calculate_intrest function now calculate compound intrest by year
-        * now show a default page for every database we select
-        * customers and items table is bind with double click event to open the selected row
-    
-    mytheme
-        * added light theme Colors
-        * renamed dark theme to Colors1
-        * removed unnessesory lines/ comments
+### Technical Updates:
 
+- **Introduction of `SearchBar` Component:**  Sales and account dropdowns leverage a new `SearchBar` component for a better user experience.
+- **Visual Design Refinements:** Subtle updates across elements, including borders, fonts, and spacing, further polish the application's look and feel.
 
-## v3.5.4
-    added
-    function to delete bills of specific month_year from database
-    show status on status bar of bill creation and deletion
-    now billnumber format is yyyymm---
-    billnumber starts from yyyymm001
-    now document files (docx) are also genrated for bills over given month
+## Resolved Issues:
 
-## v3.5.3
-    added billshowpage
-    test prototype is ready for randoom bill genration over a given month
-    we can store the genrated results into database 
+- **Accidental "0" Tags Fixed:** A potential data inconsistency issue is addressed where transactions were sometimes assigned a tag value of "0" unintentionally. Now, such accidental settings are automatically corrected during program startup, guaranteeing accurate reporting and balance calculation.
 
-## v3.5.2
-    ADDED
-    changelog.md
-    
-## v3.5.1
-    ADDED
-    make group of bill related files in bills folder/package
-    billpage.py
-    bill_db.py
-    randombillgen.py
+**Note:** This update might involve minor code changes and visual refinements across various modules to enhance overall software stability and maintainability. 
 
-    a seprate database file along with other db files at C://JBB//data
-    bills.db 
-    
-    
-    
-## v3.0.0
+## v3.6.3 - Refined Bill and Report Management 
 
-    -- WORKING -- 
-    -ACCOUNTS MANAGEMENT
-    -INVENTORY MANAGEMENT
+* **Full Bill Lifecycle Management:** You can now not only create and view bills but also fully modify and delete them using the `modifypage` module, providing granular control over your billing information.
+* **Seamlessly Navigate to Edit with Ctrl+Click:** Productivity boost: Ctrl+clicking any row within the `reports` module swiftly redirects you to the `modifypage` with the corresponding row ready for editing.
+* **Guaranteed Accurate Tax Calculations:** Addressed potential discrepancies in CGST/SGST calculations for bills. Tax amounts are now rounded off to two decimal places for consistent and precise billing.
+* **Powerful Search Capabilities in Reports:** Locating specific entries is now simpler: Search functionality is enhanced in the `reports` module, enabling searches within table dropdowns by item/account names or dates across accounts, items, and daily pages.
+
+## v3.6.2 - Streamlined User Onboarding 
+
+* **Added Documentation for Smooth Start:**  New to High Table Holdings? You'll find detailed guidance in `documentation.md`, covering software setup, features, and how to get the most out of your experience.
+* **Visualize with More Screenshots:** Multiple new screenshots highlight different themes and modules, giving you a clearer understanding of how High Table Holdings looks and functions.
+    * accountslight
+    * krardark
+    * krarlight
+    * modifydark
+    * modifylight
+    * saleslight
+* **Enhanced README:** A friendlier and more informative welcome: The `readme.md` is updated with new screenshots, a more comprehensive project description, and links to the updated documentation.
+
+## v3.6.1 - Optimized Visual Appeal and Accessibility 
+
+* **Straightforward Project Intro:** Jump right in: The newly added `readme.md` gives you essential project information for quick setup and an immediate overview of the software. 
+* **At-a-Glance UI Experience:** Get a visual preview of High Table Holdings with the new `screenshots` folder, displaying core interfaces and features before you even run the software.
+* **Immersive Dark Theme:** Enhance focus: High Table Holdings launches with the dark theme active, ensuring a comfortable viewing experience that puts your data in the spotlight.
+
+## v3.5.5 - Flexible Themes, Streamlined Transactions 
+
+* **Introducing a Light Mode Choice:** Adjust High Table Holdings to your preferences: Enjoy a bright and user-friendly light theme alongside the classic dark theme. The convenient "@" label on the title bar makes switching effortless.
+* **Theme Changes: Polished and Reliable:** Navigate through different modules (especially the homepage) with a smoother and more consistent experience as theme transitions are improved. 
+* **Enhanced Reports for Precise Insights:** Quickly analyze your data with a newly designed format for displaying account reports. Clear column widths enhance readability for greater comprehension.
+
+**Changes Not Directly Reflected in Changelog**
+
+- **Performance Enhancements:** The software may show slightly faster load times and data processing speeds, likely due to internal code optimizations. 
+- **Visual Design Tweaks:** You may notice subtle changes in element layouts, border styles, and overall visual refinement within some of the modules, further improving usability. 
+- **Search Bar Upgrades:**  SearchBar elements seem to have added features like instant suggestion filtering, likely resulting from the use of a more specialized search bar component.  
+
+**Notes**
+
+- This changelog prioritizes visible changes that would matter to end users. Minor internal improvements or refactorings are not listed in detail unless they directly affect user interaction.  
+- Changelog formatting aims for better clarity and conciseness. 

@@ -11,24 +11,15 @@ import database
 
 class AccountPage(tk.Frame):
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg=Colors.BACKGROUND1, **kwargs)
+        super().__init__(master, **kwargs)
 
         APP_FONT = "Consolas 12"
         APP_FONT1 = "Consolas 14"
-
-        img = tk.PhotoImage(file="myicons\\framebg2.png")
-
-        self.background_title = tk.Label(self, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
-
-        self.img = img
 
         # main frame to include all frames
         self.main_frame = tk.Frame(self, bg=Colors.BACKGROUND)
         self.main_frame.place(relx=0.3, rely=0.01, relwidth=.4, relheight=.98)
 
-        self.background_title = tk.Label(self.main_frame, image=img)
-        self.background_title.place(relx=0, rely=0, relheight=1, relwidth=1)
 
         title_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND1)
         title_frame.pack(fill='x', pady=2, padx=10)
@@ -41,7 +32,7 @@ class AccountPage(tk.Frame):
 
         name_label = tk.Label(name_frame, text="Name", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         name_label.pack(padx=40, fill='x')
-        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.name_entry = tk.Entry(name_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.name_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Other Details Entry Box
@@ -49,7 +40,7 @@ class AccountPage(tk.Frame):
         details_frame.pack(fill='x', pady=10, padx=10)
         details_label = tk.Label(details_frame, text="Other Details", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         details_label.pack(padx=40, fill='x')
-        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.details_entry = tk.Entry(details_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.details_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Date Entry Box
@@ -57,7 +48,7 @@ class AccountPage(tk.Frame):
         date_frame.pack(fill='x', pady=10, padx=10)
         date_label = tk.Label(date_frame, text="Date", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         date_label.pack(padx=40, fill='x')
-        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.date_entry = tk.Entry(date_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.date_entry.pack(padx=40, pady=(0,10), fill='x')
         self.date_entry.insert(0, datetime.today().strftime('%Y-%m-%d'))
 
@@ -66,7 +57,7 @@ class AccountPage(tk.Frame):
         balance_frame.pack(fill='x', pady=10, padx=10)
         balance_label = tk.Label(balance_frame, text="Opening Balance", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         balance_label.pack(padx=40, fill='x')
-        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.balance_entry = tk.Entry(balance_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.balance_entry.pack(padx=40, pady=(0,10), fill='x')
         
         # Status Entry Box
@@ -74,20 +65,20 @@ class AccountPage(tk.Frame):
         status_frame.pack(fill='x', pady=10, padx=10)
         status_label = tk.Label(status_frame, text="Source | P/M | TAG 1", font=APP_FONT, bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         status_label.pack(padx=40, fill='x')
-        self.status_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.status_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.status_entry.insert(0, "New Account")
         self.status_entry.pack(padx=40, pady=(0,10), fill='x')
-        self.pm_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.pm_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.pm_entry.insert(0, "P")
         self.pm_entry.pack(padx=40, pady=(0,10), fill='x')
-        self.tag_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_1, relief='flat')
+        self.tag_entry = tk.Entry(status_frame, font=APP_FONT1, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_1, relief='solid')
         self.tag_entry.insert(0, "1")
         self.tag_entry.pack(padx=40, pady=(0,10), fill='x')
 
         # Add Account Button
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
         button_frame.pack(fill='x', pady=(10,0), padx=10)
-        self.add_button = tk.Button(button_frame, text="Add Account", font=APP_FONT1, command=self.add_account, bg=Colors.BACKGROUND3, fg=Colors.FG_SHADE_3, relief='groove')
+        self.add_button = tk.Button(button_frame, text="Add Account", font=APP_FONT1, command=self.add_account, bg=Colors.BACKGROUND, fg=Colors.FG_SHADE_3, relief='solid')
         self.add_button.pack(padx=40, fill='x', pady=(10, 10))
 
 

@@ -138,62 +138,98 @@ def get_table1(table_name):
     return accounts_cursor.fetchall()
 
 
-def set_all_transaction_tags_to_zero(customer_id):
-    """
-    Updates all transactions in a customer's account to have "0" as the tags value.
+def calculate_interest(self, principle_amount, from_date_str, to_date=datetime.date.today()):
+        """
+        Calculates interest earned on a principle amount, considering financial year-end (March 31st).
 
-    Args:
-        customer_id (int): The ID of the customer whose transactions need to be updated.
-    """
+        Args:
+            principle_amount (float): The initial amount of money.
+            from_date_str (str): The starting date for interest calculation in "YYYY-MM-DD" format.
+            to_date (datetime.date, optional): The ending date for interest calculation. Defaults to today.
 
+        Returns:
+            float: The calculated interest amount.
+        """
+        daily_interest_rate = 0.0006575342465753425 
+        from_date = datetime.datetime.strptime(from_date_str, "%Y-%m-%d").date()
+        total_interest = 0
+
+        while from_date < to_date:
+            year_end = datetime.date(from_date.year, 3, 31) 
+            if from_date.month > 3:
+                year_end = datetime.date(from_date.year + 1, 3, 31)
+            end_date = min(year_end, to_date)
+            days = (end_date - from_date).days
+            interest = principle_amount * days * daily_interest_rate
+            total_interest += interest
+            principle_amount += interest 
+            from_date = end_date + datetime.timedelta(days=1)
+
+        return round(total_interest, 2)
+
+def find_last_settlement_date(customer_id):
+    """Finds the date of the last settled transaction."""
     table_name = f"customer_{customer_id}"
-    query = f"UPDATE {table_name} SET tags = '0'"
-    accounts_cursor.execute(query)
-    accounts_conn.commit()
+    accounts_cursor.execute(f"SELECT MAX(date) FROM {table_name} WHERE tags = '0'")
+    result = accounts_cursor.fetchone()
+    return result[0] if result[0] is not None else None
 
+def get_account_balance(customer_id):
+    """Calculates the account balance for a customer, including interest,
+       considering only the current (unsettled) period.
+    """
+    table_name = f"customer_{customer_id}"
+    last_settlement_date = find_last_settlement_date(customer_id)
+    
+    if last_settlement_date is not None:
+        last_settlement_id_on_date = find_last_settlement_id_on_date(customer_id, last_settlement_date)
 
-def calculate_interest(amt, from_date, today_date_1=datetime.date.today()):
-    interest_rate_one_day = 0.0006575342465753425
-    dt2 = from_date.split("-")
-    date_of_entry = datetime.date(int(dt2[0]), int(dt2[1]), int(dt2[2]))
-    date_difference = today_date_1 - date_of_entry
-    interest = amt*date_difference.days*interest_rate_one_day
-    return round(interest, 2)
+        accounts_cursor.execute(f"""
+            SELECT * FROM {table_name}
+            WHERE (date > ?) OR (date = ? AND id > ?) 
+            ORDER BY date, id
+        """, (last_settlement_date, last_settlement_date, last_settlement_id_on_date))
 
+    else:
+        # No settlements, include all transactions 
+        accounts_cursor.execute(f"SELECT * FROM {table_name} ORDER BY date, id")
 
-def get_account_balace(customer_id):
-    table_data = get_table1(f"customer_{customer_id}")
-    total_sum = 0.0
-    # total_sum_without_interest = 0.0
-    # total_interest = 0.0
-    for row in table_data:
-        date = row[0]
-        amount = row[1]
-        transction_type = row[2]
-        tag = row[3]
-        # print(tag == "1")
-        if tag == "1":
-            intrest = calculate_interest(amount, date)
-        else:
-            intrest = 0
-        ttl = float(amount) + intrest
-        if transction_type.upper() == "P":
-            # total_interest += intrest
-            # total_sum_without_interest += float(amount)
-            total_sum += ttl
-        else:
-            # total_interest -= intrest
-            # total_sum_without_interest -= float(amount)
-            total_sum -= ttl
+    transactions = accounts_cursor.fetchall()
+    balance = 0.0
 
-    return round(total_sum, 2)
+    for row in transactions:
+        date_str = row[1]
+        amount = row[3]
+        transaction_type = row[4]
+        tag = row[5]
 
+        if tag == '1':  # Interest-bearing transaction
+            interest = calculate_interest(amount, date_str)
+            total = amount + interest
+        else:  # No-interest transaction (tag=2) 
+            total = amount
+
+        if transaction_type == "P":
+            balance += total
+        else: # if transaciton type = "M"
+            balance -= total
+
+    return round(balance, 2)
 
 # print(get_account_balace(1))
 
 
 if __name__ =='__main__':
-    x = get_all_customers_name_and_id()
-    x = [f"{i[0]} {i[1]}" for i in x]
-    for i in x:
-        print(i)
+    while True:
+        
+        x = input(": ")
+        if x == "q":
+            break
+        accounts_cursor.execute(x)
+        for i in accounts_cursor.fetchall():
+            print(i)
+        accounts_conn.commit()
+    # x = get_all_customers_name_and_id()
+    # x = [f"{i[0]} {i[1]}" for i in x]
+    # for i in x:
+    #     print(i)
