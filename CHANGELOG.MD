@@ -1,7 +1,5 @@
 # High Table Holdings Changelog
 
-# High Table Holdings Changelog
-
 ## v3.7.0 - Enhanced User Experience and Transaction Accuracy
 
 This release focuses on improving the overall user experience, refining the visual appearance, and ensuring the accuracy of financial calculations.

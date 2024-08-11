@@ -1,13 +1,13 @@
         
 import tkinter as tk
 
-from mytheme import Colors
+from .mytheme import Colors
 from tkinter import ttk
-
-import accounts
-import inventory
-import database
-import krar
+from database import accounts, inventory, database, krar
+# import accounts
+# import inventory
+# import database
+# import krar
 import sqlite3
 from bills import bill_db
 

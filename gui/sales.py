@@ -1,14 +1,14 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import re
-from mytheme import Colors
+from .mytheme import Colors
 from datetime import datetime
-from searchbar import SearchBar
+from .searchbar import SearchBar
 
-
-import accounts
-import inventory
-import database
+from database import accounts, inventory, database
+# import accounts
+# import inventory
+# import database
 
 class SalesPage(tk.Frame):
     def __init__(self, master, **kwargs):
@@ -106,7 +106,7 @@ class SalesPage(tk.Frame):
     def _get_transaction_data(self):
         """Retrieves and validates transaction data from input fields."""
         date = self.date_entry.get()
-        item_name = self.item_dropdown.get_text()
+        item_name = self.item_dropdown.get_text().strip()
         account_name = self.account_dropdown.get_text()
         quantity = self.quantity_entry.get()
         price = self.price_entry.get()
@@ -115,16 +115,21 @@ class SalesPage(tk.Frame):
         if not all([date, item_name, account_name, quantity, price, tag_value]):
             return None  # Indicate missing data 
 
-        item_id, iname = item_name.split(" ", 1) # Split and unpack
+        item_exists = self._check_item_exists(item_name)
+        if item_exists:
+            item_id, iname = item_name.split(" ", 1) # Split and unpack
+            item_id = int(item_id)
+        else:
+            item_id = -1
+            iname = item_name
         account_id, aname = account_name.split(" ", 1)
-        item_id = int(item_id)
         account_id = int(account_id)
 
         tagint = int(tag_value[0])  # Convert to integer
         amount = float(price) * float(quantity)
         detail = f"{quantity} = {iname}"
 
-        return date, item_id, account_id, iname, aname, quantity, price, tagint, amount, detail, item_name
+        return date, item_id, account_id, iname, aname, quantity, price, tagint, amount, detail
 
     def _process_transaction(self, transaction_type): 
         """Processes sales (P) or receive (M) transactions."""
@@ -135,29 +140,28 @@ class SalesPage(tk.Frame):
                 self.master.master.set_status("[-]|Some fields are empty|")
             return 
 
-        date, item_id, account_id, iname, aname, quantity, price, tagint, amount, detail, item_name = data
-
-        item_exists = self._check_item_exists(item_name)
+        date, item_id, account_id, iname, aname, quantity, price, tagint, amount, detail = data
 
         if tagint == 0:
             self._handle_settlement(account_id, date, detail, amount, transaction_type) 
         else:
             accounts.add_customer_transaction(account_id, date, detail, amount, transaction_type, tagint)
 
-        if item_exists:  # Update inventory only if the item exists
+        if item_id != -1:  # Update inventory only if the item exists
             inventory.add_item_transaction(item_id, date,
                                         int(float(quantity)) if transaction_type == "M" else 0,
                                         int(float(quantity)) if transaction_type == "P" else 0,
                                         aname)
             inventory.set_last_value(item_id, int(price)) 
-        else:
-            if __name__ != "__main__":
-                self.master.master.set_status(f"Warning: Item not found, inventory not updated.") 
 
         note_id = self._add_daily_note(date, iname, aname, quantity, price, tagint, transaction_type)
 
         if __name__ != "__main__":
-            self.master.master.set_status(f"Success (inventory may not be updated). Note ID: {note_id}") 
+            if item_id == -1:
+                self.master.master.set_status(f"Success (inventory may not be updated). Note ID: {note_id}")
+            else:
+                self.master.master.set_status(f"Success! Note ID: {note_id}")
+
 
     def _handle_settlement(self, account_id, date, detail, amount, transaction_type):
         """Handles account settlements (Tag = 0)."""

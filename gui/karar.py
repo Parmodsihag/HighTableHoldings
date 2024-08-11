@@ -1,13 +1,14 @@
 import tkinter as tk
 # import sqlite3
 
-import accounts
-import krar
+# import accounts
+# import krar
 
 from tkinter import ttk
-from mytheme import Colors
+from .mytheme import Colors
 from datetime import datetime
 
+from database import accounts, krar
 
 
 

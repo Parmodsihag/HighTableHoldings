@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkfont
-from mytheme import Colors
+from .mytheme import Colors
 
 class SearchBar(tk.Frame):
     def __init__(self, master, data, **kwargs):

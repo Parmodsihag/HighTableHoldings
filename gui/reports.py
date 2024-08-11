@@ -1,7 +1,7 @@
         
 import tkinter as tk
 
-from mytheme import Colors
+from .mytheme import Colors
 from tkinter import ttk
 
 import calendar
@@ -9,10 +9,11 @@ import sqlite3
 import datetime
 import re
 
-import accounts
-import inventory
-import database
-import krar
+from database import accounts, inventory, database, krar
+# import accounts
+# import inventory
+# import database
+# import krar
 
 db_name = "C://JBB//data//bills.db"
 bill_cursor = sqlite3.connect(db_name).cursor()
@@ -406,7 +407,7 @@ class ReportsPage(tk.Frame):
 
     def make_table_accounts(self, column_list, table_data):
         """Prepares account transaction data for display, 
-           including interest and settlement handling.
+            including interest and settlement handling.
         """
         total_sum_without_interest = 0.0
         total_interest = 0.0
@@ -424,11 +425,12 @@ class ReportsPage(tk.Frame):
             updated_column_list = ['ID', 'Date', 'Particulars', 'Interest', 'Debit', 'Credit', 'Balance']
 
             current_balance = 0.0
-            last_settlement_date = self._find_last_settlement_date(table_data)
+            last_settlement_date, last_settlement_id = self._find_last_settlement_date(table_data)
+            # Keep track of the last settlement transaction ID
 
             for row in table_data:
-                id, date, particulars, amount, transaction_type, tag  = row # extract from row
-                date_obj = datetime.datetime.strptime(date, "%Y-%m-%d").date()  # Convert to date object
+                id, date, particulars, amount, transaction_type, tag = row
+                date_obj = datetime.datetime.strptime(date, "%Y-%m-%d").date()
                 interest = 0.0
                 debit = amount if transaction_type.upper() == "P" else ""
                 credit = amount if transaction_type.upper() == "M" else ""
@@ -437,8 +439,15 @@ class ReportsPage(tk.Frame):
                     current_balance = 0.0
                     total_interest = 0.0
                     total_sum_without_interest = 0.0
+                    last_settlement_date = date_obj
+
                 else: 
-                    if tag == '1' and (last_settlement_date is None or (date_obj > last_settlement_date)):
+                    # Calculate interest only if transaction is after the last settlement
+                    if (tag == '1' and 
+                        (last_settlement_date is None or 
+                            date_obj > last_settlement_date or 
+                            (date_obj == last_settlement_date and id > last_settlement_id))
+                    ):
                         interest = self.calculate_interest(amount, date)
                         total_interest += interest
 
@@ -470,12 +479,14 @@ class ReportsPage(tk.Frame):
         Returns:
             datetime.date or None: Date of the last settlement or None if no settlements found.
         """
-        last_settlement_date = None 
+        last_settlement_date = None
+        last_settlement_id = -1
         for row in reversed(table_data):  # Iterate in reverse to find the last settlement quickly 
             if row[5] == '0': 
                 last_settlement_date = datetime.datetime.strptime(row[1], "%Y-%m-%d").date()
+                last_settlement_id = row[0]
                 break
-        return last_settlement_date 
+        return last_settlement_date , last_settlement_id
 
     def make_table_items(self, column_list, table_data):
         updated_column_list = []
@@ -494,10 +505,12 @@ class ReportsPage(tk.Frame):
                 status = f"{item_name}   [{item_instock}] "
                 self.master.master.set_status(status)
         else:
-            column_width_list = [1,1,1,1,1,1,1,1,1,1,1]
+            column_width_list = [10,200,1,1,1,1,1,1,1,1,1,1]
             updated_column_list.append("In Stock")
+            updated_column_list.append("Total Value")
             # updated_column_list.append("Stock Value")
             # updated_column_list.append("Last Value")
+            all_items_stock_value = 0.0
             for row in table_data:
                 # print(row)
                 item_id = int(row[0])
@@ -506,12 +519,18 @@ class ReportsPage(tk.Frame):
                     temp_list.append(i)
 
                 in_stock = inventory.get_item_quantity(item_id)
+                total_stock_value = round(in_stock * float(row[2]), 2)
+                all_items_stock_value += total_stock_value
                 # total_stock_value = inventory.get_item_value(item_id)
                 # last_value = inventory.get_last_value(item_id)
                 temp_list.append(in_stock)
+                temp_list.append(total_stock_value)
                 # temp_list.append(total_stock_value)
                 # temp_list.append(last_value)
                 updated_table_data.append(temp_list)
+            if __name__ != "__main__":
+                status = f"{all_items_stock_value} "
+                self.master.master.set_status(status)
 
             
 

@@ -2,11 +2,12 @@ import tkinter as tk
 # from tkinter import ttk
 from datetime import datetime
 
-from mytheme import Colors
+from .mytheme import Colors
 
+from database import inventory, database
 # import accounts
-import inventory
-import database
+# import inventory
+# import database
 # from inventory import
 # from sales import Sales
 
