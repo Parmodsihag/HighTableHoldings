@@ -246,3 +246,48 @@ if __name__ == '__main__':
     # inventory_conn.commit()
     # print(get_item_value(44))
     # get_item_value(44)
+
+def get_total_inventory_value():
+    """Calculates the total value of all items currently in stock."""
+    total_value = 0.0
+    try:
+        items = get_all_items() # Get list of all items [id, name, stock_val, last_val, ...]
+        for item in items:
+            item_id = item[0]
+            stock_value_per_unit = float(item[2]) if item[2] else 0.0 # Use 'stock_value'
+            quantity = get_item_quantity(item_id) # Assumes this function exists and is correct
+            total_value += quantity * stock_value_per_unit
+    except Exception as e:
+        print(f"Error calculating total inventory value: {e}")
+    return round(total_value, 2)
+
+def get_low_stock_items(threshold=5):
+    """Retrieves items with stock quantity at or below a threshold."""
+    low_stock = []
+    try:
+        items = get_all_items_id_and_name() # Get [(id, name), ...]
+        for item_id, name in items:
+            quantity = get_item_quantity(item_id)
+            if quantity <= threshold:
+                low_stock.append((item_id, name, quantity))
+        # Sort by quantity (lowest first)
+        low_stock.sort(key=lambda x: x[2])
+    except Exception as e:
+        print(f"Error getting low stock items: {e}")
+    return low_stock
+
+# Ensure get_item_quantity is robust
+def get_item_quantity(item_id):
+    quantity = 0
+    try:
+        inventory_cursor.execute(f"SELECT SUM(received - sale) FROM item_{item_id}")
+        row = inventory_cursor.fetchone()
+        # Ensure row and row[0] are not None before converting
+        if row and row[0] is not None:
+            quantity = int(row[0])
+    except sqlite3.Error as e:
+        # Log specific item ID in error message
+        print(f"Error getting quantity for item {item_id}: {e}")
+    except Exception as e_gen: # Catch potential non-SQLite errors
+         print(f"Unexpected error getting quantity for item {item_id}: {e_gen}")
+    return quantity

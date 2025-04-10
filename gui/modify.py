@@ -9,7 +9,7 @@ from database import accounts, inventory, database, krar
 # import database
 # import krar
 import sqlite3
-from bills import bill_db
+# from bills import bill_db
 
 class ModifyPage(tk.Frame):
     def __init__(self, master, **kwargs):
@@ -165,12 +165,7 @@ class ModifyPage(tk.Frame):
             if selected_db == "krar.db":
                 krar.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 self.table_list = krar.cursor.fetchall()
-            if selected_db == "bills.db":
-                conn = sqlite3.connect(bill_db.db_name)
-                cursor = conn.cursor()
-                cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-                self.table_list = cursor.fetchall()
-                conn.close()
+            
             
             self.table_dropdown.config(values=self.table_list)
             
@@ -204,11 +199,6 @@ class ModifyPage(tk.Frame):
                     x = 'uid'
                 row = krar.cursor.execute(f"SELECT * FROM {selected_table} where {x} = {row_id}").fetchone()
 
-            if selected_db == "bills.db":
-                conn = sqlite3.connect(bill_db.db_name)
-                cursor = conn.cursor()
-                row = cursor.execute(f"SELECT * FROM {selected_table} where id = {row_id}").fetchone()
-                conn.close()
 
         new_row = "|".join(map(str, row))
         self.table_row.set(new_row)
@@ -241,18 +231,7 @@ class ModifyPage(tk.Frame):
                 else:
                     krar.modify_by_krar_id(int(row_id), row_list[1], row_list[2])
 
-            if selected_db == 'bills.db':
-                conn = sqlite3.connect(bill_db.db_name)
-                cursor = conn.cursor()
-                if selected_table == "item_details":
-                    bill_db.modify_item_details(int(row_id), tuple(row_list[1:]))
-                
-                elif selected_table == "bill_details":
-                    bill_db.modify_bill_details(int(row_list[1]), tuple(row_list[2:]))
-                
-                else:
-                    bill_db.modify_bill_item(int(row_list[1]), int(row_list[2]), int(row_list[3]))
-
+            
             note = f"05 = {selected_db}, {selected_table}, {row_id}, {table_row}"
             database.add_note_to_date(note)
 
@@ -290,8 +269,7 @@ class ModifyPage(tk.Frame):
                 else:
                     krar.delete_from_by_krar_id(int(row_id))
             
-            if selected_db == 'bills.db':
-                bill_db.delete_row(selected_table, row_id)
+            
 
 
             note = f"06 = {selected_db}, {selected_table}, {row_id}, {table_row}"

@@ -1,3 +1,4 @@
+# main.py
 # import time
 # st = time.time()
 import os
@@ -15,13 +16,14 @@ from gui.accounts import AccountPage
 from gui.items import AddItemsPage 
 from gui.karar import KararPage
 from gui.reports import ReportsPage
-from gui.modify import ModifyPage 
-# from gui.bills import BillPage
-# from gui.bills import BillShowPage
+from gui.modify import ModifyPage
+from gui.crop_trading import CropTradingPage 
 
 # Import any necessary utility functions
 from mypandasfile import get_all_list
 
+# Import database modules needed for initialization check
+from database import crop_database, accounts, inventory, database, krar
 
 
 class CustomLabel(tk.Frame):
@@ -112,6 +114,7 @@ class MyApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.create_folder_and_subfolder()
+        crop_database.initialize_database()
         self.themeint = 0
         self.is_graph_ready = 0
         self.title("High Table Holdings")
@@ -140,7 +143,7 @@ class MyApp(tk.Tk):
                             'Treeview':{
                                 'configure':
                                 {
-                                    'rowheight': 20,
+                                    'rowheight': 28,
                                     'font': 'Ubantu 10'
                                 }
                             }
@@ -153,8 +156,21 @@ class MyApp(tk.Tk):
         #                     foreground=Colors.FG_SHADE_1, 
         #                     arrowcolor=Colors.FOREGROUND,
         #                     borderwidth=1)
-        self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND)
-        self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 12')
+        # self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND, font="Consolas 18", rowheight=35)
+        # self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 14')
+
+        self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND, font="Consolas 18", rowheight=35)
+        self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1, font='Consolas 14')
+        # Configure TCombobox style explicitly here or in toggle_theme
+        self.style.map('TCombobox', fieldbackground=[('readonly', Colors.BACKGROUND3)]) # Example for readonly state
+        self.style.map('TCombobox', foreground=[('readonly', Colors.FG_SHADE_1)])
+        self.style.map('TCombobox', selectbackground=[('readonly', Colors.ACTIVE_BACKGROUND)])
+        self.style.map('TCombobox', selectforeground=[('readonly', Colors.ACTIVE_FOREGROUND)])
+
+
+
+        # self.chatbot_instance = None
+
 
         # main 4 parts 
         self.title_bar = tk.Frame(self, bg=Colors.BG_SHADE_1)
@@ -207,6 +223,9 @@ class MyApp(tk.Tk):
         self.reportframe.place(relx=0, rely=0, relheight=1, relwidth=1)
         self.modifyframe = ModifyPage(self.action_frame)
         self.modifyframe.place(relx=0, rely=0, relheight=1, relwidth=1)
+        
+        # self.croptradeframe = CropTradingPage(self.action_frame) # <--- Create Crop Trading Frame
+        # self.croptradeframe.place(relx=0, rely=0, relheight=1, relwidth=1)
         # self.billframe = BillPage(self.action_frame)
         # self.billframe.place(relx=0, rely=0, relheight=1, relwidth=1)
         # self.billshowframe = BillShowPage(self.action_frame)
@@ -231,15 +250,17 @@ class MyApp(tk.Tk):
         self.modify_frame_label.pack( fill="x")
         self.report_frame_label = CustomLabel(self.menu_frame, "Reports ", self.reportframe, 'R')
         self.report_frame_label.pack( fill="x")
+        # self.crop_trading_label = CustomLabel(self.menu_frame, "Crop Trade ", self.croptradeframe, 'C') # <--- Add Label
+        # self.crop_trading_label.pack( fill="x") # <--- Pack it
         # self.bill_frame_label = CustomLabel(self.menu_frame, "Bills ", self.billframe, 'B')
         # self.bill_frame_label.pack( fill="x")
         # self.bill_show_frame_label = CustomLabel(self.menu_frame, "Bill ", self.billshowframe, 'T')
         # self.bill_show_frame_label.pack( fill="x")
 
+        self.bind()
         # activating home page
         self.home_page_label.set_active()
 
-        self.bind()
         # self.sale_page_label.set_active()
         # self.account_page_label.set_active()
         # self.report_frame_label.set_active()
@@ -279,102 +300,166 @@ class MyApp(tk.Tk):
         today_date = tk.Label(master, text=today, font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
         today_date.place(relx=0.9, rely=0)
 
-        show_graph_label = tk.Label(master, text="#", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        show_graph_label = tk.Label(master, text="📊", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
         show_graph_label.place(relx=0.8, rely=0)
         show_graph_label.bind("<Button-1>",lambda e: self.my_parallel_processes())
 
-        change_theme_label = tk.Label(master, text="@", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
+        change_theme_label = tk.Label(master, text="🎨", font="Consolas 16", bg= Colors.BG_SHADE_1, fg=Colors.FG_SHADE_1)
         change_theme_label.place(relx=0.78, rely=0)
         change_theme_label.bind("<Button-1>",lambda e: self.togle_theme())
 
+    # ---Function to show/hide chatbot ---
+    
     def set_status(self,s):
         self.status.set(s)
 
     def togle_theme(self):
+        # ... (your theme toggling logic) ...
+        global Colors # Make sure Colors is updated globally if needed by other modules
         if self.themeint:
-            colors = Colors
+            Colors = Colors1 # Use Colors1 instance directly
             self.themeint = 0
         else:
-            colors = Colors1
+            Colors = Colors # Use Colors instance directly
             self.themeint = 1
 
-        self.update_widget_colors(widget=self, colors=colors)
-        self.homeframe.Colors = colors
-        self.reportframe.Colors = colors
-        # self.billframe.Colors = colors
-        self.style.configure('TCombobox', selectbackground=colors.FG_SHADE_1, 
-                            fieldbackground=colors.BACKGROUND3, 
-                            background=colors.BACKGROUND3, 
-                            foreground=colors.FG_SHADE_1, 
-                            arrowcolor=colors.FOREGROUND)
-        self.style.configure('Treeview', fieldbackground=colors.BACKGROUND)
-        self.style.configure("Treeview.Heading", foreground=colors.FOREGROUND, 
-                                background=colors.BACKGROUND1)
+        # Update styles and widgets recursively
+        self.update_widget_colors(self, Colors) # Pass the selected theme instance
+        # Update specific pages if they cache Colors
+        self.homeframe.Colors = Colors
+        self.reportframe.Colors = Colors
+        # self.chatbotpage.Colors = Colors # If ChatbotPage uses self.Colors
+
+        # Update styles
+        self.style.configure('Treeview', fieldbackground=Colors.BACKGROUND)
+        self.style.configure("Treeview.Heading", foreground=Colors.FOREGROUND, background=Colors.BACKGROUND1)
+        self.style.map('TCombobox', fieldbackground=[('readonly', Colors.BACKGROUND3)])
+        self.style.map('TCombobox', foreground=[('readonly', Colors.FG_SHADE_1)])
+        self.style.map('TCombobox', selectbackground=[('readonly', Colors.ACTIVE_BACKGROUND)])
+        self.style.map('TCombobox', selectforeground=[('readonly', Colors.ACTIVE_FOREGROUND)])
 
         if self.is_graph_ready:
             self.homeframe.redraw_graphs()
 
+
     def update_widget_colors(self, widget, colors):
-        """
-        Recursively updates the colors of a widget and its children based on the current theme.
+        # ... (your recursive color update logic) ...
+        # Ensure it handles all widget types correctly based on the 'colors' object passed in
+        widget_bg = colors.BACKGROUND
+        widget_fg = colors.FOREGROUND
+        active_bg = colors.ACTIVE_BACKGROUND
+        active_fg = colors.ACTIVE_FOREGROUND
+        entry_bg = colors.BACKGROUND3
+        entry_fg = colors.FG_SHADE_1
+        button_fg = colors.FG_SHADE_3
+        label_fg = colors.ACTIVE_FOREGROUND # Or colors.FOREGROUND depending on label type
 
-        Args:
-            widget (tk.Widget): The widget to start updating colors from.
-        """
+        config_opts = {}
 
-        if isinstance(widget, CustomLabel):
-            # widget.Colors = colors
-            widget.normal_bg = colors.BACKGROUND
-            widget.normal_fg = colors.FOREGROUND
-            widget.hover_bg = colors.LIGHT_BG
-            widget.hover_fg = colors.FOREGROUND
-            widget.active_bg = colors.ACTIVE_BACKGROUND
-            widget.active_fg = colors.FG_SHADE_1
-        
-        elif isinstance(widget, tk.Listbox):
-            widget.config(background=colors.BACKGROUND)
-        
-        elif isinstance(widget, tk.Frame):
-            widget.config(background=colors.BACKGROUND)
+        # --- Frame / Toplevel ---
+        if isinstance(widget, (tk.Frame, tk.Toplevel, tk.PanedWindow)):
+             config_opts['bg'] = widget_bg
 
+        # --- Label ---
         elif isinstance(widget, tk.Label):
-            widget.config(background=colors.BACKGROUND,
-                foreground=colors.ACTIVE_FOREGROUND)
-        
-        elif isinstance(widget, ttk.Combobox):
-            widget.config(
-                          background= colors.BACKGROUND3,
-                          foreground= colors.FG_SHADE_1)
+             # Be careful not to override labels meant to stay a specific color (like titles)
+             # Maybe check current bg/fg before changing?
+             # Simple approach: change all non-title-bar labels
+             if widget.master != self.title_bar and widget.master != self.status_bar:
+                  config_opts['background'] = widget_bg
+                  # Decide on foreground based on role, default to standard FG
+                  config_opts['foreground'] = label_fg if widget.cget('foreground') != colors.FG_SHADE_3 else colors.FG_SHADE_3
 
+        # --- Button ---
         elif isinstance(widget, tk.Button):
-            widget.config(activebackground=colors.ACTIVE_BACKGROUND, 
-                          activeforeground=colors.ACTIVE_FOREGROUND, 
-                          background=colors.BACKGROUND3, 
-                          foreground=colors.FG_SHADE_3)
+             config_opts['background'] = widget_bg # Or BACKGROUND1/3?
+             config_opts['foreground'] = button_fg
+             config_opts['activebackground'] = active_bg
+             config_opts['activeforeground'] = colors.BACKGROUND # Often white/black on active
 
+        # --- Entry ---
         elif isinstance(widget, tk.Entry):
-            widget.config(background=colors.BACKGROUND3, 
-                          foreground=colors.FG_SHADE_1)
-        
+             config_opts['background'] = entry_bg
+             config_opts['foreground'] = entry_fg
+             config_opts['relief'] = 'solid' # Ensure relief matches theme
+             config_opts['bd'] = 1
+             config_opts['insertbackground'] = colors.FOREGROUND # Cursor
 
-        # Recursively update child widgets
+        # --- Text / ScrolledText ---
+        # elif isinstance(widget, (tk.Text, scrolledtext.ScrolledText)):
+        #      config_opts['background'] = entry_bg # Often same as Entry
+        #      config_opts['foreground'] = entry_fg
+        #      config_opts['insertbackground'] = colors.FOREGROUND # Cursor
+
+        # --- Listbox ---
+        elif isinstance(widget, tk.Listbox):
+             config_opts['background'] = entry_bg
+             config_opts['foreground'] = entry_fg
+             config_opts['selectbackground'] = active_bg
+             config_opts['selectforeground'] = colors.FOREGROUND
+
+        # --- ttk Widgets (Check style configuration first) ---
+        elif isinstance(widget, ttk.Combobox):
+             # Primarily handled by style, but might set readonly bg/fg if needed
+             pass # Rely on self.style updates
+        elif isinstance(widget, ttk.Treeview):
+             pass # Rely on self.style updates
+        elif isinstance(widget, ttk.Scrollbar):
+             # Often themed with parent, but might need explicit config
+             pass
+
+        # --- Custom Widgets ---
+        elif isinstance(widget, CustomLabel):
+             widget.normal_bg = colors.BACKGROUND1
+             widget.normal_fg = colors.FOREGROUND
+             widget.hover_bg = colors.LIGHT_BG
+             widget.hover_fg = colors.FOREGROUND
+             widget.active_bg = colors.ACTIVE_BACKGROUND
+             widget.active_fg = colors.FG_SHADE_1
+             # Re-apply current state colors
+             if widget.is_active:
+                  widget.customlabel.config(fg=widget.active_fg) # Keep bg as frame's bg
+                  widget.customlabel1.config(bg=widget.active_fg) # Frame bg remains default
+             elif widget.is_hovering:
+                  widget.customlabel.config(bg=widget.hover_bg, fg=widget.hover_fg)
+                  widget.customlabel1.config(bg=widget.hover_bg)
+             else:
+                  widget.customlabel.config(bg=widget.normal_bg, fg=widget.normal_fg)
+                  widget.customlabel1.config(bg=widget.normal_bg)
+             # Configure the frame itself
+             config_opts['bg'] = widget_bg # Set frame background
+
+        # Apply collected configurations
+        if config_opts:
+             try:
+                  widget.configure(**config_opts)
+             except tk.TclError as e:
+                  # Ignore errors for widgets that don't support certain options (like 'bg' for ttk widgets)
+                  # print(f"TclError configuring {widget.winfo_class()}: {e}")
+                  pass
+
+
+        # Recursively update children
         for child in widget.winfo_children():
-            self.update_widget_colors(child, colors)
-        
-        
+            self.update_widget_colors(child, colors) # Pass the selected theme object 
 
     def my_parallel_processes(self):
-        if self.themeint:
-            colors = Colors1
-        else:
-            colors = Colors
-        
-        self.homeframe.Colors = colors
-        accounts_df = get_all_list()
-        self.homeframe.all_graphs_function(accounts_df)
-        self.reportframe.parallel_process_combo(accounts_df)
-        self.is_graph_ready = 1
-
+        # ... (load data and update graph/report pages) ...
+        # This should ideally run in a separate thread or process
+        # to avoid blocking the GUI, especially if data loading is slow.
+        # For simplicity now, it runs synchronously.
+        print("Starting data processing...")
+        self.set_status("Loading dashboard data...")
+        try:
+             accounts_df = get_all_list() # Fetch fresh data
+             self.homeframe.all_graphs_function(accounts_df)
+             self.reportframe.parallel_process_combo(accounts_df) # Update reports page combo/data
+             self.is_graph_ready = 1
+             self.set_status("Dashboard data loaded.")
+             print("Data processing finished.")
+        except Exception as e:
+             self.set_status(f"[Error] Loading dashboard data: {e}")
+             print(f"Error in my_parallel_processes: {e}")
     
     # def start_processing(self):
     #     with ThreadPoolExecutor() as executor:

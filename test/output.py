@@ -1,17 +1,3 @@
-# from bills.billshowpage import BillShowPage as bill
-# from bills.billpage import BillPage as bill
-# import tkinter as tk
-
-
-# if __name__ == "__main__":
-#     app = tk.Tk()
-#     app.state("zoomed")
-#     h = bill(app)
-#     h.pack(expand=1, fill="both")
-#     app.mainloop()
-
-# import whisper
-
 import os
 
 def get_python_files(path):

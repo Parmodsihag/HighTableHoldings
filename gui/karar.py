@@ -10,6 +10,8 @@ from datetime import datetime
 
 from database import accounts, krar
 
+from .searchbar import SearchBar
+
 
 
 class KararPage(tk.Frame):
@@ -53,9 +55,14 @@ class KararPage(tk.Frame):
         account_label = tk.Label(account_frame, text="Account", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         account_label.pack(padx=40, fill='x')
         account_choices = self.get_accounts()
-        self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
-        self.account_dropdown.pack(padx=40, pady=(0,10), fill='x')
-        self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
+        self.account_dropdown = SearchBar(account_frame, data=account_choices)
+        self.account_dropdown.set_data(account_choices)
+        self.account_dropdown.pack(padx=40, pady=(0, 10), fill='x')
+        self.account_dropdown.search_bar.bind('<Enter>', lambda e: self.account_dropdown.set_data(self.get_accounts()))
+
+        # self.account_dropdown = ttk.Combobox(account_frame, values=account_choices, font="Consolas 14")
+        # self.account_dropdown.pack(padx=40, pady=(0,10), fill='x')
+        # self.account_dropdown.bind('<Enter>', lambda e: self.account_dropdown.config(values=self.get_accounts()))
 
         # button frame
         button_frame = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
@@ -69,9 +76,13 @@ class KararPage(tk.Frame):
         account_label2 = tk.Label(account_frame2, text="Account Krar", font="Consolas 12", bg=Colors.BACKGROUND, fg=Colors.ACTIVE_FOREGROUND, anchor='w')
         account_label2.pack(padx=40, fill='x')
         account_choices2 = self.get_accounts_unsettled()
-        self.account_dropdown2 = ttk.Combobox(account_frame2, values=account_choices2, font="Consolas 14")
-        self.account_dropdown2.pack(padx=40, pady=(0,10), fill='x')
-        self.account_dropdown2.bind('<Enter>', lambda e: self.account_dropdown2.config(values=self.get_accounts_unsettled()))
+        self.account_dropdown2 = SearchBar(self.main_frame, data=account_choices2)
+        self.account_dropdown2.pack(padx=40, pady=(0, 10), fill='x')
+        self.account_dropdown2.search_bar.bind('<Enter>', lambda e: self.account_dropdown2.set_data(self.get_accounts_unsettled()))
+
+        # self.account_dropdown2 = ttk.Combobox(account_frame2, values=account_choices2, font="Consolas 14")
+        # self.account_dropdown2.pack(padx=40, pady=(0,10), fill='x')
+        # self.account_dropdown2.bind('<Enter>', lambda e: self.account_dropdown2.config(values=self.get_accounts_unsettled()))
 
         # button frame
         button_frame2 = tk.Frame(self.main_frame, bg=Colors.BACKGROUND)
@@ -80,8 +91,8 @@ class KararPage(tk.Frame):
         settle_button.pack(padx=40, fill='x', pady=(10, 10))
 
     def get_accounts(self):
-        accoount_list = accounts.get_all_customers()
-        return accoount_list
+        account_list = accounts.get_all_customers()
+        return [f"{i[0]} {i[1]} {i[2]}" for i in account_list] 
     
     def get_accounts_unsettled(self):
         accounts_list = krar.get_accounts_with_unsettled_krars()
@@ -89,11 +100,11 @@ class KararPage(tk.Frame):
         for account_id in accounts_list:
             result_list.append(accounts.get_customer_details(account_id))
 
-        return result_list
+        return [f"{i[0]} {i[1]} {i[2]}" for i in result_list] 
 
 
     def add_krar(self):
-        customer_name = self.account_dropdown.get()
+        customer_name = self.account_dropdown.get_text()
         krar_date = self.date_entry.get()
         if customer_name and krar_date:
             customer_id = customer_name.split()[0]
@@ -102,7 +113,7 @@ class KararPage(tk.Frame):
                 self.master.master.set_status(f"Krar Id : {krar_id}")
 
     def settle_krar(self):
-        customer_name = self.account_dropdown2.get()
+        customer_name = self.account_dropdown2.get_text()
         if customer_name:
             customer_id = customer_name.split()[0]
             krar.set_krar_settlement(customer_id)

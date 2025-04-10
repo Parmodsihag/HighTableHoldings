@@ -138,7 +138,7 @@ def get_table1(table_name):
     return accounts_cursor.fetchall()
 
 
-def calculate_interest(self, principle_amount, from_date_str, to_date=datetime.date.today()):
+def calculate_interest(principle_amount, from_date_str, to_date=datetime.date.today()):
         """
         Calculates interest earned on a principle amount, considering financial year-end (March 31st).
 
@@ -173,6 +173,17 @@ def find_last_settlement_date(customer_id):
     accounts_cursor.execute(f"SELECT MAX(date) FROM {table_name} WHERE tags = '0'")
     result = accounts_cursor.fetchone()
     return result[0] if result[0] is not None else None
+
+def find_last_settlement_id_on_date(customer_id, last_settlement_date):
+    """Finds the id of the last settled transaction on a given date."""
+    table_name = f"customer_{customer_id}"
+    accounts_cursor.execute(f"""
+        SELECT id FROM {table_name}
+        WHERE date = ? AND tags = '0'
+        ORDER BY id DESC
+    """, (last_settlement_date,))
+    result = accounts_cursor.fetchone()
+    return result[0] if result is not None else None
 
 def get_account_balance(customer_id):
     """Calculates the account balance for a customer, including interest,
@@ -229,6 +240,8 @@ if __name__ =='__main__':
         for i in accounts_cursor.fetchall():
             print(i)
         accounts_conn.commit()
+    
+    # print(get_account_balance(2))
     # x = get_all_customers_name_and_id()
     # x = [f"{i[0]} {i[1]}" for i in x]
     # for i in x:

@@ -136,7 +136,7 @@ def get_customers_with_last_krar_today():
         SELECT DISTINCT a.customer_id
         FROM all_krar a
         JOIN by_krar_id b ON a.krar_id = b.kid
-        WHERE DATE(b.date) = ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+        WHERE DATE(b.date) = ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id) AND is_nill = 0
     ''', (today,))
     customers_today = cursor.fetchall()
     return [customer[0] for customer in customers_today]
@@ -148,7 +148,7 @@ def get_customers_with_last_krar_past():
         SELECT DISTINCT a.customer_id
         FROM all_krar a
         JOIN by_krar_id b ON a.krar_id = b.kid
-        WHERE DATE(b.date) < ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+        WHERE DATE(b.date) < ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id) AND is_nill = 0
     ''', (today,))
     customers_past = cursor.fetchall()
     return [customer[0] for customer in customers_past]
@@ -159,7 +159,7 @@ def get_customers_with_last_krar_future():
         SELECT DISTINCT a.customer_id
         FROM all_krar a
         JOIN by_krar_id b ON a.krar_id = b.kid
-        WHERE DATE(b.date) > ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id)
+        WHERE DATE(b.date) > ? AND DATE(b.date) = (SELECT MAX(DATE(date)) FROM by_krar_id WHERE kid = a.krar_id) AND is_nill = 0
     ''', (today,))
     customers_future = cursor.fetchall()
     return [customer[0] for customer in customers_future]

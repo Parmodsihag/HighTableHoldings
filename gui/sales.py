@@ -166,7 +166,7 @@ class SalesPage(tk.Frame):
     def _handle_settlement(self, account_id, date, detail, amount, transaction_type):
         """Handles account settlements (Tag = 0)."""
         total_amount = accounts.get_account_balance(account_id)  # Before adding new transaction
-        discount = total_amount + amount if transaction_type == "P" else total_amount - amount 
+        discount = total_amount + amount if transaction_type == "P" else (total_amount - amount) 
 
         accounts.add_customer_transaction(account_id, date, detail, amount, transaction_type, 0) # original transaction
         accounts.add_customer_transaction(account_id, date, "Settled Amount", total_amount, "M" , 0)  # record settled amount 

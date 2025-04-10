@@ -104,26 +104,6 @@ def get_table(table_name):
     daily_cursor.execute(f"select * from {table_name}")
     return daily_cursor.fetchall()
 
-def get_todays_notes_summary():
-    """Gets a count of notes added today."""
-    today_str = datetime.now().strftime('%Y_%m_%d')
-    table_name = f"d{today_str}"
-    count = 0
-    try:
-        # Check if table exists first to avoid error
-        daily_cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
-        if daily_cursor.fetchone():
-            daily_cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-            result = daily_cursor.fetchone()
-            if result:
-                count = result[0]
-    except sqlite3.Error as e:
-        print(f"Error getting today's notes count ({table_name}): {e}")
-    except Exception as e_gen:
-         print(f"Unexpected error in get_todays_notes_summary: {e_gen}")
-    return count
-
-
 
 if __name__ == '__main__':
     print('main')
