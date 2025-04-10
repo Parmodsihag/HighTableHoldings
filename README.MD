@@ -60,38 +60,18 @@ High Table Holdings is a comprehensive Python software designed to simplify acco
 
 *(Screenshots provide a visual understanding of the application)*
 
-*   **Dark Theme**
-    *   HomePage
-        ![HomePage Dark](screenshots/homepagedark.png)
-    *   Accounts
-        ![Accounts Dark](screenshots/accountsdark.png)
-    *   Items
-        ![Items Dark](screenshots/itemsdark.png)
-    *   Krar
-        ![Krar Dark](screenshots/krardark.png)
-    *   Modify
-        ![Modify Dark](screenshots/modifydark.png)
-    *   Reports
-        ![Reports Dark 1](screenshots/reportsdark1.png)
-        ![Reports Dark 2](screenshots/reportsdark2.png)
-    *   *(Add Crop Trading screenshot if available)*
-
-*   **Light Theme**
-    *   HomePage
-        ![HomePage Light](screenshots/homepagelight.png)
-    *   Accounts
-        ![Accounts Light](screenshots/accountslight.png)
-    *   Items
-        ![Items Light](screenshots/itemslight.png)
-    *   Krar
-        ![Krar Light](screenshots/krarlight.png)
-    *   Modify
-        ![Modify Light](screenshots/modifylight.png)
-    *   Reports
-        ![Reports Light 1](screenshots/reportslight1.png)
-        ![Reports Light 2](screenshots/reportslight2.png)
-        ![Reports Light 3](screenshots/reportslight3.png)
-    *   *(Add Crop Trading screenshot if available)*
+*   HomePage
+    ![HomePage Dark](screenshots/homepage.png)
+*   Accounts
+    ![Accounts Dark](screenshots/account.png)
+*   Items
+    ![Items Dark](screenshots/item.png)
+*   Krar
+    ![Krar Dark](screenshots/krar.png)
+*   Modify
+    ![Modify Dark](screenshots/modify.png)
+*   Reports
+    ![Reports Dark 1](screenshots/report.png)
 
 ## Setup and Installation
 
